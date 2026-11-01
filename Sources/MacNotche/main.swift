@@ -101,7 +101,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let g: CGSize = switch z {
         case .zu: CGSize(width: UserDefaults.standard.double(forKey: E.breite), height: leiste)
         case .meldung: CGSize(width: 440, height: leiste + 44)
-        case .offen: CGSize(width: 780, height: 290)
+        case .offen: CGSize(width: 780, height: 290 + ((s.safeAreaInsets.top > 0) ? leiste : 0))
         }
         let r = NSRect(x: s.frame.midX - g.width / 2, y: s.frame.maxY - g.height, width: g.width, height: g.height)
         panel.setFrame(r, display: true, animate: panel.frame.width > 0)

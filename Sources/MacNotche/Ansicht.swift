@@ -199,7 +199,7 @@ struct Offen: View {
                     .buttonStyle(.plain).foregroundStyle(Color.primary.opacity(0.55)).padding(.leading, 6)
                     .help("Einstellungen")
             }
-            .padding(.top, 10)
+            .padding(.top, 10 + m.echteNotch)
             Group {
                 switch m.reiter {
                 case .uebersicht: Uebersicht()
