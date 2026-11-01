@@ -148,7 +148,7 @@ final class SystemAnzeige: ObservableObject {
         NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] e in
             guard e.keyCode == UInt16(kVK_CapsLock) else { return }
             let an = e.modifierFlags.contains(.capsLock)
-            self?.melden?("feststell", an ? "capslock.fill" : "capslock", an ? "Feststelltaste an" : "Feststelltaste aus", nil)
+            self?.melden?("feststell", an ? "capslock.fill" : "capslock", L(an ? "Feststelltaste an" : "Feststelltaste aus"), nil)
         }
     }
 
@@ -187,7 +187,7 @@ final class SystemAnzeige: ObservableObject {
         lautstaerke = stumm ? 0 : wert
         guard Date().timeIntervalSince(start) > 3 else { return }
         let symbol = stumm ? "speaker.slash.fill" : v < 0.34 ? "speaker.wave.1.fill" : v < 0.67 ? "speaker.wave.2.fill" : "speaker.wave.3.fill"
-        melden?("lautstaerke", symbol, stumm ? "Stumm" : "Lautstärke \(Int((v * 100).rounded())) %", stumm ? 0 : Double(v))
+        melden?("lautstaerke", symbol, stumm ? L("Stumm") : L("Lautstärke") + " \(Int((v * 100).rounded())) %", stumm ? 0 : Double(v))
     }
 }
 
@@ -276,13 +276,13 @@ final class FokusTimer: ObservableObject {
         switch art {
         case .fokus:
             rauschen = false
-            melden?("timer", "cup.and.saucer.fill", "Fokus geschafft – 5 Minuten Pause")
+            melden?("timer", "cup.and.saucer.fill", L("Fokus geschafft – 5 Minuten Pause"))
             start(.pause, minuten: 5)
         case .pause:
-            melden?("timer", "brain.head.profile", "Pause vorbei – weiter geht's")
+            melden?("timer", "brain.head.profile", L("Pause vorbei – weiter geht's"))
             stopp()
         default:
-            melden?("timer", "timer", "Timer abgelaufen")
+            melden?("timer", "timer", L("Timer abgelaufen"))
             stopp()
         }
     }

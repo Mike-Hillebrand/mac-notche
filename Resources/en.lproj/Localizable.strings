@@ -1,0 +1,277 @@
+/* Mac Notche – English. Keys are the German source strings. */
+
+/* Reiter / tabs */
+"Übersicht" = "Overview";
+"Mitteilungen" = "Notifications";
+"Wetter" = "Weather";
+"KI" = "AI";
+"Fragen" = "Ask";
+"Ablage" = "Shelf";
+"Fokus" = "Focus";
+"Werkzeuge" = "Tools";
+"Timer" = "Timer";
+"Pause" = "Break";
+
+/* Einstellungen – Seiten */
+"Allgemein" = "General";
+"Aussehen" = "Appearance";
+"Live-Aktivitäten" = "Live Activities";
+"Gesicht entsperren" = "Face Unlock";
+"Claude" = "Claude";
+"Über Mac Notche" = "About Mac Notche";
+"Einstellungen …" = "Settings…";
+"Einstellungen und Beenden" = "Settings and Quit";
+"Mac Notche beenden" = "Quit Mac Notche";
+"Notch öffnen" = "Open Notch";
+"Claude-Usage aktualisieren" = "Refresh Claude Usage";
+"Beim Anmelden starten" = "Launch at Login";
+"Sprache" = "Language";
+"System" = "System";
+"Deutsch" = "German";
+"English" = "English";
+"Neustart nötig, damit die Sprache wechselt." = "Restart needed for the language to change.";
+"Jetzt neu starten" = "Restart Now";
+
+/* Allgemein */
+"Start" = "Startup";
+"Verhalten" = "Behavior";
+"Klick außerhalb schließt die Notch" = "Click outside closes the notch";
+"Look" = "Look";
+"Schwarz – wie eine echte Notch" = "Black – like a real notch";
+"Glas – transparent" = "Glass – translucent";
+"Hell" = "Light";
+"Dunkel" = "Dark";
+"System – folgt Hell/Dunkel" = "System – follows Light/Dark";
+"Form" = "Shape";
+"Stil" = "Style";
+"Schatten" = "Shadow";
+"Symbole" = "Symbols";
+
+/* Live */
+"In der zugeklappten Notch" = "In the closed notch";
+"Laufende Musik (Cover und Equalizer)" = "Now playing (cover and equalizer)";
+"Claude-Auslastung" = "Claude usage";
+"Temperatur, wenn keine Musik läuft" = "Temperature when no music is playing";
+"Meldungen" = "Alerts";
+"Bluetooth-Gerät verbunden oder getrennt" = "Bluetooth device connected or disconnected";
+"Akku lädt oder ist schwach" = "Battery charging or low";
+"Fokus-Wechsel" = "Focus mode changes";
+"Lautstärke mit Pegel" = "Volume with level bar";
+"Feststelltaste an/aus" = "Caps Lock on/off";
+"Timer und Fokus-Sitzung abgelaufen" = "Timer and focus session finished";
+"Ablage: Umwandeln und Installieren" = "Shelf: converting and installing";
+"Termin beginnt (5 Min. vorher und zum Start)" = "Event starting (5 min before and at start)";
+"Tor bei deinen Vereinen" = "Goal for your teams";
+"Fokus-Meldungen brauchen Festplattenvollzugriff (Systemeinstellungen › Datenschutz & Sicherheit)." = "Focus alerts need Full Disk Access (System Settings › Privacy & Security).";
+"Neue Mitteilungen kurz in der Notch zeigen" = "Show new notifications briefly in the notch";
+"Meldung beim Verbinden und Trennen" = "Alert on connect and disconnect";
+
+/* Wetter */
+"Einheit" = "Unit";
+"Celsius" = "Celsius";
+"Fahrenheit" = "Fahrenheit";
+"Daten von Open-Meteo, kostenlos und ohne Konto. Ohne Standortfreigabe gilt Chemnitz." = "Data from Open-Meteo, free and without an account. Without location access, Chemnitz is used.";
+
+/* iPhone */
+"Verbunden per Kabel" = "Connected via cable";
+"Nur per Kabel. Das iPhone muss entsperrt sein und dem Mac vertrauen. Live-Fotos werden als Foto und Video getrennt übernommen." = "Cable only. The iPhone must be unlocked and trust this Mac. Live Photos are imported as separate photo and video.";
+"Neue Fotos beim Anschließen automatisch in Fotos übernehmen" = "Import new photos to Photos automatically when connected";
+"In die Fotos-App übernehmen" = "Import to Photos";
+"Jetzt übernehmen" = "Import now";
+"Vorhandene ignorieren" = "Ignore existing";
+"Keine neuen Fotos." = "No new photos.";
+"%lld Fotos und Videos auf dem Gerät" = "%lld photos and videos on the device";
+"%lld neue Fotos und Videos" = "%lld new photos and videos";
+"%lld von %lld …" = "%lld of %lld…";
+
+/* Mitteilungen */
+"Keine Mitteilungen" = "No notifications";
+"Alles erledigt" = "All done";
+"Nachrichten" = "Messages";
+"Ungelesene Mails" = "Unread mail";
+"Antwort an %@" = "Reply to %@";
+"In Mail antworten: %@" = "Reply in Mail: %@";
+"%@ öffnen" = "Open %@";
+"Mac Notche braucht Festplattenvollzugriff" = "Mac Notche needs Full Disk Access";
+"Dort Mac Notche einschalten, dann erscheinen Mitteilungen und Nachrichten hier." = "Enable Mac Notche there and notifications and messages will appear here.";
+"Festplattenvollzugriff öffnen …" = "Open Full Disk Access…";
+"Mac Notche liest die Mitteilungen und Nachrichten nur lokal. Dafür in Systemeinstellungen › Datenschutz & Sicherheit › Festplattenvollzugriff „Mac Notche“ einschalten. Antworten geht für iMessage/SMS direkt, für Mail über das Antwortfenster; andere Apps (z. B. WhatsApp) erlauben das nicht – ein Klick öffnet die App." = "Mac Notche reads notifications and messages locally only. Enable “Mac Notche” in System Settings › Privacy & Security › Full Disk Access. Replies work directly for iMessage/SMS and via the reply window for Mail; other apps (e.g. WhatsApp) don’t allow it – a click opens the app.";
+
+/* KI */
+"Claude · Plan-Limits" = "Claude · Plan limits";
+"Jetzt abrufen" = "Refresh now";
+"Claude Code auf diesem Mac" = "Claude Code on this Mac";
+"Kosten = API-Gegenwert, im Abo nicht berechnet" = "Cost = API equivalent, not charged on a subscription";
+"Codex" = "Codex";
+"Gemini CLI" = "Gemini CLI";
+"Anthropic meldet für deinen Plan gerade kein 5-Stunden-Limit." = "Anthropic currently reports no 5-hour limit for your plan.";
+"Plan-Limits abrufen alle" = "Fetch plan limits every";
+"Plan-Limits brauchen einen Claude-Code-Login im Terminal (einmal „claude“ starten). Token und Kosten werden lokal aus ~/.claude gezählt." = "Plan limits need a Claude Code login in Terminal (run “claude” once). Tokens and cost are counted locally from ~/.claude.";
+"Stand %@ Uhr" = "As of %@";
+"Setzt zurück: %@" = "Resets: %@";
+"%@ rein · %@ raus · %@ Cache gelesen · %@ geschrieben" = "%@ in · %@ out · %@ cache read · %@ written";
+"%@ rein · %@ raus · %@ aus dem Cache" = "%@ in · %@ out · %@ from cache";
+"Woche – alle Modelle" = "Week – all models";
+"5-Stunden-Fenster" = "5-hour window";
+"Weiteres Limit" = "Additional limit";
+
+/* Fragen */
+"Frage" = "Ask";
+"Bildschirm" = "Screen";
+"Aufgabe" = "Task";
+"Planen" = "Plan";
+"Stopp" = "Stop";
+"Kopieren" = "Copy";
+"Neue Frage" = "New question";
+"Ausführen" = "Run";
+"Verwerfen" = "Discard";
+"Was soll Claude auf dem Mac erledigen?" = "What should Claude do on this Mac?";
+"Claude fragen" = "Ask Claude";
+"Modell" = "Model";
+"Haiku – am schnellsten" = "Haiku – fastest";
+"Sonnet – ausgewogen" = "Sonnet – balanced";
+"Opus – am klügsten" = "Opus – smartest";
+"⌥⌘K öffnet den Reiter „Fragen“ mit drei Arten: Frage, Bildschirm (schickt ein Foto des Bildschirms mit, braucht die Erlaubnis Bildschirmaufnahme) und Aufgabe (Claude plant Schritte, du bestätigst, Mac Notche führt sie aus). Läuft über deinen Claude-Code-Login, ohne API-Schlüssel." = "⌥⌘K opens the “Ask” tab with three modes: Ask, Screen (sends a screenshot, needs Screen Recording permission) and Task (Claude plans steps, you confirm, Mac Notche runs them). Uses your Claude Code login, no API key.";
+
+/* Ablage */
+"In PNG umwandeln" = "Convert to PNG";
+"In JPEG umwandeln" = "Convert to JPEG";
+"In HEIC umwandeln" = "Convert to HEIC";
+"Programm installieren" = "Install app";
+"Per AirDrop senden" = "Send via AirDrop";
+"Im Finder zeigen" = "Show in Finder";
+"Alle entfernen" = "Remove all";
+"Entfernen" = "Remove";
+
+/* Fokus */
+"5 Min." = "5 min";
+"15 Min." = "15 min";
+"30 Min." = "30 min";
+"60 Min." = "60 min";
+"1 Std." = "1 h";
+"%lld Min." = "%lld min";
+"Fokus 25 + 5 Pause" = "Focus 25 + 5 break";
+"Umgebung" = "Environment";
+"Rauschen zum Konzentrieren" = "Noise for concentration";
+"Augenpause alle %lld Min." = "Eye break every %lld min";
+"Trinkpause alle %lld Min." = "Water break every %lld min";
+"Ton-Ausgabe" = "Audio output";
+"Lautstärke pro App" = "Volume per app";
+"Notizen" = "Notes";
+"Aus" = "Off";
+
+/* Werkzeuge (Notch) */
+"Spiegel" = "Mirror";
+"Kamera an" = "Camera on";
+"Wach halten" = "Keep awake";
+"Unbegrenzt" = "Unlimited";
+"Zwischenablage" = "Clipboard";
+"Noch nichts kopiert." = "Nothing copied yet.";
+"Erneut kopieren" = "Copy again";
+
+/* Werkzeuge (Einstellungen) */
+"Fenster" = "Windows";
+"Fenster per Tastenkürzel einrasten" = "Snap windows with keyboard shortcuts";
+"Fenster per Ziehen an den Rand einrasten" = "Snap windows by dragging to the edge";
+"Braucht die Bedienungshilfen-Erlaubnis (wie beim Entsperren)." = "Needs the Accessibility permission (same as for unlocking).";
+"Die letzten 20 kopierten Texte, nur im Speicher. Inhalte aus Passwort-Managern werden nie gemerkt." = "The last 20 copied texts, in memory only. Content from password managers is never kept.";
+"Textbausteine" = "Text snippets";
+"Textbaustein hinzufügen" = "Add snippet";
+"Kürzel" = "Shortcut";
+"Text" = "Text";
+"Emoji-Kürzel wie :herz: oder :daumen:" = "Emoji shortcuts like :herz: or :daumen:";
+"Tippst du das Kürzel irgendwo, ersetzt Mac Notche es durch den Text. Emoji-Kürzel: " = "Type the shortcut anywhere and Mac Notche replaces it with the text. Emoji shortcuts: ";
+"Augenpause" = "Eye break";
+"Erinnern, in die Ferne zu schauen" = "Remind me to look into the distance";
+"Alle %lld Minuten" = "Every %lld minutes";
+"Trinken und Aufstehen" = "Water and standing up";
+"Erinnern, etwas zu trinken und aufzustehen" = "Remind me to drink and stand up";
+"Aktienkurse in der Übersicht" = "Stock quotes in Overview";
+"Kürzel wie bei Yahoo Finance, mit Komma getrennt. Enter lädt sofort, sonst alle 15 Minuten. Leer = aus." = "Symbols as on Yahoo Finance, comma separated. Enter loads now, otherwise every 15 minutes. Empty = off.";
+"Kurzbefehle" = "Shortcuts";
+"Kurzbefehle in der Übersicht" = "Shortcuts in Overview";
+"Namen aus der Kurzbefehle-App, mit Komma getrennt." = "Names from the Shortcuts app, comma separated.";
+"Menüleiste" = "Menu bar";
+"Menüleisten-Symbole ausblenden" = "Hide menu bar icons";
+"Halte ⌘ gedrückt und ziehe Symbole links neben den Schrägstrich in der Menüleiste. Der Pfeil daneben oder ⌃⌥M blendet sie ein und aus." = "Hold ⌘ and drag icons to the left of the slash in the menu bar. The arrow next to it or ⌃⌥M shows and hides them.";
+"Bildschirmecken" = "Hot corners";
+"Oben links" = "Top left";
+"Oben rechts" = "Top right";
+"Unten links" = "Bottom left";
+"Unten rechts" = "Bottom right";
+"Nichts" = "Nothing";
+"Ablage öffnen" = "Open shelf";
+"Mission Control" = "Mission Control";
+"Schreibtisch zeigen" = "Show desktop";
+"Bildschirmschoner" = "Screen saver";
+"Bildschirm aus (sperrt)" = "Display off (locks)";
+"Maus kurz in die Ecke schieben löst die Aktion aus. Gilt für jeden Bildschirm. Die Ecken von macOS (Systemeinstellungen › Schreibtisch & Dock) besser auf „–“ lassen." = "Push the mouse into a corner briefly to trigger the action. Works on every display. Best leave macOS’s own hot corners (System Settings › Desktop & Dock) set to “–”.";
+"Sport in der Übersicht" = "Sports in Overview";
+"Liga" = "League";
+"Vereine" = "Teams";
+"Daten von OpenLigaDB. Liga: bl1 = 1. Bundesliga, bl2 = 2. Bundesliga, bl3 = 3. Liga. Vereine mit Komma getrennt, ein Teil des Namens reicht. Leer = aus. Bei Toren kommt eine Meldung." = "Data from OpenLigaDB. League: bl1 = Bundesliga, bl2 = 2. Bundesliga, bl3 = 3. Liga. Teams comma separated, part of the name is enough. Empty = off. Goals trigger an alert.";
+
+/* Gesicht entsperren */
+"Mit Gesicht entsperren" = "Unlock with face";
+"1. Gesicht" = "1. Face";
+"2. Mac-Passwort" = "2. Mac password";
+"3. Bedienungshilfen (zum Eintippen)" = "3. Accessibility (for typing)";
+"Gesicht einlernen" = "Enroll face";
+"Gesichtsdaten löschen" = "Delete face data";
+"Erkennung testen" = "Test recognition";
+"Prüfen und speichern" = "Verify and save";
+"Geprüft und im Schlüsselbund gespeichert" = "Verified and stored in Keychain";
+"Erlauben …" = "Allow…";
+"Systemeinstellungen öffnen" = "Open System Settings";
+"Das Gesichtsmodell fehlt in dieser App-Version." = "The face model is missing in this build.";
+"Bequemer, aber weniger sicher als Touch ID oder Apple Watch: Eine Webcam misst kein 3D-Gesicht. Mac Notche verlangt deshalb ein Blinzeln (gegen Fotos) und drei Treffer hintereinander – ein Video oder eine sehr ähnliche Person kann trotzdem durchkommen. Dein Passwort liegt nur im Schlüsselbund und wird ausschließlich getippt, wenn der Bildschirm gesperrt ist." = "More convenient but less secure than Touch ID or Apple Watch: a webcam doesn’t measure a 3D face. Mac Notche therefore requires a blink (against photos) and three matches in a row – a video or a very similar person can still get through. Your password is kept only in the Keychain and typed only while the screen is locked.";
+
+/* Über */
+"Alle Funktionen frei – kein Abo, keine Sperren." = "All features free – no subscription, no locks.";
+"Version %@" = "Version %@";
+"made with" = "made with";
+"by" = "by";
+
+/* Übersicht */
+"Termine" = "Events";
+"Erinnerungen" = "Reminders";
+"Abhaken" = "Complete";
+
+/* Meldungen (Texte) */
+"Augenpause: 20 Sekunden in die Ferne schauen" = "Eye break: look into the distance for 20 seconds";
+"Zeit für einen Schluck Wasser und kurz aufstehen" = "Time for a sip of water and a quick stretch";
+"Feststelltaste an" = "Caps Lock on";
+"Feststelltaste aus" = "Caps Lock off";
+"Stumm" = "Muted";
+"Timer abgelaufen" = "Timer finished";
+"Fokus geschafft – 5 Minuten Pause" = "Focus done – 5-minute break";
+"Pause vorbei – weiter geht's" = "Break over – back to it";
+"Fokus aus" = "Focus off";
+"Umwandeln fehlgeschlagen" = "Conversion failed";
+"In 5 Min.: " = "In 5 min: ";
+"Jetzt: " = "Now: ";
+"Termin" = "Event";
+
+/* Nachträge */
+"Mac Notche – Einstellungen" = "Mac Notche – Settings";
+"Öffnen nach" = "Open after";
+"sofort" = "immediately";
+"Erlaubt" = "Allowed";
+"Noch nicht erlaubt" = "Not allowed yet";
+"erkannt ✓" = "recognized ✓";
+"nicht erkannt" = "not recognized";
+"Bildschirm wird fotografiert und an Claude geschickt …" = "Taking a screenshot and sending it to Claude…";
+"Claude denkt nach …" = "Claude is thinking…";
+"Frag Claude zu deinem Bildschirm …" = "Ask Claude about your screen…";
+"Frag Claude …" = "Ask Claude…";
+"Morgen" = "Tomorrow";
+"Übermorgen" = "Day after tomorrow";
+"Nichts in den nächsten 48 Std." = "Nothing in the next 48 h.";
+"Kein Kalender-Zugriff – Systemeinstellungen › Datenschutz" = "No calendar access – System Settings › Privacy";
+"Enter schickt die Frage ab. ⌥⌘K öffnet diesen Reiter von überall." = "Enter sends the question. ⌥⌘K opens this tab from anywhere.";
+"Claude bekommt ein Foto deines Bildschirms und beantwortet deine Frage dazu." = "Claude gets a screenshot and answers your question about it.";
+"Prüfe die Schritte, dann „Ausführen“." = "Check the steps, then “Run”.";
+"Fertig." = "Done.";
+"Ein Schritt ist fehlgeschlagen, danach gestoppt." = "A step failed, stopped after it.";
+"Ablage ist leer" = "Shelf is empty";
+"Dateien auf die Notch ziehen" = "Drag files onto the notch";

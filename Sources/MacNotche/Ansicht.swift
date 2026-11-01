@@ -188,7 +188,7 @@ struct Offen: View {
         VStack(spacing: 12) {
             HStack(spacing: 4) {
                 ForEach(Reiter.allCases, id: \.self) { r in
-                    Button(r.rawValue) { m.reiter = r }
+                    Button(LocalizedStringKey(r.rawValue)) { m.reiter = r }
                         .buttonStyle(.plain)
                         .font(.system(size: 12, weight: .semibold))
                         .padding(.horizontal, 10).padding(.vertical, 5)
@@ -343,7 +343,7 @@ struct TermineKarte: View {
         f.locale = deutsch
         f.timeStyle = .short
         let kal = Calendar.current
-        let tag = e.startDate < Date() ? "Läuft" : kal.isDateInToday(e.startDate) ? "Heute" : kal.isDateInTomorrow(e.startDate) ? "Morgen" : "Übermorgen"
+        let tag = e.startDate < Date() ? "Läuft" : kal.isDateInToday(e.startDate) ? "Heute" : kal.isDateInTomorrow(e.startDate) ? L("Morgen") : L("Übermorgen")
         return e.isAllDay ? "\(tag), ganztägig" : "\(tag), \(f.string(from: e.startDate))–\(f.string(from: e.endDate)) Uhr"
     }
 
@@ -351,7 +351,7 @@ struct TermineKarte: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Termine").kopf()
             if k.termine.isEmpty {
-                Text(k.zugriff ? "Nichts in den nächsten 48 Std." : "Kein Kalender-Zugriff – Systemeinstellungen › Datenschutz")
+                Text(k.zugriff ? L("Nichts in den nächsten 48 Std.") : L("Kein Kalender-Zugriff – Systemeinstellungen › Datenschutz"))
                     .font(.system(size: 12)).foregroundStyle(Color.primary.opacity(0.6))
             }
             ForEach(Array(k.termine.enumerated()), id: \.offset) { _, e in
@@ -840,7 +840,7 @@ struct FokusAnsicht: View {
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             VStack(alignment: .leading, spacing: 8) {
-                Text(fokus.art?.rawValue ?? "Timer").kopf()
+                Text(LocalizedStringKey(fokus.art?.rawValue ?? "Timer")).kopf()
                 if let ende = fokus.ende {
                     TimelineView(.periodic(from: .now, by: 1)) { tl in
                         let rest = max(ende.timeIntervalSince(tl.date), 0)
@@ -1006,7 +1006,7 @@ struct FragenAnsicht: View {
                     if agent.plant { ProgressView().controlSize(.small); Button("Stopp") { agent.abbrechen() }.buttonStyle(.plain).font(.system(size: 11)) }
                     else { Button("Planen") { agent.planen() }.controlSize(.small).disabled(agent.aufgabe.isEmpty || agent.laeuft) }
                 } else {
-                    TextField(art == 1 ? "Frag Claude zu deinem Bildschirm …" : "Frag Claude …", text: $f.frage)
+                    TextField(art == 1 ? L("Frag Claude zu deinem Bildschirm …") : L("Frag Claude …"), text: $f.frage)
                         .textFieldStyle(.plain).font(.system(size: 13)).focused($fokus).onSubmit { f.senden() }
                     if f.laeuft { ProgressView().controlSize(.small); Button("Stopp") { f.stopp() }.buttonStyle(.plain).font(.system(size: 11)) }
                     else {
@@ -1024,7 +1024,7 @@ struct FragenAnsicht: View {
 
     @ViewBuilder private var antwortBereich: some View {
         if f.antwort.isEmpty {
-            Text(f.laeuft ? (art == 1 ? "Bildschirm wird fotografiert und an Claude geschickt …" : "Claude denkt nach …")
+            Text(f.laeuft ? (art == 1 ? L("Bildschirm wird fotografiert und an Claude geschickt …") : L("Claude denkt nach …"))
                  : art == 1 ? "Claude bekommt ein Foto deines Bildschirms und beantwortet deine Frage dazu."
                  : "Enter schickt die Frage ab. ⌥⌘K öffnet diesen Reiter von überall.")
                 .font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.45))

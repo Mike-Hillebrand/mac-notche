@@ -69,7 +69,7 @@ struct EinstellungenAnsicht: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $seite) {
-                ForEach(Seite.allCases) { s in Label(s.rawValue, systemImage: s.symbol).tag(s) }
+                ForEach(Seite.allCases) { s in Label(LocalizedStringKey(s.rawValue), systemImage: s.symbol).tag(s) }
             }
             .navigationSplitViewColumnWidth(200)
         } detail: {
@@ -88,7 +88,7 @@ struct EinstellungenAnsicht: View {
                 }
             }
             .formStyle(.grouped)
-            .navigationTitle(seite?.rawValue ?? "")
+            .navigationTitle(L(seite?.rawValue ?? ""))
         }
         .frame(minWidth: 700, minHeight: 460)
     }
@@ -115,7 +115,32 @@ struct AllgemeinSeite: View {
     @AppStorage(E.verzoegerung) var verzoegerung = 0.0
     @AppStorage(E.klickSchliesst) var klick = true
     @State private var login = SMAppService.mainApp.status == .enabled
+    @State private var sprache = (UserDefaults.standard.stringArray(forKey: "AppleLanguages")?.first).flatMap { ["de", "en"].first(where: $0.hasPrefix) } ?? ""
+    @State private var neustart = false
     var body: some View {
+        Section("Sprache") {
+            Picker("Sprache", selection: $sprache) {
+                Text("System").tag("")
+                Text("Deutsch").tag("de")
+                Text("English").tag("en")
+            }
+            .onChange(of: sprache) { _, s in
+                // Standard-Trick: AppleLanguages nur für diese App setzen, gilt ab dem nächsten Start.
+                if s.isEmpty { UserDefaults.standard.removeObject(forKey: "AppleLanguages") } else { UserDefaults.standard.set([s], forKey: "AppleLanguages") }
+                neustart = true
+            }
+            if neustart {
+                HStack {
+                    Text("Neustart nötig, damit die Sprache wechselt.").foregroundStyle(.secondary)
+                    Spacer()
+                    Button("Jetzt neu starten") {
+                        let p = Process(); p.executableURL = URL(fileURLWithPath: "/bin/zsh")
+                        p.arguments = ["-c", "sleep 1; open -a \"\(Bundle.main.bundlePath)\""]
+                        try? p.run(); NSApp.terminate(nil)
+                    }
+                }
+            }
+        }
         Section("Start") {
             Toggle("Beim Anmelden starten", isOn: $login)
                 .onChange(of: login) { _, an in
@@ -124,8 +149,8 @@ struct AllgemeinSeite: View {
                 }
         }
         Section("Verhalten") {
-            Regler(titel: "Öffnen nach", wert: $verzoegerung, bereich: 0...1, schritt: 0.1) {
-                $0 == 0 ? "sofort" : String(format: "%.1f s", $0).replacingOccurrences(of: ".", with: ",")
+            Regler(titel: L("Öffnen nach"), wert: $verzoegerung, bereich: 0...1, schritt: 0.1) {
+                $0 == 0 ? L("sofort") : String(format: "%.1f s", $0).replacingOccurrences(of: ".", with: ",")
             }
             Toggle("Klick außerhalb schließt die Notch", isOn: $klick)
         }
@@ -299,7 +324,7 @@ struct EntsperrenSeite: View {
             }
             .disabled(!ent.modellBereit || ent.kameraLaeuft)
             if let a = ent.testAehnlichkeit {
-                Text("Ähnlichkeit \(String(format: "%.2f", a)) – \(a >= Float(schwelle) ? "erkannt ✓" : "nicht erkannt") · Blinzeln \(ent.testBlinzeln ? "✓" : "–")")
+                Text("Ähnlichkeit \(String(format: "%.2f", a)) – \(a >= Float(schwelle) ? L("erkannt ✓") : L("nicht erkannt")) · Blinzeln \(ent.testBlinzeln ? "✓" : "–")")
                     .monospacedDigit()
             }
             Regler(titel: "Strenge", wert: $schwelle, bereich: 0.6...0.9, schritt: 0.02) { String(format: "%.2f", $0) }
@@ -320,7 +345,7 @@ struct EntsperrenSeite: View {
         }
         Section("3. Bedienungshilfen (zum Eintippen)") {
             HStack {
-                Label(ent.bedienungshilfen ? "Erlaubt" : "Noch nicht erlaubt",
+                Label(ent.bedienungshilfen ? L("Erlaubt") : L("Noch nicht erlaubt"),
                       systemImage: ent.bedienungshilfen ? "checkmark.circle.fill" : "exclamationmark.circle")
                 Spacer()
                 Button("Erlauben …") { ent.bedienungshilfenAnfragen() }.disabled(ent.bedienungshilfen)
@@ -428,10 +453,10 @@ struct WerkzeugeSeite: View {
         }
 
         Section {
-            Picker("Oben links", selection: $eckeOL) { ForEach(Ecken.Aktion.allCases, id: \.rawValue) { Text($0.rawValue) } }
-            Picker("Oben rechts", selection: $eckeOR) { ForEach(Ecken.Aktion.allCases, id: \.rawValue) { Text($0.rawValue) } }
-            Picker("Unten links", selection: $eckeUL) { ForEach(Ecken.Aktion.allCases, id: \.rawValue) { Text($0.rawValue) } }
-            Picker("Unten rechts", selection: $eckeUR) { ForEach(Ecken.Aktion.allCases, id: \.rawValue) { Text($0.rawValue) } }
+            Picker("Oben links", selection: $eckeOL) { ForEach(Ecken.Aktion.allCases, id: \.rawValue) { Text(LocalizedStringKey($0.rawValue)) } }
+            Picker("Oben rechts", selection: $eckeOR) { ForEach(Ecken.Aktion.allCases, id: \.rawValue) { Text(LocalizedStringKey($0.rawValue)) } }
+            Picker("Unten links", selection: $eckeUL) { ForEach(Ecken.Aktion.allCases, id: \.rawValue) { Text(LocalizedStringKey($0.rawValue)) } }
+            Picker("Unten rechts", selection: $eckeUR) { ForEach(Ecken.Aktion.allCases, id: \.rawValue) { Text(LocalizedStringKey($0.rawValue)) } }
         } header: { Text("Bildschirmecken") } footer: {
             Text("Maus kurz in die Ecke schieben löst die Aktion aus. Gilt für jeden Bildschirm. Die Ecken von macOS (Systemeinstellungen › Schreibtisch & Dock) besser auf „–“ lassen.")
         }

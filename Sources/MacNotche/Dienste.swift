@@ -5,6 +5,9 @@ import IOKit.ps
 import IOBluetooth
 import CoreBluetooth
 
+/// Übersetzung aus Resources/<Sprache>.lproj, sonst der deutsche Text.
+func L(_ s: String) -> String { NSLocalizedString(s, comment: "") }
+
 enum Zustand { case zu, offen, meldung }
 enum Reiter: String, CaseIterable { case uebersicht = "Übersicht", mitteilungen = "Mitteilungen", wetter = "Wetter", claude = "KI", fragen = "Fragen", ablage = "Ablage", iphone = "iPhone", fokus = "Fokus", werkzeuge = "Werkzeuge" }
 
@@ -44,8 +47,8 @@ final class NotchModell: ObservableObject {
     let systemAnzeige = SystemAnzeige()
     let audio = AudioAusgabe()
     let fokus = FokusTimer()
-    let augen = Erinnerung(art: "augen", minuten: E.augenMinuten, symbol: "eye", text: "Augenpause: 20 Sekunden in die Ferne schauen")
-    let trinken = Erinnerung(art: "trinken", minuten: E.trinkenMinuten, symbol: "drop.fill", text: "Zeit für einen Schluck Wasser und kurz aufstehen")
+    let augen = Erinnerung(art: "augen", minuten: E.augenMinuten, symbol: "eye", text: L("Augenpause: 20 Sekunden in die Ferne schauen"))
+    let trinken = Erinnerung(art: "trinken", minuten: E.trinkenMinuten, symbol: "drop.fill", text: L("Zeit für einen Schluck Wasser und kurz aufstehen"))
     let bausteine = Textbausteine()
     let kurse = Kurse()
     var einstellungenOeffnen: (() -> Void)?

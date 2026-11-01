@@ -130,7 +130,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         modell.zustand = .zu
         if einstellungsFenster == nil {
             let w = NSWindow(contentViewController: NSHostingController(rootView: EinstellungenAnsicht().environmentObject(modell.entsperren)))
-            w.title = "Mac Notche – Einstellungen"
+            w.title = L("Mac Notche – Einstellungen")
             w.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
             w.setContentSize(NSSize(width: 760, height: 500))
             w.isReleasedWhenClosed = false

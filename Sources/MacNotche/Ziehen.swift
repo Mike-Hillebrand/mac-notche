@@ -105,11 +105,11 @@ final class TerminHinweis {
         guard UserDefaults.standard.bool(forKey: E.meldung("termin")) else { return }
         for t in termine where !t.isAllDay {
             guard let id = t.eventIdentifier, let start = t.startDate else { continue }
-            for (vorlauf, text) in [(300.0, "In 5 Min.: "), (0.0, "Jetzt: ")] {
+            for (vorlauf, text) in [(300.0, L("In 5 Min.: ")), (0.0, L("Jetzt: "))] {
                 let d = start.timeIntervalSince(jetzt) - vorlauf
                 let schluessel = "\(id)|\(Int(vorlauf))"
                 if d <= 20, d > -40, gemeldet.insert(schluessel).inserted {
-                    melden?("termin", "calendar", text + (t.title ?? "Termin"))
+                    melden?("termin", "calendar", text + (t.title ?? L("Termin")))
                 }
             }
         }
