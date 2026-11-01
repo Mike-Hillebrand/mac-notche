@@ -195,9 +195,14 @@ struct Offen: View {
                         .background(Capsule().fill(m.reiter == r ? Color.primary.opacity(0.18) : .clear))
                         .foregroundStyle(m.reiter == r ? Color.primary : Color.primary.opacity(0.55))
                 }
-                Button { m.einstellungenOeffnen?() } label: { Image(systemName: "gearshape") }
-                    .buttonStyle(.plain).foregroundStyle(Color.primary.opacity(0.55)).padding(.leading, 6)
-                    .help("Einstellungen")
+                Menu {
+                    Button("Einstellungen …") { m.einstellungenOeffnen?() }
+                    Divider()
+                    Button("Mac Notche beenden") { NSApp.terminate(nil) }
+                } label: { Image(systemName: "gearshape") }
+                .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+                .foregroundStyle(Color.primary.opacity(0.55)).padding(.leading, 6)
+                .help("Einstellungen und Beenden")
             }
             .padding(.top, 10 + m.echteNotch)
             Group {
