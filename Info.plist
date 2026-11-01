@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key><string>MacNotche</string>
+    <key>CFBundleIdentifier</key><string>com.mikehillebrand.kerbe</string>
+    <key>CFBundleName</key><string>Mac Notche</string>
+    <key>CFBundleDisplayName</key><string>Mac Notche</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleShortVersionString</key><string>2.0</string>
+    <key>CFBundleVersion</key><string>1</string>
+    <key>CFBundleDevelopmentRegion</key><string>de</string>
+    <key>LSMinimumSystemVersion</key><string>14.2</string>
+    <key>CFBundleIconFile</key><string>AppIcon</string>
+    <key>LSUIElement</key><true/>
+    <key>NSAppleEventsUsageDescription</key><string>Mac Notche steuert Apple Music und Spotify, sendet Antworten über Nachrichten und öffnet Antworten in Mail.</string>
+    <key>NSCalendarsFullAccessUsageDescription</key><string>Mac Notche zeigt deine nächsten Termine in der Notch.</string>
+    <key>NSRemindersFullAccessUsageDescription</key><string>Mac Notche zeigt offene Erinnerungen und hakt sie auf Klick ab.</string>
+    <key>NSRemovableVolumesUsageDescription</key><string>Mac Notche liest die Claude-Code-Sitzungen in ~/.claude, um Token und Kosten anzuzeigen.</string>
+    <key>NSNetworkVolumesUsageDescription</key><string>Mac Notche liest die Claude-Code-Sitzungen in ~/.claude, um Token und Kosten anzuzeigen.</string>
+    <key>NSLocationUsageDescription</key><string>Mac Notche zeigt das Wetter für deinen Ort.</string>
+    <key>NSLocationWhenInUseUsageDescription</key><string>Mac Notche zeigt das Wetter für deinen Ort.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key><string>Mac Notche übernimmt Fotos von deinem iPhone in die Fotos-App.</string>
+    <key>NSPhotoLibraryUsageDescription</key><string>Mac Notche übernimmt Fotos von deinem iPhone in die Fotos-App.</string>
+    <key>NSContactsUsageDescription</key><string>Mac Notche zeigt bei Nachrichten den Namen statt der Telefonnummer.</string>
+    <key>NSCameraUsageDescription</key><string>Mac Notche zeigt dein Kamerabild im Spiegel-Werkzeug, nur solange du es einschaltest.</string>
+    <key>NSBluetoothAlwaysUsageDescription</key><string>Mac Notche meldet, wenn sich ein Bluetooth-Gerät verbindet oder trennt.</string>
+    <key>NSAudioCaptureUsageDescription</key><string>Mac Notche regelt die Lautstärke einzelner Apps. Dafür leitet es deren Ton durch, nichts wird gespeichert.</string>
+    <key>NSScreenCaptureUsageDescription</key><string>Mac Notche schickt auf Wunsch ein Foto deines Bildschirms an Claude, damit du Fragen dazu stellen kannst.</string>
+</dict>
+</plist>
