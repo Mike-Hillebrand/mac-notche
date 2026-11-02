@@ -112,13 +112,11 @@ struct Kompakt: View {
             if zeigeClaude, !claude.limits.isEmpty {
                 // 5-Std.-Fenster nur, wenn Anthropic es für den Plan mitschickt; Woche immer.
                 ForEach([("5h", claude.fuenfStundenProzent), ("Wo", claude.limits.first { $0.id == "seven_day" }?.prozent)], id: \.0) { name, p in
-                    Text(name).foregroundStyle(Color.primary.opacity(0.5))
+                    // Ultra hat kein 5-Stunden-Fenster mehr; dann nur die Woche zeigen.
                     if let p {
+                        Text(name).foregroundStyle(Color.primary.opacity(0.5))
                         Ring(anteil: p / 100).frame(width: 13, height: 13)
                         Text("\(Int(p.rounded())) %")
-                    } else {
-                        Text("–").foregroundStyle(Color.primary.opacity(0.5))
-                            .help("Anthropic meldet für deinen Plan gerade kein 5-Stunden-Limit.")
                     }
                 }
             } else if zeigeClaude, claude.fuenfStunden.gesamt > 0 {
