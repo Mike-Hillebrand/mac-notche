@@ -294,3 +294,14 @@
 "Ein Schritt ist fehlgeschlagen, danach gestoppt." = "A step failed, stopped after it.";
 "Ablage ist leer" = "Shelf is empty";
 "Dateien auf die Notch ziehen" = "Drag files onto the notch";
+
+"Automatisch nach Updates suchen" = "Check for updates automatically";
+"Version %@ ist da" = "Version %@ is available";
+"Laden" = "Download";
+"Jetzt prüfen" = "Check now";
+"Prüfe …" = "Checking …";
+"Updates kommen von GitHub (Mike-Hillebrand/mac-notche)." = "Updates come from GitHub (Mike-Hillebrand/mac-notche).";
+"GitHub nicht erreichbar." = "GitHub not reachable.";
+"Du hast die neueste Version." = "You have the latest version.";
+"Mac Notche " = "Mac Notche ";
+" ist da – Einstellungen › Über Mac Notche" = " is available – Settings › About Mac Notche";

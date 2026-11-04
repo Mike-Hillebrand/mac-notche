@@ -5,6 +5,7 @@ import ServiceManagement
 enum E {
     static let look = "look", breite = "breite", schatten = "schatten"
     static let verzoegerung = "verzoegerung", klickSchliesst = "klickSchliesst"
+    static let updatesAuto = "updates.auto"
     static let zeigeMusik = "zeige.musik", zeigeClaude = "zeige.claude", zeigeWetter = "zeige.wetter"
     static let fahrenheit = "wetter.fahrenheit", claudeIntervall = "claude.intervall"
     static let iphoneAuto = "iphone.auto"
@@ -30,7 +31,7 @@ enum Einstellungen {
             E.fensterAktiv: true, E.augenMinuten: 20.0, E.trinkenMinuten: 15.0, E.emojiKuerzel: true, E.aktien: "",
             E.bausteine: [";mfg": "Mit freundlichen Grüßen", ";vg": "Viele Grüße"],
             E.meldung("lautstaerke"): true, E.meldung("feststell"): true, E.meldung("timer"): true,
-            E.meldung("augen"): false, E.meldung("trinken"): true, E.meldung("ablage"): true,
+            E.meldung("augen"): false, E.meldung("trinken"): true, E.meldung("update"): true, E.updatesAuto: true, E.meldung("ablage"): true,
             E.leisteAktiv: true, E.leisteSekunden: 10.0, E.fragenModell: "sonnet",
             E.sportLiga: "bl1", E.sportVereine: "", E.meldung("sport"): true,
             E.fensterZiehen: true, E.kurzbefehle: "", E.meldung("termin"): true,
@@ -280,7 +281,23 @@ struct VerbindungenSeite: View {
 }
 
 struct InfoSeite: View {
+    @EnvironmentObject var u: Updates
+    @AppStorage(E.updatesAuto) var auto = true
     var body: some View {
+        Section {
+            Toggle("Automatisch nach Updates suchen", isOn: $auto)
+            HStack {
+                if let n = u.neu {
+                    Text("Version \(n.version) ist da").fontWeight(.medium)
+                    Spacer()
+                    Button("Laden") { NSWorkspace.shared.open(n.url) }
+                } else {
+                    Text(u.hinweis ?? L("Updates kommen von GitHub (Mike-Hillebrand/mac-notche).")).foregroundStyle(.secondary)
+                    Spacer()
+                    Button(u.laeuft ? "Prüfe …" : "Jetzt prüfen") { u.pruefen() }.disabled(u.laeuft)
+                }
+            }
+        }
         Section {
             HStack(spacing: 16) {
                 Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 72, height: 72)

@@ -238,6 +238,12 @@ enum Selbsttest {
         precondition(l.map(\.id) == ["five_hour", "seven_day"], "Reihenfolge: \(l.map(\.id))")
         precondition(l[0].prozent == 12.5 && l[0].reset != nil && l[1].reset != nil, "Reset-Zeiten nicht gelesen")
 
+        precondition(Updates.neuer("2.10", als: "2.9") && !Updates.neuer("2.5", als: "2.5") && !Updates.neuer("2.4.1", als: "2.5"), "Versionsvergleich")
+        let rel = #"{"tag_name":"v2.6","html_url":"https://x/r","assets":[{"name":"Mac Notche 2.6.dmg","browser_download_url":"https://x/d.dmg"}]}"#
+        let r = Updates.lesen(Data(rel.utf8))!
+        precondition(r.0 == "2.6" && r.1.absoluteString == "https://x/d.dmg", "Release-Antwort")
+        precondition(Verbindungen.jwt("a.eyJlbWFpbCI6ImFAYi5jIn0.b")?["email"] as? String == "a@b.c", "JWT")
+
         let ordner = FileManager.default.temporaryDirectory.appendingPathComponent("kerbe-test-\(UUID().uuidString)/p")
         try! FileManager.default.createDirectory(at: ordner, withIntermediateDirectories: true)
         let iso = ISO8601DateFormatter()

@@ -26,6 +26,7 @@ final class NotchModell: ObservableObject {
     let kalender = Kalender()
     let claude = ClaudeUsage()
     let andereKIs = AndereKIs()
+    let updates = Updates()
     let menueleiste = Menueleiste()
     let ecken = Ecken()
     let fragen = Fragen()
@@ -81,6 +82,8 @@ final class NotchModell: ObservableObject {
         augen.starten()
         trinken.melden = melden
         trinken.starten()
+        updates.melden = melden
+        updates.starten()
         ablage.melden = melden
         kurse.starten()
         sport.melden = melden
