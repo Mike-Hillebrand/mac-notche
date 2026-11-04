@@ -2,11 +2,11 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 2.7.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 2.8.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
-**Zugeklappt:** Musik-Cover und Equalizer, Temperatur, Timer-Countdown, Claude-Wochenlimit in Prozent.
+**Zugeklappt:** Musik-Cover und Equalizer, Temperatur, Timer-Countdown, Claude-Limits in Prozent (5 Stunden, wo der Plan eines hat, und Woche).
 
 **Aufgeklappt, nach Reitern:**
 

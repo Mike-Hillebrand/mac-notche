@@ -396,6 +396,10 @@ struct ClaudeAnsicht: View {
                         .buttonStyle(.plain).font(.system(size: 11)).help("Jetzt abrufen")
                 }
                 ForEach(c.limits) { LimitBalken(l: $0) }
+                if c.ohneFuenfStunden, !c.limits.isEmpty {
+                    Text("Kein 5-Stunden-Fenster in diesem Plan – nur das Wochenlimit zählt.")
+                        .font(.system(size: 10)).foregroundStyle(Color.primary.opacity(0.5))
+                }
                 if let h = c.limitHinweis {
                     Text(h).font(.system(size: 11)).foregroundStyle(c.limits.isEmpty ? Color.primary.opacity(0.6) : .orange)
                 }

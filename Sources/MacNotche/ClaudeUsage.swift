@@ -23,6 +23,8 @@ struct TokenSumme {
 final class ClaudeUsage: ObservableObject {
     @Published var limits: [Limit] = []
     @Published var limitHinweis: String?
+    /// Anthropic liefert den Schlüssel, aber leer: dieser Plan hat kein 5-Stunden-Fenster (z. B. Max 20×).
+    @Published var ohneFuenfStunden = false
     @Published var stand: Date?
     @Published var heute = TokenSumme()
     @Published var fuenfStunden = TokenSumme()
@@ -76,7 +78,8 @@ final class ClaudeUsage: ObservableObject {
             dienst = d
             if code == 429 { hinweis = L("Anthropic drosselt gerade – neuer Versuch in 5 Min."); break }
             guard code == 200, let l = Self.limitsLesen(daten) else { hinweis = L("Unerwartete Antwort") + " (\(code))."; break }
-            await MainActor.run { self.limits = l; self.limitHinweis = nil; self.stand = Date() }
+            let ohne = Self.ohneFuenfStunden(daten)
+            await MainActor.run { self.limits = l; self.ohneFuenfStunden = ohne; self.limitHinweis = nil; self.stand = Date() }
             return
         }
         let h = hinweis
@@ -134,6 +137,11 @@ final class ClaudeUsage: ObservableObject {
                         "seven_day_opus": "Woche – Opus", "seven_day_sonnet": "Woche – Sonnet",
                         "seven_day_oauth_apps": "Woche – Apps"]
     static let reihenfolge = ["five_hour", "seven_day", "seven_day_opus", "seven_day_sonnet"]
+
+    static func ohneFuenfStunden(_ d: Data) -> Bool {
+        guard let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any], let v = j["five_hour"] else { return false }
+        return v is NSNull
+    }
 
     static func limitsLesen(_ d: Data) -> [Limit]? {
         guard let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any] else { return nil }
@@ -240,6 +248,7 @@ enum Selbsttest {
         let l = ClaudeUsage.limitsLesen(Data(antwort.utf8))!
         precondition(l.map(\.id) == ["five_hour", "seven_day"], "Reihenfolge: \(l.map(\.id))")
         precondition(l[0].prozent == 12.5 && l[0].reset != nil && l[1].reset != nil, "Reset-Zeiten nicht gelesen")
+        precondition(!ClaudeUsage.ohneFuenfStunden(Data(antwort.utf8)) && ClaudeUsage.ohneFuenfStunden(Data(#"{"five_hour":null,"seven_day":{"utilization":1}}"#.utf8)), "five_hour null")
 
         precondition(Updates.neuer("2.10", als: "2.9") && !Updates.neuer("2.5", als: "2.5") && !Updates.neuer("2.4.1", als: "2.5"), "Versionsvergleich")
         let rel = #"{"tag_name":"v2.6","html_url":"https://x/r","assets":[{"name":"Mac Notche 2.6.dmg","browser_download_url":"https://x/d.dmg"}]}"#

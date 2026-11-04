@@ -319,3 +319,4 @@
 "ja" = "yes";
 "nein" = "no";
 "Claude Code ist angemeldet, aber der Schlüsselbund-Eintrag ist für Mac Notche nicht lesbar. Einstellungen › Verbindungen." = "Claude Code is signed in, but Mac Notche cannot read the keychain item. Settings › Connections.";
+"Kein 5-Stunden-Fenster in diesem Plan – nur das Wochenlimit zählt." = "No 5-hour window in this plan – only the weekly limit counts.";
