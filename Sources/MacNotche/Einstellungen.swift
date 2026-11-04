@@ -41,7 +41,7 @@ enum Einstellungen {
 
 enum Seite: String, CaseIterable, Identifiable {
     case allgemein = "Allgemein", aussehen = "Aussehen", live = "Live-Aktivitäten", mitteilungen = "Mitteilungen"
-    case wetter = "Wetter", iphone = "iPhone", werkzeuge = "Werkzeuge", entsperren = "Gesicht entsperren", claude = "Claude", info = "Über Mac Notche"
+    case wetter = "Wetter", iphone = "iPhone", werkzeuge = "Werkzeuge", entsperren = "Gesicht entsperren", claude = "Verbindungen", info = "Über Mac Notche"
     var id: String { rawValue }
     var symbol: String {
         switch self {
@@ -53,7 +53,7 @@ enum Seite: String, CaseIterable, Identifiable {
         case .iphone: "iphone"
         case .werkzeuge: "wrench.and.screwdriver"
         case .entsperren: "faceid"
-        case .claude: "sparkle"
+        case .claude: "link"
         case .info: "info.circle"
         }
     }
@@ -83,7 +83,7 @@ struct EinstellungenAnsicht: View {
                 case .iphone: IPhoneSeite()
                 case .werkzeuge: WerkzeugeSeite()
                 case .entsperren: EntsperrenSeite()
-                case .claude: ClaudeSeite()
+                case .claude: VerbindungenSeite()
                 case .info: InfoSeite()
                 }
             }
@@ -231,15 +231,50 @@ struct WetterSeite: View {
     }
 }
 
-struct ClaudeSeite: View {
+struct VerbindungenSeite: View {
     @AppStorage(E.claudeIntervall) var intervall = 5
+    @State private var liste: [Verbindung] = []
     var body: some View {
+        Section {
+            ForEach(liste) { v in
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: v.angemeldet ? "checkmark.circle.fill" : "circle.dashed")
+                        .foregroundStyle(v.angemeldet ? .green : .secondary).padding(.top, 2)
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 6) {
+                            Text(v.name).fontWeight(.medium)
+                            if let k = v.konto, !k.isEmpty { Text(k).foregroundStyle(.secondary) }
+                        }
+                        Text(v.hinweis).font(.callout).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    if let b = v.befehl {
+                        Button(v.angemeldet ? "Neu anmelden" : "Anmelden") { Verbindungen.anmelden(b) }
+                    }
+                }
+            }
+        } header: {
+            HStack {
+                Text("Anmeldungen auf diesem Mac")
+                Spacer()
+                Button("Prüfen") { laden() }.font(.caption)
+            }
+        } footer: {
+            Text("Jede Anmeldung läuft über das Werkzeug selbst (Claude Code, Codex, Gemini CLI) im Terminal und Browser. Mac Notche speichert keine Passwörter und liest nur, was die Werkzeuge ablegen. Ohne Claude-Code-Login zeigt die Notch kein Claude-Kontingent.")
+        }
         Section {
             Picker("Plan-Limits abrufen alle", selection: $intervall) {
                 ForEach([5, 10, 15, 30], id: \.self) { Text("\($0) Min.").tag($0) }
             }
         } footer: {
-            Text("Plan-Limits brauchen einen Claude-Code-Login im Terminal (einmal „claude“ starten). Token und Kosten werden lokal aus ~/.claude gezählt.")
+            Text("Token und Kosten werden lokal aus ~/.claude, ~/.codex und ~/.gemini gezählt.")
+        }
+        .onAppear(perform: laden)
+    }
+    private func laden() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let l = Verbindungen.alle()
+            DispatchQueue.main.async { liste = l }
         }
     }
 }

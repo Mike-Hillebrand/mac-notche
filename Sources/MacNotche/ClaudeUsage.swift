@@ -55,22 +55,25 @@ final class ClaudeUsage: ObservableObject {
     private func limitsHolen() async {
         var kandidaten = dienst.map { [$0] } ?? []
         kandidaten += Self.schluesselbundDienste().filter { $0 != dienst }
-        var hinweis = "Kein gültiger Claude-Code-Login gefunden. Einmal „claude“ im Terminal starten."
+        if Self.dateiToken() != nil { kandidaten.append(Self.dateiDienst) }
+        var hinweis = kandidaten.isEmpty
+            ? L("Kein Claude-Code-Login auf diesem Mac. Einstellungen › Verbindungen.")
+            : L("Claude-Code-Login abgelaufen oder ungültig. Einmal „claude“ im Terminal starten.")
         for d in kandidaten.prefix(6) {
-            guard let token = Self.token(dienst: d)?.token else { continue }
+            guard let token = (d == Self.dateiDienst ? Self.dateiToken() : Self.token(dienst: d))?.token else { continue }
             var r = URLRequest(url: URL(string: "https://api.anthropic.com/api/oauth/usage")!)
             r.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             r.setValue("oauth-2025-04-20", forHTTPHeaderField: "anthropic-beta")
             r.timeoutInterval = 15
             guard let (daten, antwort) = try? await URLSession.shared.data(for: r),
                   let code = (antwort as? HTTPURLResponse)?.statusCode else {
-                hinweis = "Keine Verbindung zu Anthropic."
+                hinweis = L("Keine Verbindung zu Anthropic.")
                 break
             }
             if code == 401 || code == 403 { continue }
             dienst = d
-            if code == 429 { hinweis = "Anthropic drosselt gerade – neuer Versuch in 5 Min."; break }
-            guard code == 200, let l = Self.limitsLesen(daten) else { hinweis = "Unerwartete Antwort (\(code))."; break }
+            if code == 429 { hinweis = L("Anthropic drosselt gerade – neuer Versuch in 5 Min."); break }
+            guard code == 200, let l = Self.limitsLesen(daten) else { hinweis = L("Unerwartete Antwort") + " (\(code))."; break }
             await MainActor.run { self.limits = l; self.limitHinweis = nil; self.stand = Date() }
             return
         }
@@ -104,8 +107,20 @@ final class ClaudeUsage: ObservableObject {
     }
 
     static func token(dienst: String) -> (token: String, ablauf: Double)? {
-        guard let d = security(["find-generic-password", "-s", dienst, "-w"]),
-              let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any],
+        guard let d = security(["find-generic-password", "-s", dienst, "-w"]) else { return nil }
+        return tokenLesen(d)
+    }
+
+    /// Claude Code ohne Schlüsselbund (Linux-Art, auch auf manchen Macs): Datei mit demselben JSON.
+    static let dateiDienst = "~/.claude/.credentials.json"
+    static func dateiToken() -> (token: String, ablauf: Double)? {
+        let url = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".claude/.credentials.json")
+        guard let d = try? Data(contentsOf: url) else { return nil }
+        return tokenLesen(d)
+    }
+
+    static func tokenLesen(_ d: Data) -> (token: String, ablauf: Double)? {
+        guard let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any],
               let o = j["claudeAiOauth"] as? [String: Any],
               let t = o["accessToken"] as? String else { return nil }
         let a = (o["expiresAt"] as? NSNumber)?.doubleValue ?? 0
