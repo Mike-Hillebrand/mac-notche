@@ -57,7 +57,9 @@ final class ClaudeUsage: ObservableObject {
         kandidaten += Self.schluesselbundDienste().filter { $0 != dienst }
         if Self.dateiToken() != nil { kandidaten.append(Self.dateiDienst) }
         var hinweis = kandidaten.isEmpty
-            ? L("Kein Claude-Code-Login auf diesem Mac. Einstellungen › Verbindungen.")
+            ? (Verbindungen.claudeStatus()?.angemeldet == true
+               ? L("Claude Code ist angemeldet, aber der Schlüsselbund-Eintrag ist für Mac Notche nicht lesbar. Einstellungen › Verbindungen.")
+               : L("Kein Claude-Code-Login auf diesem Mac. Einstellungen › Verbindungen."))
             : L("Claude-Code-Login abgelaufen oder ungültig. Einmal „claude“ im Terminal starten.")
         for d in kandidaten.prefix(6) {
             guard let token = (d == Self.dateiDienst ? Self.dateiToken() : Self.token(dienst: d))?.token else { continue }
@@ -103,6 +105,7 @@ final class ClaudeUsage: ObservableObject {
         for m in muster.matches(in: text, range: NSRange(text.startIndex..., in: text)) {
             if let r = Range(m.range(at: 1), in: text) { namen.insert(String(text[r])) }
         }
+        if namen.isEmpty, token(dienst: "Claude Code-credentials") != nil { namen.insert("Claude Code-credentials") }
         return namen.map { ($0, token(dienst: $0)?.ablauf ?? 0) }.sorted { $0.1 > $1.1 }.map(\.0)
     }
 

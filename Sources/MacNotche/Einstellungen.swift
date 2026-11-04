@@ -235,6 +235,7 @@ struct WetterSeite: View {
 struct VerbindungenSeite: View {
     @AppStorage(E.claudeIntervall) var intervall = 5
     @State private var liste: [Verbindung] = []
+    @State private var diagnose = ""
     var body: some View {
         Section {
             ForEach(liste) { v in
@@ -250,7 +251,7 @@ struct VerbindungenSeite: View {
                     }
                     Spacer()
                     if let b = v.befehl {
-                        Button(v.angemeldet ? "Neu anmelden" : "Anmelden") { Verbindungen.anmelden(b) }
+                        Button(v.angemeldet ? "Neu anmelden" : b.contains("install") ? "Installieren" : "Anmelden") { Verbindungen.anmelden(b) }
                     }
                 }
             }
@@ -261,7 +262,10 @@ struct VerbindungenSeite: View {
                 Button("Prüfen") { laden() }.font(.caption)
             }
         } footer: {
-            Text("Jede Anmeldung läuft über das Werkzeug selbst (Claude Code, Codex, Gemini CLI) im Terminal und Browser. Mac Notche speichert keine Passwörter und liest nur, was die Werkzeuge ablegen. Ohne Claude-Code-Login zeigt die Notch kein Claude-Kontingent.")
+            VStack(alignment: .trailing, spacing: 6) {
+                Text("Jede Anmeldung läuft über das Werkzeug selbst (Claude Code, Codex, Gemini CLI) im Terminal und Browser. Mac Notche speichert keine Passwörter und liest nur, was die Werkzeuge ablegen. Ohne Claude-Code-Login zeigt die Notch kein Claude-Kontingent.")
+                Text(diagnose).font(.system(size: 10, design: .monospaced)).textSelection(.enabled)
+            }
         }
         Section {
             Picker("Plan-Limits abrufen alle", selection: $intervall) {
@@ -274,8 +278,8 @@ struct VerbindungenSeite: View {
     }
     private func laden() {
         DispatchQueue.global(qos: .userInitiated).async {
-            let l = Verbindungen.alle()
-            DispatchQueue.main.async { liste = l }
+            let l = Verbindungen.alle(), d = Verbindungen.diagnose()
+            DispatchQueue.main.async { liste = l; diagnose = d }
         }
     }
 }

@@ -16,29 +16,81 @@ enum Verbindungen {
 
     static func alle() -> [Verbindung] { [claude(), codex(), gemini(), grok()] }
 
+    /// Eine Zeile für die Fehlersuche: was die App auf diesem Mac sieht.
+    static func diagnose() -> String {
+        let home = Self.home.path
+        func kurz(_ p: String?) -> String { p.map { $0.replacingOccurrences(of: home, with: "~") } ?? "–" }
+        let eintraege = ClaudeUsage.schluesselbundDienste().count
+        let datei = FileManager.default.fileExists(atPath: home + "/.claude/.credentials.json")
+        return "claude: \(kurz(pfad("claude"))) · codex: \(kurz(pfad("codex"))) · gemini: \(kurz(pfad("gemini"))) · "
+            + L("Schlüsselbund-Einträge: ") + "\(eintraege) · credentials.json: " + (datei ? L("ja") : L("nein"))
+    }
+
+    /// Login-Shell, damit PATH wie im Terminal gilt (nvm, ~/.local/bin).
+    static func shell(_ befehl: String, sekunden: Double = 20) -> String? {
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: "/bin/zsh")
+        p.arguments = ["-lc", befehl]
+        let pipe = Pipe()
+        p.standardOutput = pipe; p.standardError = FileHandle.nullDevice
+        guard (try? p.run()) != nil else { return nil }
+        let frist = DispatchWorkItem { if p.isRunning { p.terminate() } }
+        DispatchQueue.global().asyncAfter(deadline: .now() + sekunden, execute: frist)
+        let d = pipe.fileHandleForReading.readDataToEndOfFile()
+        p.waitUntilExit(); frist.cancel()
+        return p.terminationStatus == 0 ? String(decoding: d, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines) : nil
+    }
+
+    static func pfad(_ werkzeug: String) -> String? {
+        shell("command -v \(werkzeug)", sekunden: 10).flatMap { $0.isEmpty ? nil : $0 }
+    }
+
+    /// „claude auth status“: loggedIn, email, subscriptionType.
+    static func claudeStatus() -> (angemeldet: Bool, konto: String?)? {
+        guard let t = shell("claude auth status"), let d = t.data(using: .utf8),
+              let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any] else { return nil }
+        let an = j["loggedIn"] as? Bool ?? false
+        let konto = [j["email"] as? String, (j["subscriptionType"] as? String).map { "Claude \($0.capitalized)" }].compactMap { $0 }.joined(separator: " · ")
+        return (an, konto.isEmpty ? nil : konto)
+    }
+
+    static let claudeInstall = "curl -fsSL https://claude.ai/install.sh | bash && exec zsh -lc claude"
+    static let codexInstall = "npm install -g @openai/codex && codex login"
+    static let geminiInstall = "npm install -g @google/gemini-cli && gemini"
+
     static func claude() -> Verbindung {
-        let dienste = ClaudeUsage.schluesselbundDienste()
-        let abgelaufen = L("Anmeldung abgelaufen – Claude Code erneuert sie beim nächsten Start.")
-        if let d = dienste.first, let t = ClaudeUsage.token(dienst: d) {
-            let gueltig = t.ablauf / 1000 > Date().timeIntervalSince1970
-            return Verbindung(id: "claude", name: "Claude Code", angemeldet: gueltig, konto: nil,
-                              hinweis: gueltig ? L("Schlüsselbund: ") + d : abgelaufen, befehl: "claude")
+        guard pfad("claude") != nil else {
+            return Verbindung(id: "claude", name: "Claude Code", angemeldet: false, konto: nil,
+                              hinweis: L("Nicht installiert. „Installieren“ holt Claude Code und startet die Anmeldung im Browser."), befehl: claudeInstall)
         }
-        if let t = ClaudeUsage.dateiToken() {
-            let gueltig = t.ablauf / 1000 > Date().timeIntervalSince1970
-            return Verbindung(id: "claude", name: "Claude Code", angemeldet: gueltig, konto: nil,
-                              hinweis: gueltig ? "~/.claude/.credentials.json" : abgelaufen, befehl: "claude")
+        let status = claudeStatus()
+        let dienste = ClaudeUsage.schluesselbundDienste()
+        let token = dienste.first.flatMap { ClaudeUsage.token(dienst: $0) } ?? ClaudeUsage.dateiToken()
+        let tokenGueltig = token.map { $0.ablauf / 1000 > Date().timeIntervalSince1970 } ?? false
+        let fundort = dienste.first.map { L("Schlüsselbund: ") + $0 } ?? (ClaudeUsage.dateiToken() != nil ? "~/.claude/.credentials.json" : nil)
+        if let s = status, s.angemeldet {
+            let hinweis = tokenGueltig ? (fundort ?? "")
+                : token != nil ? L("Anmeldung abgelaufen – Claude Code erneuert sie beim nächsten Start.")
+                : L("Claude Code ist angemeldet, aber Mac Notche kann den Schlüsselbund-Eintrag „Claude Code-credentials“ nicht lesen. Schlüsselbundverwaltung öffnen, Eintrag suchen, Reiter „Zugriff“, Mac Notche erlauben – oder bei der Nachfrage „Immer erlauben“ wählen.")
+            return Verbindung(id: "claude", name: "Claude Code", angemeldet: tokenGueltig, konto: s.konto, hinweis: hinweis, befehl: "claude")
+        }
+        if tokenGueltig {
+            return Verbindung(id: "claude", name: "Claude Code", angemeldet: true, konto: nil, hinweis: fundort ?? "", befehl: "claude")
         }
         return Verbindung(id: "claude", name: "Claude Code", angemeldet: false, konto: nil,
-                          hinweis: L("Kein Login gefunden. Claude Code installieren und einmal „claude“ im Terminal starten, dort anmelden."),
+                          hinweis: status == nil ? L("Claude Code antwortet nicht auf „claude auth status“. Einmal „claude“ im Terminal starten und anmelden.")
+                                                 : L("Claude Code ist installiert, aber nicht angemeldet. „Anmelden“ öffnet das Terminal, dort /login eingeben."),
                           befehl: "claude")
     }
 
     static func codex() -> Verbindung {
         let url = home.appendingPathComponent(".codex/auth.json")
+        let da = pfad("codex") != nil
         guard let d = try? Data(contentsOf: url), let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any] else {
             return Verbindung(id: "codex", name: "Codex (ChatGPT)", angemeldet: false, konto: nil,
-                              hinweis: L("Kein Login gefunden. Codex installieren und „codex login“ im Terminal ausführen."), befehl: "codex login")
+                              hinweis: da ? L("Installiert, aber kein Login. „Anmelden“ öffnet das Terminal und den Browser (ChatGPT-Konto).")
+                                          : L("Nicht installiert. „Installieren“ holt Codex (braucht Node/npm) und startet die Anmeldung im Browser."),
+                              befehl: da ? "codex login" : codexInstall)
         }
         if let t = j["tokens"] as? [String: Any], let id = t["id_token"] as? String, let c = jwt(id) {
             let plan = ((c["https://api.openai.com/auth"] as? [String: Any])?["chatgpt_plan_type"] as? String)?.capitalized
@@ -61,8 +113,11 @@ enum Verbindungen {
         let mail = (try? Data(contentsOf: konten)).flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }?["active"] as? String
         guard let d = try? Data(contentsOf: creds), let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any],
               j["refresh_token"] is String else {
+            let da = pfad("gemini") != nil
             return Verbindung(id: "gemini", name: "Gemini CLI", angemeldet: false, konto: mail,
-                              hinweis: L("Kein Login gefunden. Gemini CLI installieren, „gemini“ starten und mit Google anmelden."), befehl: "gemini")
+                              hinweis: da ? L("Installiert, aber kein Login. „Anmelden“ startet Gemini im Terminal, dort „Login with Google“ wählen – der Browser öffnet sich.")
+                                          : L("Nicht installiert. „Installieren“ holt Gemini CLI (braucht Node/npm) und startet die Google-Anmeldung im Browser."),
+                              befehl: da ? "gemini" : geminiInstall)
         }
         return Verbindung(id: "gemini", name: "Gemini CLI", angemeldet: true, konto: mail, hinweis: "~/.gemini/oauth_creds.json", befehl: "gemini")
     }
@@ -85,7 +140,8 @@ enum Verbindungen {
 
     /// Öffnet den Login-Befehl im Terminal; die Anmeldung läuft dann im Browser des Werkzeugs.
     static func anmelden(_ befehl: String) {
-        let skript = "tell application \"Terminal\"\nactivate\ndo script \"\(befehl)\"\nend tell"
+        let b = befehl.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
+        let skript = "tell application \"Terminal\"\nactivate\ndo script \"\(b)\"\nend tell"
         let p = Process()
         p.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
         p.arguments = ["-e", skript]

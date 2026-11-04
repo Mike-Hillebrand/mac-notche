@@ -305,3 +305,17 @@
 "Du hast die neueste Version." = "You have the latest version.";
 "Mac Notche " = "Mac Notche ";
 " ist da – Einstellungen › Über Mac Notche" = " is available – Settings › About Mac Notche";
+
+"Installieren" = "Install";
+"Nicht installiert. „Installieren“ holt Claude Code und startet die Anmeldung im Browser." = "Not installed. “Install” fetches Claude Code and starts the browser login.";
+"Claude Code ist angemeldet, aber Mac Notche kann den Schlüsselbund-Eintrag „Claude Code-credentials“ nicht lesen. Schlüsselbundverwaltung öffnen, Eintrag suchen, Reiter „Zugriff“, Mac Notche erlauben – oder bei der Nachfrage „Immer erlauben“ wählen." = "Claude Code is signed in, but Mac Notche cannot read the keychain item “Claude Code-credentials”. Open Keychain Access, find the item, tab “Access Control”, allow Mac Notche – or choose “Always Allow” when asked.";
+"Claude Code antwortet nicht auf „claude auth status“. Einmal „claude“ im Terminal starten und anmelden." = "Claude Code does not answer “claude auth status”. Run “claude” once in Terminal and sign in.";
+"Claude Code ist installiert, aber nicht angemeldet. „Anmelden“ öffnet das Terminal, dort /login eingeben." = "Claude Code is installed but not signed in. “Sign in” opens Terminal, type /login there.";
+"Installiert, aber kein Login. „Anmelden“ öffnet das Terminal und den Browser (ChatGPT-Konto)." = "Installed, but no login. “Sign in” opens Terminal and the browser (ChatGPT account).";
+"Nicht installiert. „Installieren“ holt Codex (braucht Node/npm) und startet die Anmeldung im Browser." = "Not installed. “Install” fetches Codex (needs Node/npm) and starts the browser login.";
+"Installiert, aber kein Login. „Anmelden“ startet Gemini im Terminal, dort „Login with Google“ wählen – der Browser öffnet sich." = "Installed, but no login. “Sign in” starts Gemini in Terminal, choose “Login with Google” there – the browser opens.";
+"Nicht installiert. „Installieren“ holt Gemini CLI (braucht Node/npm) und startet die Google-Anmeldung im Browser." = "Not installed. “Install” fetches Gemini CLI (needs Node/npm) and starts the Google login in the browser.";
+"Schlüsselbund-Einträge: " = "Keychain items: ";
+"ja" = "yes";
+"nein" = "no";
+"Claude Code ist angemeldet, aber der Schlüsselbund-Eintrag ist für Mac Notche nicht lesbar. Einstellungen › Verbindungen." = "Claude Code is signed in, but Mac Notche cannot read the keychain item. Settings › Connections.";
