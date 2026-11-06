@@ -428,3 +428,7 @@
 "Ausschnitt " = "Clip ";
 "Ausschnitt in der Ablage (kein Text erkannt)" = "Clip in the tray (no text recognized)";
 "Text kopiert: " = "Text copied: ";
+" – Timer abgelaufen" = " – timer done";
+"Timer läuft: " = "Timer running: ";
+" – steht in der Leiste, bis er klingelt." = " – shown in the bar until it rings.";
+" … oder „15 min Tee“ für einen Timer" = " … or “15 min tea” for a timer";

@@ -147,6 +147,7 @@ final class NotchModell: ObservableObject {
         }
         zwischenablage.schliessen = { [weak self] in self?.zustand = .zu }
         fragen.schliessen = { [weak self] in self?.zustand = .zu }
+        fragen.timer = fokus
         // Textbausteine brauchen Bedienungshilfen – starten, sobald die Erlaubnis da ist.
         bausteine.starten()
         Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { [weak self] _ in self?.bausteine.starten() }

@@ -252,13 +252,28 @@ final class FokusTimer: ObservableObject {
     @Published var art: Art?
     @Published var ende: Date?
     @Published var gesamt: Double = 0
+    /// Name des Schnell-Timers („Tee“), leer bei Fokus/Pause.
+    @Published var name = ""
     @Published var rauschen = false { didSet { if rauschen != oldValue { rauschen ? rauschenAn() : rauschenAus() } } }
     var melden: ((String, String, String) -> Void)?
     private var timer: Timer?
     private var engine: AVAudioEngine?
 
-    func start(_ art: Art, minuten: Double) {
+    /// Schnell-Timer aus Text: „15 min Tee“, „1,5 h Wäsche“, „90 s Ei“ → (Minuten, Name). Nil, wenn es kein Timer ist.
+    static func schnell(_ text: String) -> (minuten: Double, name: String)? {
+        let muster = try! NSRegularExpression(pattern: "^\\s*(\\d+(?:[.,]\\d+)?)\\s*(min|minuten?|m|h|std|stunden?|s|sek|sekunden?)\\.?(?:\\s+(.*))?\\s*$", options: .caseInsensitive)
+        guard let m = muster.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+              let z = Range(m.range(at: 1), in: text), let e = Range(m.range(at: 2), in: text),
+              let zahl = Double(text[z].replacingOccurrences(of: ",", with: ".")), zahl > 0 else { return nil }
+        let einheit = text[e].lowercased()
+        let minuten = einheit.hasPrefix("h") || einheit.hasPrefix("st") ? zahl * 60 : einheit.hasPrefix("s") ? zahl / 60 : zahl
+        let name = Range(m.range(at: 3), in: text).map { text[$0].trimmingCharacters(in: .whitespaces) } ?? ""
+        return (minuten, name)
+    }
+
+    func start(_ art: Art, minuten: Double, name: String = "") {
         self.art = art
+        self.name = name
         gesamt = minuten * 60
         ende = Date().addingTimeInterval(gesamt)
         timer?.invalidate()
@@ -267,7 +282,7 @@ final class FokusTimer: ObservableObject {
 
     func stopp() {
         timer?.invalidate(); timer = nil
-        art = nil; ende = nil
+        art = nil; ende = nil; name = ""
         rauschen = false
     }
 
@@ -282,7 +297,7 @@ final class FokusTimer: ObservableObject {
             melden?("timer", "brain.head.profile", L("Pause vorbei – weiter geht's"))
             stopp()
         default:
-            melden?("timer", "timer", L("Timer abgelaufen"))
+            melden?("timer", "timer", name.isEmpty ? L("Timer abgelaufen") : name + L(" – Timer abgelaufen"))
             stopp()
         }
     }

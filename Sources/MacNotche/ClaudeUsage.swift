@@ -261,6 +261,9 @@ enum Selbsttest {
         precondition(r.0 == "2.6" && r.1.absoluteString == "https://x/d.dmg", "Release-Antwort")
         precondition(Verbindungen.geminiInstall.contains("brew install gemini-cli") && !Verbindungen.geminiInstall.contains("\n") && Verbindungen.codexInstall.contains("--cask codex"), "Installer")
         precondition(AndereKIs.agyLimitsLesen(["Gemini Models\tWeekly Limit Remaining\t100%\t2026-11-13T14:04:54Z", "Flash: 7,5 % used", "Resets in 3h"]).map(\.prozent) == [0, 7.5], "agy usage")
+        let t1 = FokusTimer.schnell("15 min Tee"), t2 = FokusTimer.schnell("1,5 h Wäsche"), t3 = FokusTimer.schnell("90s")
+        precondition(t1?.minuten == 15 && t1?.name == "Tee" && t2?.minuten == 90 && t2?.name == "Wäsche" && t3?.minuten == 1.5 && t3?.name == "", "Schnell-Timer")
+        precondition(FokusTimer.schnell("Wie spät ist es in 15 min?") == nil && FokusTimer.schnell("3 Minuten") != nil, "Schnell-Timer nein/ja")
         let call = TerminCountdown.anrufLink(url: nil, texte: ["Raum 3", "Einwahl: https://us02web.zoom.us/j/123?pwd=x (Zoom)"])
         precondition(call?.host == "us02web.zoom.us" && TerminCountdown.anrufLink(url: URL(string: "https://example.com"), texte: [nil]) == nil, "Call-Link")
         // OCR-Pipeline: Text in ein Bild zeichnen und wieder lesen.

@@ -166,6 +166,7 @@ final class Fragen: ObservableObject {
     @Published var mitBildschirm = false
     @Published var ki: KI = KI.gewaehlt { didSet { UserDefaults.standard.set(ki.rawValue, forKey: E.fragenKI) } }
     @Published var antwortVon: KI = .claude
+    var timer: FokusTimer?
     private var prozess: Process?
 
     static var claudePfad: String? {
@@ -179,6 +180,13 @@ final class Fragen: ObservableObject {
     func senden() {
         let f = frage.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !f.isEmpty, !laeuft else { return }
+        // „15 min Tee“ startet einen Timer statt einer KI-Frage.
+        if let (minuten, name) = FokusTimer.schnell(f), let timer {
+            timer.start(.timer, minuten: minuten, name: name)
+            frage = ""
+            antwort = L("Timer läuft: ") + (name.isEmpty ? "" : name + ", ") + zeit(minuten * 60) + L(" – steht in der Leiste, bis er klingelt.")
+            return
+        }
         var bild: Data?
         if mitBildschirm {
             guard ki.kannBild else { antwort = L("Bildschirm-Fragen gehen nur mit Claude oder ChatGPT – Gemini (agy) nimmt kein Bild an."); return }

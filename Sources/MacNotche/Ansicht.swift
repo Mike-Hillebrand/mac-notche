@@ -131,7 +131,7 @@ struct Kompakt: View {
         }
     }
 
-    private func breite(_ termin: Bool) { m.zuExtraBreite = CGFloat(max(0, alle.count - 1)) * 70 + (termin ? 80 : 0) }
+    private func breite(_ termin: Bool) { m.zuExtraBreite = CGFloat(max(0, alle.count - 1)) * 70 + (termin ? 80 : 0) + (fokus.name.isEmpty ? 0 : CGFloat(min(fokus.name.count, 12)) * 7) }
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 10)) { tl in
@@ -169,6 +169,7 @@ struct Kompakt: View {
                 Image(systemName: fokus.art == .fokus ? "brain.head.profile" : fokus.art == .pause ? "cup.and.saucer" : "timer")
                     .foregroundStyle(.orange)
                 Restzeit(ende: ende)
+                if !fokus.name.isEmpty { Text(fokus.name).lineLimit(1).fixedSize().foregroundStyle(Color.primary.opacity(0.7)) }
             }
             if zeigeClaude, !alle.isEmpty {
                 ForEach(alle, id: \.0) { ki, p in
@@ -196,6 +197,7 @@ struct Kompakt: View {
         .onAppear { breite(termin != nil) }
         .onChange(of: alle.count) { _, _ in breite(termin != nil) }
         .onChange(of: termin?.eventIdentifier) { _, _ in breite(termin != nil) }
+        .onChange(of: fokus.name) { _, _ in breite(termin != nil) }
     }
 }
 
@@ -1124,7 +1126,7 @@ struct FragenAnsicht: View {
                     if agent.plant { ProgressView().controlSize(.small); Button("Stopp") { agent.abbrechen() }.buttonStyle(.plain).font(.system(size: 11)) }
                     else { Button("Planen") { agent.planen() }.controlSize(.small).disabled(agent.aufgabe.isEmpty || agent.laeuft) }
                 } else {
-                    TextField(art == 1 ? L("Frag ") + f.ki.rawValue + L(" zu deinem Bildschirm …") : L("Frag ") + f.ki.rawValue + " …", text: $f.frage)
+                    TextField(art == 1 ? L("Frag ") + f.ki.rawValue + L(" zu deinem Bildschirm …") : L("Frag ") + f.ki.rawValue + L(" … oder „15 min Tee“ für einen Timer"), text: $f.frage)
                         .textFieldStyle(.plain).font(.system(size: 13)).focused($fokus).onSubmit { f.senden() }
                     if f.laeuft { ProgressView().controlSize(.small); Button("Stopp") { f.stopp() }.buttonStyle(.plain).font(.system(size: 11)) }
                     else {

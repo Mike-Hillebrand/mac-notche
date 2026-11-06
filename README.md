@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.2.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.3.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -20,7 +20,7 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 | Notiz | Schnellnotiz mit Diktat (Apple-Spracherkennung, lokal), sichern in Apple Notizen oder als Markdown in einen Ordner |
 | Ablage | Dateien ablegen, umwandeln (PNG/JPEG/HEIC), DMG installieren, per AirDrop senden; Freistellen (⌥⌘4): Bildschirmbereich aufziehen, Text wird erkannt und kopiert, das Bild liegt in der Ablage |
 | iPhone | Fotos vom iPhone am Kabel übernehmen |
-| Fokus | Timer, Fokus 25+5, braunes Rauschen, Augen- und Trinkpause, Ton-Ausgabe, Lautstärke pro App, Notizen |
+| Fokus | Timer (auch per Text im Reiter Fragen: „15 min Tee“ läuft in der Leiste), Fokus 25+5, braunes Rauschen, Augen- und Trinkpause, Ton-Ausgabe, Lautstärke pro App, Notizen |
 | Zuhause | HomeKit über Kurzbefehle: Szenen und Geräte als Kacheln (Ordner „Zuhause“ oder Stichwörter) |
 | Werkzeuge | Spiegel (Kamera), Wach halten, Zwischenablage-Verlauf |
 
