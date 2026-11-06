@@ -51,6 +51,7 @@ struct NotchAnsicht: View {
     @EnvironmentObject var m: NotchModell
     @State private var ziel = false
     @AppStorage(E.look) private var look = "schwarz"
+    @AppStorage(E.skin) private var skinRaw = "Angedockt"
     @Environment(\.colorScheme) private var system
 
     private var schema: ColorScheme {
@@ -66,9 +67,17 @@ struct NotchAnsicht: View {
 
     private var unten: CGFloat { switch m.zustand { case .offen: 28; case .meldung: 20; case .zu: 14 } }
 
+    private var skin: Skin { Skin(rawValue: skinRaw) ?? .angedockt }
+    /// Schwebende Skins: rundum weiche Pille; angedockt: Island mit Ohren.
+    private var form: AnyShape {
+        skin.schwebend ? AnyShape(RoundedRectangle(cornerRadius: m.zustand == .offen ? 24 : 60)) : AnyShape(Island(unten: unten))
+    }
+
     var body: some View {
+        let r = skin.rand
+        let offen = m.zustand == .offen
         ZStack(alignment: .top) {
-            Island(unten: unten).fill(hintergrund)
+            form.fill(hintergrund)
             Group {
                 switch m.zustand {
                 case .zu: Kompakt()
@@ -76,10 +85,17 @@ struct NotchAnsicht: View {
                 case .offen: Offen()
                 }
             }
-            .padding(.horizontal, Island.ohr)  // Inhalt bleibt neben den Ohren
+            // Inhalt bleibt neben den Ohren; bei Tieren rechts vom Kopf.
+            .padding(.leading, skin.schwebend ? (offen ? 12 : m.leistenHoehe + 14) : Island.ohr)
+            .padding(.trailing, skin.schwebend ? 12 : Island.ohr)
         }
         // Inhalt nie über die Form hinaus zeichnen (sonst wirken die Ecken abgeschnitten).
-        .clipShape(Island(unten: unten))
+        .clipShape(form)
+        .overlay {
+            if skin.schwebend, !offen { Tier(art: skin, fuellung: hintergrund, hoehe: m.leistenHoehe) }
+            else if skin == .tropfend, !offen { Tropfen(fuellung: hintergrund).frame(height: r.unten).offset(y: m.zustand == .meldung ? m.leistenHoehe + 48 : m.leistenHoehe) }
+        }
+        .padding(.top, r.oben).padding(.bottom, offen ? 0 : r.unten).padding(.trailing, offen ? r.rechts / 2 : r.rechts).padding(.leading, offen ? r.rechts / 2 : 0)
         .environmentObject(m.musik)
         .environmentObject(m.kalender)
         .environmentObject(m.claude)

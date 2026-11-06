@@ -105,11 +105,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         modell.leistenHoehe = leiste
         // Je Seite ein „Ohr“ dazu, damit der Inhalt so breit bleibt wie bisher.
         let ohren = 2 * Island.ohr
-        let g: CGSize = switch z {
+        var g: CGSize = switch z {
         case .zu: CGSize(width: UserDefaults.standard.double(forKey: E.breite) + modell.zuExtraBreite + ohren, height: leiste)
         case .meldung: CGSize(width: 440 + ohren, height: leiste + 48)
         case .offen: CGSize(width: 780 + ohren, height: 290 + ((s.safeAreaInsets.top > 0) ? leiste : 0))
         }
+        // Skins brauchen Platz für Ohren, Schwanz, Beine oder Tropfen.
+        let rand = Skin.gewaehlt.rand
+        g.width += rand.rechts
+        g.height += rand.oben + (z == .offen ? 0 : rand.unten)
         let r = NSRect(x: s.frame.midX - g.width / 2, y: s.frame.maxY - g.height, width: g.width, height: g.height)
         panel.setFrame(r, display: true, animate: panel.frame.width > 0)
     }
