@@ -78,6 +78,12 @@ final class AndereKIs: ObservableObject {
                   let wert = Double(z[w].replacingOccurrences(of: ",", with: ".")) else { return nil }
             let spalten = z.split(separator: "\t").map { $0.trimmingCharacters(in: .whitespaces) }
             var name = spalten.first ?? ""
+            // „Weekly Limit Remaining“ → „· Woche“, „Daily …“ → „· Tag“, sonst die Spalte selbst gekürzt
+            if spalten.count >= 2 {
+                let art = spalten[1].lowercased()
+                name += art.contains("week") ? " · Woche" : art.contains("daily") || art.contains("day") ? " · Tag"
+                    : art.contains("hour") ? " · " + (art.components(separatedBy: " ").first { Int($0) != nil } ?? "5") + " Std." : " · " + spalten[1].replacingOccurrences(of: " Limit Remaining", with: "")
+            }
             if spalten.count < 2, let n = Range(m.range, in: z) { name = z[..<n.lowerBound].trimmingCharacters(in: CharacterSet(charactersIn: ": \t")) }
             let rest = z.lowercased().contains("remaining") || z.lowercased().contains("verbleib")
             let reset = spalten.compactMap { iso.date(from: $0) }.first

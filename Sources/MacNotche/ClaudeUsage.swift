@@ -25,6 +25,8 @@ final class ClaudeUsage: ObservableObject {
     @Published var limitHinweis: String?
     /// Anthropic liefert den Schlüssel, aber leer: dieser Plan hat kein 5-Stunden-Fenster (z. B. Max 20×).
     @Published var ohneFuenfStunden = false
+    /// Kein Claude Code angemeldet: der KI-Reiter blendet die Claude-Spalten dann aus.
+    @Published var keinLogin = false
     @Published var stand: Date?
     @Published var heute = TokenSumme()
     @Published var fuenfStunden = TokenSumme()
@@ -58,8 +60,10 @@ final class ClaudeUsage: ObservableObject {
         var kandidaten = dienst.map { [$0] } ?? []
         kandidaten += Self.schluesselbundDienste().filter { $0 != dienst }
         if Self.dateiToken() != nil { kandidaten.append(Self.dateiDienst) }
+        let angemeldet = kandidaten.isEmpty ? (Verbindungen.claudeStatus()?.angemeldet == true) : true
+        await MainActor.run { self.keinLogin = kandidaten.isEmpty && !angemeldet }
         var hinweis = kandidaten.isEmpty
-            ? (Verbindungen.claudeStatus()?.angemeldet == true
+            ? (angemeldet
                ? L("Claude Code ist angemeldet, aber der Schlüsselbund-Eintrag ist für Mac Notche nicht lesbar. Einstellungen › Verbindungen.")
                : L("Kein Claude-Code-Login auf diesem Mac. Einstellungen › Verbindungen."))
             : L("Claude-Code-Login abgelaufen oder ungültig. Einmal „claude“ im Terminal starten.")
@@ -256,7 +260,7 @@ enum Selbsttest {
         precondition(r.0 == "2.6" && r.1.absoluteString == "https://x/d.dmg", "Release-Antwort")
         precondition(Verbindungen.geminiInstall.contains("brew install gemini-cli") && !Verbindungen.geminiInstall.contains("\n") && Verbindungen.codexInstall.contains("--cask codex"), "Installer")
         precondition(AndereKIs.agyLimitsLesen(["Gemini Models\tWeekly Limit Remaining\t100%\t2026-11-13T14:04:54Z", "Flash: 7,5 % used", "Resets in 3h"]).map(\.prozent) == [0, 7.5], "agy usage")
-        precondition(AndereKIs.agyLimitsLesen(["Gemini Models\tWeekly Limit Remaining\t40%\t2026-11-13T14:04:54Z"]).first.map { $0.prozent == 60 && $0.reset != nil && $0.name == "Gemini Models" } == true, "agy remaining")
+        precondition(AndereKIs.agyLimitsLesen(["Gemini Models\tWeekly Limit Remaining\t40%\t2026-11-13T14:04:54Z"]).first.map { $0.prozent == 60 && $0.reset != nil && $0.name == "Gemini Models · Woche" } == true, "agy remaining")
         precondition(Verbindungen.jwt("a.eyJlbWFpbCI6ImFAYi5jIn0.b")?["email"] as? String == "a@b.c", "JWT")
 
         let ordner = FileManager.default.temporaryDirectory.appendingPathComponent("kerbe-test-\(UUID().uuidString)/p")

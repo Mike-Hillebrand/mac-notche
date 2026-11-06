@@ -434,6 +434,10 @@ struct ClaudeAnsicht: View {
     @EnvironmentObject var k: AndereKIs
     var body: some View {
         HStack(alignment: .top, spacing: 18) {
+            // Ohne Claude-Login (z. B. nur Gemini/ChatGPT) die beiden Claude-Spalten weglassen.
+            if c.keinLogin && c.heute.gesamt == 0 && (k.codexDa || k.agyUsage != nil) {
+                EmptyView()
+            } else {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Text("Claude · Plan-Limits").kopf()
@@ -464,8 +468,9 @@ struct ClaudeAnsicht: View {
                     .font(.system(size: 9)).foregroundStyle(Color.primary.opacity(0.4))
             }
             .frame(width: 220, alignment: .leading)
+            }
             if k.codexDa || k.geminiDa || k.agyUsage != nil {
-                Rectangle().fill(Color.primary.opacity(0.12)).frame(width: 1)
+                if !(c.keinLogin && c.heute.gesamt == 0) { Rectangle().fill(Color.primary.opacity(0.12)).frame(width: 1) }
                 ScrollView(.vertical, showsIndicators: false) { VStack(alignment: .leading, spacing: 10) {
                     if k.codexDa {
                         Text("Codex" + (k.codexPlan.map { " · ChatGPT \($0.capitalized)" } ?? "")).kopf()
@@ -483,7 +488,7 @@ struct ClaudeAnsicht: View {
                         TokenZeile(titel: "Heute", s: k.geminiHeute)
                     }
                 } }
-                .frame(width: 200, alignment: .leading)
+                .frame(width: c.keinLogin && c.heute.gesamt == 0 ? 320 : 200, alignment: .leading)
             }
         }
     }
