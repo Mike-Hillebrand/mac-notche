@@ -12,7 +12,7 @@ enum E {
     static let entsperrenAktiv = "entsperren.aktiv", entsperrenSchwelle = "entsperren.schwelle"
     static let fensterAktiv = "fenster.aktiv", augenMinuten = "augen.minuten", trinkenMinuten = "trinken.minuten", bausteine = "bausteine"
     static let emojiKuerzel = "emoji.kuerzel", aktien = "aktien", notizen = "notizen"
-    static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuhauseWoerter = "zuhause.woerter", zuKI = "zu.ki", zuAus = "zu.aus"
+    static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuhauseWoerter = "zuhause.woerter", notizOrdner = "notiz.ordner", diktatSprache = "diktat.sprache", downloadsAblage = "downloads.ablage", zuKI = "zu.ki", zuAus = "zu.aus"
     static let sportLiga = "sport.liga", sportVereine = "sport.vereine"
     static let fensterZiehen = "fenster.ziehen", kurzbefehle = "kurzbefehle"
     static func meldung(_ art: String) -> String { "meldung.\(art)" }
@@ -31,7 +31,7 @@ enum Einstellungen {
             E.fensterAktiv: true, E.augenMinuten: 20.0, E.trinkenMinuten: 15.0, E.emojiKuerzel: true, E.aktien: "",
             E.bausteine: [";mfg": "Mit freundlichen Grüßen", ";vg": "Viele Grüße"],
             E.meldung("lautstaerke"): true, E.meldung("feststell"): true, E.meldung("timer"): true,
-            E.meldung("augen"): false, E.meldung("trinken"): true, E.meldung("update"): true, E.updatesAuto: true, E.meldung("ablage"): true,
+            E.meldung("augen"): false, E.meldung("trinken"): true, E.meldung("update"): true, E.meldung("download"): true, E.downloadsAblage: true, E.updatesAuto: true, E.meldung("ablage"): true,
             E.leisteAktiv: true, E.leisteSekunden: 10.0, E.fragenModell: "sonnet", E.fragenKI: "Claude",
             E.sportLiga: "bl1", E.sportVereine: "", E.meldung("sport"): true,
             E.fensterZiehen: true, E.kurzbefehle: "", E.meldung("termin"): true,
@@ -203,6 +203,8 @@ struct LiveSeite: View {
     @AppStorage(E.zuKI) var zuKI = "auto"
     @AppStorage(E.zuAus) var zuAus = ""
     @AppStorage("meldung.ablage") var ablage = true
+    @AppStorage("meldung.download") var download = true
+    @AppStorage(E.downloadsAblage) var downloadsAblage = true
     @AppStorage("meldung.termin") var termin = true
     @AppStorage("meldung.sport") var sport = true
     var body: some View {
@@ -225,6 +227,8 @@ struct LiveSeite: View {
         }
         Section {
             Toggle("Bluetooth-Gerät verbunden oder getrennt", isOn: $bluetooth)
+            Toggle("Neue Datei in Downloads", isOn: $download)
+            if download { Toggle("… und in die Ablage legen", isOn: $downloadsAblage) }
             Toggle("Akku lädt oder ist schwach", isOn: $akku)
             Toggle("Fokus-Wechsel", isOn: $fokus)
             Toggle("Lautstärke mit Pegel", isOn: $lautstaerke)
@@ -491,6 +495,8 @@ struct WerkzeugeSeite: View {
     @AppStorage(E.fensterZiehen) var ziehen = true
     @AppStorage(E.kurzbefehle) var kurzbefehle = ""
     @AppStorage(E.zuhauseWoerter) var zuhauseWoerter = ""
+    @AppStorage(E.notizOrdner) var notizOrdner = ""
+    @AppStorage(E.diktatSprache) var diktatSprache = "de-DE"
     @State private var alleKurzbefehle: [String] = []
     @AppStorage(E.emojiKuerzel) var emoji = true
     @AppStorage(E.augenMinuten) var augenMinuten = 20.0
@@ -564,6 +570,14 @@ struct WerkzeugeSeite: View {
             Text("Kürzel wie bei Yahoo Finance, mit Komma getrennt. Enter lädt sofort, sonst alle 15 Minuten. Leer = aus.")
         }
 
+        Section {
+            TextField("Ordner", text: $notizOrdner, prompt: Text(NotizSichern.standardOrdner))
+            Picker("Diktat-Sprache", selection: $diktatSprache) {
+                Text("Deutsch").tag("de-DE"); Text("English").tag("en-US")
+            }
+        } header: { Text("Reiter „Notiz“ (Diktat)") } footer: {
+            Text("„In Ordner“ legt eine Markdown-Datei mit Datum und Frontmatter ab; leer = Vault-Inbox, sonst ~/Dokumente/Notizen. Erste Nutzung fragt nach Mikrofon und Spracherkennung.")
+        }
         Section {
             TextField("Stichwörter", text: $zuhauseWoerter, prompt: Text(Zuhause.standardWoerter))
         } header: { Text("Reiter „Zuhause“ (HomeKit über Kurzbefehle)") } footer: {

@@ -71,6 +71,7 @@ struct NotchAnsicht: View {
         .environmentObject(m.appTon)
         .environmentObject(m.systemAnzeige)
         .environmentObject(m.zuhause)
+        .environmentObject(m.diktat)
         .environmentObject(m.agent)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onHover { m.hover($0) }
@@ -236,7 +237,7 @@ struct Offen: View {
                     Button(LocalizedStringKey(r.rawValue)) { m.reiter = r }
                         .buttonStyle(.plain)
                         .font(.system(size: 12, weight: .semibold))
-                        .padding(.horizontal, 10).padding(.vertical, 5)
+                        .padding(.horizontal, reiter.count > 9 ? 7 : 10).padding(.vertical, 5)
                         .background(Capsule().fill(m.reiter == r ? Color.primary.opacity(0.18) : .clear))
                         .foregroundStyle(m.reiter == r ? Color.primary : Color.primary.opacity(0.55))
                 }
@@ -260,6 +261,7 @@ struct Offen: View {
                 case .ablage: AblageAnsicht()
                 case .iphone: IPhoneAnsicht()
                 case .fokus: FokusAnsicht()
+                case .notiz: NotizAnsicht()
                 case .zuhause: ZuhauseAnsicht()
                 case .werkzeuge: WerkzeugeAnsicht()
                 }
@@ -1057,10 +1059,11 @@ struct FragenAnsicht: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
                 Picker("", selection: $art) {
-                    Text("Frage").tag(0); Text("Bildschirm").tag(1); Text("Aufgabe").tag(2)
+                    Text("Frage").tag(0); Text("Bildschirm").tag(1); Text("Aufgabe").tag(2); Text("Text").tag(3)
                 }
-                .pickerStyle(.segmented).labelsHidden().controlSize(.small).frame(width: 230)
-                .onChange(of: art) { _, n in f.mitBildschirm = n == 1; fokus = true }
+                .pickerStyle(.segmented).labelsHidden().controlSize(.small).frame(width: 280)
+                .onChange(of: art) { _, n in f.mitBildschirm = n == 1; fokus = n != 3; if n == 3, f.werkstattText.isEmpty { f.werkstattOeffnen() } }
+                .onReceive(f.$artWunsch) { w in if let w { art = w; f.artWunsch = nil } }
                 if art != 2 {
                     Menu {
                         ForEach(KI.allCases) { k in Button { f.ki = k } label: { Label(k.rawValue, systemImage: k.symbol) } }
@@ -1071,7 +1074,12 @@ struct FragenAnsicht: View {
                     .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
                     .help(L("Welche KI antwortet"))
                 }
-                if art == 2 {
+                if art == 3 {
+                    Text(L("Zwischenablage · ") + "\(f.werkstattText.count) " + L("Zeichen")).font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.6))
+                    Button("Neu laden") { f.werkstattOeffnen() }.controlSize(.small)
+                    Spacer()
+                    if f.laeuft { ProgressView().controlSize(.small); Button("Stopp") { f.stopp() }.buttonStyle(.plain).font(.system(size: 11)) }
+                } else if art == 2 {
                     TextField("Was soll Claude auf dem Mac erledigen?", text: $agent.aufgabe)
                         .textFieldStyle(.plain).font(.system(size: 13)).focused($fokus).onSubmit { agent.planen() }
                     if agent.plant { ProgressView().controlSize(.small); Button("Stopp") { agent.abbrechen() }.buttonStyle(.plain).font(.system(size: 11)) }
@@ -1088,9 +1096,45 @@ struct FragenAnsicht: View {
             }
             .padding(8)
             .background(RoundedRectangle(cornerRadius: 10).fill(Color.primary.opacity(0.08)))
-            if art == 2 { AgentListe() } else { antwortBereich }
+            if art == 3 { werkstattBereich } else if art == 2 { AgentListe() } else { antwortBereich }
         }
         .onAppear { fokus = true; f.mitBildschirm = art == 1 }
+    }
+
+    @ViewBuilder private var werkstattBereich: some View {
+        if f.werkstattText.isEmpty {
+            Text("Erst Text kopieren (⌘C), dann ⌥⌘T – oder hier „Neu laden“. Das Ergebnis geht per „Einfügen“ zurück in die App.")
+                .font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.45))
+            Spacer(minLength: 0)
+        } else {
+            HStack(spacing: 6) {
+                ForEach(Fragen.werkstattAktionen, id: \.0) { name, anweisung in
+                    Button(LocalizedStringKey(name)) { f.werkstatt(anweisung) }.controlSize(.small).disabled(f.laeuft)
+                }
+            }
+            HStack(alignment: .top, spacing: 12) {
+                ScrollView {
+                    Text(f.werkstattText).font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.6))
+                        .frame(maxWidth: .infinity, alignment: .leading).textSelection(.enabled)
+                }
+                Rectangle().fill(Color.primary.opacity(0.12)).frame(width: 1)
+                ScrollView {
+                    Text(f.antwort.isEmpty ? (f.laeuft ? f.ki.rawValue + L(" arbeitet …") : L("Ergebnis erscheint hier.")) : f.antwort)
+                        .font(.system(size: 12)).foregroundStyle(f.antwort.isEmpty ? Color.primary.opacity(0.4) : .primary)
+                        .frame(maxWidth: .infinity, alignment: .leading).textSelection(.enabled)
+                }
+            }
+            if !f.antwort.isEmpty {
+                HStack {
+                    Label(L("Antwort von ") + f.antwortVon.rawValue, systemImage: f.antwortVon.symbol).foregroundStyle(Color.primary.opacity(0.45))
+                    Spacer()
+                    Button("Kopieren") { NSPasteboard.general.clearContents(); NSPasteboard.general.setString(f.antwort, forType: .string) }
+                    Button("Einfügen") { f.einfuegen() }.disabled(f.zielApp == nil)
+                    Button("Als Vorlage") { f.werkstattText = f.antwort; f.antwort = "" }
+                }
+                .buttonStyle(.plain).font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.7))
+            }
+        }
     }
 
     @ViewBuilder private var antwortBereich: some View {
@@ -1156,6 +1200,40 @@ struct AgentListe: View {
                     .disabled(agent.laeuft || !agent.schritte.contains { $0.an && $0.zustand == .offen })
             }
         }
+    }
+}
+
+struct NotizAnsicht: View {
+    @EnvironmentObject var d: Diktat
+    @EnvironmentObject var m: NotchModell
+    @State private var meldung = ""
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 10) {
+                Button { d.umschalten() } label: {
+                    Label(d.laeuft ? L("Diktat stoppen") : L("Diktieren"), systemImage: d.laeuft ? "stop.circle.fill" : "mic.circle.fill")
+                        .foregroundStyle(d.laeuft ? .red : .orange)
+                }
+                .buttonStyle(.plain).font(.system(size: 13, weight: .semibold))
+                if d.laeuft { Text("… spricht").font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.5)) }
+                Spacer()
+                Button("In Notizen") { meldung = NotizSichern.inNotizen(d.text) ? L("In Apple Notizen gesichert.") : L("Notizen-App hat es nicht angenommen.") }
+                    .controlSize(.small).disabled(d.text.isEmpty)
+                Button("In Ordner") {
+                    do { let u = try NotizSichern.inOrdner(d.text); meldung = L("Gesichert: ") + u.lastPathComponent }
+                    catch { meldung = L("Sichern fehlgeschlagen: ") + error.localizedDescription }
+                }
+                .controlSize(.small).disabled(d.text.isEmpty)
+                Button("Leeren") { d.text = ""; meldung = "" }.controlSize(.small).disabled(d.text.isEmpty)
+            }
+            TextEditor(text: $d.text)
+                .font(.system(size: 13)).scrollContentBackground(.hidden)
+                .padding(6)
+                .background(RoundedRectangle(cornerRadius: 10).fill(Color.primary.opacity(0.08)))
+            Text(d.hinweis ?? (meldung.isEmpty ? L("Diktat läuft über Apples Spracherkennung, wenn möglich auf dem Mac. „In Ordner“ schreibt eine Markdown-Datei (Einstellungen › Werkzeuge).") : meldung))
+                .font(.system(size: 10)).foregroundStyle(d.hinweis == nil ? Color.primary.opacity(0.45) : .orange)
+        }
+        .onDisappear { d.stoppen() }
     }
 }
 

@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.0.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.1.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -16,14 +16,15 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 | Mitteilungen | Mitteilungen des Macs, Antworten auf iMessage und SMS direkt aus der Notch |
 | Wetter | Aktuell und Vorhersage (Open-Meteo, ohne Schlüssel) |
 | KI | Claude-Plan-Limits, Token und Kosten von Claude Code, Codex (ChatGPT-Limits) und Gemini über Antigravity CLI |
-| Fragen | Claude, Gemini (Antigravity), ChatGPT (Codex) oder per API-Schlüssel Grok, Perplexity, Mistral fragen – als Text, mit Bildschirmfoto, oder als Aufgabe (Claude plant Schritte, du bestätigst, die App führt aus) |
+| Fragen | Claude, Gemini (Antigravity), ChatGPT (Codex) oder per API-Schlüssel Grok, Perplexity, Mistral fragen; Text-Werkstatt (⌥⌘T): kopierten Text umschreiben, kürzen, übersetzen und zurück einfügen – als Text, mit Bildschirmfoto, oder als Aufgabe (Claude plant Schritte, du bestätigst, die App führt aus) |
+| Notiz | Schnellnotiz mit Diktat (Apple-Spracherkennung, lokal), sichern in Apple Notizen oder als Markdown in einen Ordner |
 | Ablage | Dateien ablegen, umwandeln (PNG/JPEG/HEIC), DMG installieren, per AirDrop senden |
 | iPhone | Fotos vom iPhone am Kabel übernehmen |
 | Fokus | Timer, Fokus 25+5, braunes Rauschen, Augen- und Trinkpause, Ton-Ausgabe, Lautstärke pro App, Notizen |
 | Zuhause | HomeKit über Kurzbefehle: Szenen und Geräte als Kacheln (Ordner „Zuhause“ oder Stichwörter) |
 | Werkzeuge | Spiegel (Kamera), Wach halten, Zwischenablage-Verlauf |
 
-**Im Hintergrund:** Lautstärke- und Feststell-Anzeige, Bluetooth- und Akku-Meldungen, Termin-Hinweis, Fenster einrasten (per ⌃⌥-Tastenkürzel oder Ziehen an den Rand), Textbausteine und Emoji-Kürzel (`;mfg`, `:herz:`), Menüleisten-Symbole ausblenden, Bildschirmecken mit Aktionen, Gesicht entsperren.
+**Im Hintergrund:** Lautstärke- und Feststell-Anzeige, Bluetooth- und Akku-Meldungen, Termin-Hinweis, Downloads-Wächter (neue Datei → Meldung und Ablage), Fenster einrasten (per ⌃⌥-Tastenkürzel oder Ziehen an den Rand), Textbausteine und Emoji-Kürzel (`;mfg`, `:herz:`), Menüleisten-Symbole ausblenden, Bildschirmecken mit Aktionen, Gesicht entsperren.
 
 ## Bauen
 

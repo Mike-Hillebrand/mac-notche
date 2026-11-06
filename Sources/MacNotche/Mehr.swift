@@ -197,6 +197,51 @@ final class Fragen: ObservableObject {
     }
 
     func stopp() { prozess?.terminate() }
+
+    // MARK: Zwischenablage-Werkstatt
+    @Published var artWunsch: Int?        // 3 = Werkstatt öffnen (die Ansicht liest es aus)
+    @Published var werkstattText = ""
+    var zielApp: NSRunningApplication?
+    var schliessen: (() -> Void)?
+
+    static let werkstattAktionen: [(String, String)] = [
+        ("Umschreiben", "Schreibe den Text flüssiger und klarer um, gleiche Sprache, gleicher Inhalt."),
+        ("Kürzer", "Kürze den Text auf etwa die Hälfte, ohne wichtige Aussagen zu verlieren."),
+        ("Korrigieren", "Korrigiere Rechtschreibung, Grammatik und Zeichensetzung; ändere sonst nichts."),
+        ("Zusammenfassen", "Fasse den Text in drei bis fünf kurzen Sätzen zusammen."),
+        ("→ Deutsch", "Übersetze den Text ins Deutsche."),
+        ("→ Englisch", "Übersetze den Text ins Englische."),
+        ("Förmlich", "Formuliere den Text höflich und geschäftlich um, gleiche Sprache."),
+        ("Locker", "Formuliere den Text locker und freundlich um, gleiche Sprache."),
+    ]
+
+    func werkstattOeffnen() {
+        werkstattText = NSPasteboard.general.string(forType: .string)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        antwort = ""
+        artWunsch = 3
+    }
+
+    func werkstatt(_ anweisung: String) {
+        let t = werkstattText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !t.isEmpty, !laeuft else { return }
+        laeuft = true; antwort = ""; antwortVon = ki
+        let system = "Du bearbeitest Text. Antworte ausschließlich mit dem Ergebnis, ohne Einleitung, ohne Anführungszeichen, ohne Erklärung."
+        prozess = AndereAufruf.senden(ki, anweisung + "\n\nText:\n" + t, system: system, bild: nil) { [weak self] a in
+            self?.antwort = a
+            self?.laeuft = false
+        }
+    }
+
+    /// Ergebnis in die Zwischenablage und in die App einfügen, aus der ⌥⌘T kam.
+    func einfuegen() {
+        let pb = NSPasteboard.general
+        pb.clearContents(); pb.setString(antwort, forType: .string)
+        guard let app = zielApp else { return }
+        zielApp = nil
+        schliessen?()
+        app.activate()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { Tippen.taste(9, .maskCommand) }  // ⌘V
+    }
 }
 
 // MARK: - Sport (OpenLigaDB, ohne Schlüssel)

@@ -9,7 +9,7 @@ import CoreBluetooth
 func L(_ s: String) -> String { NSLocalizedString(s, comment: "") }
 
 enum Zustand { case zu, offen, meldung }
-enum Reiter: String, CaseIterable { case uebersicht = "Übersicht", mitteilungen = "Mitteilungen", wetter = "Wetter", claude = "KI", fragen = "Fragen", ablage = "Ablage", iphone = "iPhone", fokus = "Fokus", zuhause = "Zuhause", werkzeuge = "Werkzeuge" }
+enum Reiter: String, CaseIterable { case uebersicht = "Übersicht", mitteilungen = "Mitteilungen", wetter = "Wetter", claude = "KI", fragen = "Fragen", notiz = "Notiz", ablage = "Ablage", iphone = "iPhone", fokus = "Fokus", zuhause = "Zuhause", werkzeuge = "Werkzeuge" }
 
 extension Reiter {
     /// Vom Nutzer ausgeschaltete Reiter (Einstellungen › Allgemein), Übersicht nie.
@@ -44,6 +44,8 @@ final class NotchModell: ObservableObject {
     let sport = Sport()
     let ziehen = FensterZiehen()
     let zuhause = Zuhause()
+    let diktat = Diktat()
+    let downloads = DownloadsWaechter()
     let terminHinweis = TerminHinweis()
     let appTon = AppLautstaerke()
     let agent = Agent()
@@ -97,6 +99,17 @@ final class NotchModell: ObservableObject {
         updates.melden = melden
         updates.starten()
         ablage.melden = melden
+        downloads.melden = melden
+        downloads.ablage = ablage
+        downloads.starten()
+        // ⌥⌘T: Zwischenablage-Werkstatt (markierten/kopierten Text umschreiben, übersetzen, kürzen).
+        Tastenkuerzel.registrieren(kVK_ANSI_T, cmdKey | optionKey) { [weak self] in
+            guard let self else { return }
+            self.fragen.zielApp = NSWorkspace.shared.frontmostApplication
+            self.fragen.werkstattOeffnen()
+            self.reiter = .fragen
+            self.zustand = .offen
+        }
         kurse.starten()
         sport.melden = melden
         sport.starten()
@@ -125,6 +138,7 @@ final class NotchModell: ObservableObject {
             self.zustand = .offen
         }
         zwischenablage.schliessen = { [weak self] in self?.zustand = .zu }
+        fragen.schliessen = { [weak self] in self?.zustand = .zu }
         // Textbausteine brauchen Bedienungshilfen – starten, sobald die Erlaubnis da ist.
         bausteine.starten()
         Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { [weak self] _ in self?.bausteine.starten() }

@@ -7,7 +7,7 @@
     <key>CFBundleName</key><string>Mac Notche</string>
     <key>CFBundleDisplayName</key><string>Mac Notche</string>
     <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleShortVersionString</key><string>4.0</string>
+    <key>CFBundleShortVersionString</key><string>4.1</string>
     <key>CFBundleVersion</key><string>1</string>
     <key>CFBundleDevelopmentRegion</key><string>de</string>
     <key>CFBundleLocalizations</key><array><string>de</string><string>en</string></array>
@@ -24,6 +24,8 @@
     <key>NSPhotoLibraryAddUsageDescription</key><string>Mac Notche übernimmt Fotos von deinem iPhone in die Fotos-App.</string>
     <key>NSPhotoLibraryUsageDescription</key><string>Mac Notche übernimmt Fotos von deinem iPhone in die Fotos-App.</string>
     <key>NSContactsUsageDescription</key><string>Mac Notche zeigt bei Nachrichten den Namen statt der Telefonnummer.</string>
+    <key>NSMicrophoneUsageDescription</key><string>Mac Notche nimmt dein Diktat für Schnellnotizen auf, nur solange du das Mikrofon einschaltest.</string>
+    <key>NSSpeechRecognitionUsageDescription</key><string>Mac Notche wandelt dein Diktat in Text um, wenn möglich auf dem Mac selbst.</string>
     <key>NSCameraUsageDescription</key><string>Mac Notche zeigt dein Kamerabild im Spiegel-Werkzeug, nur solange du es einschaltest.</string>
     <key>NSBluetoothAlwaysUsageDescription</key><string>Mac Notche meldet, wenn sich ein Bluetooth-Gerät verbindet oder trennt.</string>
     <key>NSAudioCaptureUsageDescription</key><string>Mac Notche regelt die Lautstärke einzelner Apps. Dafür leitet es deren Ton durch, nichts wird gespeichert.</string>
