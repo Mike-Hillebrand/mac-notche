@@ -251,7 +251,7 @@ struct VerbindungenSeite: View {
                     }
                     Spacer()
                     if let b = v.befehl {
-                        Button(v.angemeldet ? "Neu anmelden" : b.contains("install") ? "Installieren" : "Anmelden") { Verbindungen.anmelden(b) }
+                        Button(v.angemeldet ? "Neu anmelden" : b.contains("install") || b.contains("brew") ? "Installieren" : "Anmelden") { Verbindungen.anmelden(b) }
                     }
                 }
             }

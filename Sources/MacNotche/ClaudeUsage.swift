@@ -254,6 +254,7 @@ enum Selbsttest {
         let rel = #"{"tag_name":"v2.6","html_url":"https://x/r","assets":[{"name":"Mac Notche 2.6.dmg","browser_download_url":"https://x/d.dmg"}]}"#
         let r = Updates.lesen(Data(rel.utf8))!
         precondition(r.0 == "2.6" && r.1.absoluteString == "https://x/d.dmg", "Release-Antwort")
+        precondition(Verbindungen.geminiInstall.contains("brew install gemini-cli") && !Verbindungen.geminiInstall.contains("\n") && Verbindungen.codexInstall.contains("--cask codex"), "Installer")
         precondition(Verbindungen.jwt("a.eyJlbWFpbCI6ImFAYi5jIn0.b")?["email"] as? String == "a@b.c", "JWT")
 
         let ordner = FileManager.default.temporaryDirectory.appendingPathComponent("kerbe-test-\(UUID().uuidString)/p")

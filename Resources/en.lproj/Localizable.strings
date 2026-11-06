@@ -312,9 +312,9 @@
 "Claude Code antwortet nicht auf „claude auth status“. Einmal „claude“ im Terminal starten und anmelden." = "Claude Code does not answer “claude auth status”. Run “claude” once in Terminal and sign in.";
 "Claude Code ist installiert, aber nicht angemeldet. „Anmelden“ öffnet das Terminal, dort /login eingeben." = "Claude Code is installed but not signed in. “Sign in” opens Terminal, type /login there.";
 "Installiert, aber kein Login. „Anmelden“ öffnet das Terminal und den Browser (ChatGPT-Konto)." = "Installed, but no login. “Sign in” opens Terminal and the browser (ChatGPT account).";
-"Nicht installiert. „Installieren“ holt Codex (braucht Node/npm) und startet die Anmeldung im Browser." = "Not installed. “Install” fetches Codex (needs Node/npm) and starts the browser login.";
+"Nicht installiert. „Installieren“ holt Codex (über Homebrew oder npm) und startet die Anmeldung im Browser." = "Not installed. “Install” fetches Codex (via Homebrew or npm) and starts the browser login.";
 "Installiert, aber kein Login. „Anmelden“ startet Gemini im Terminal, dort „Login with Google“ wählen – der Browser öffnet sich." = "Installed, but no login. “Sign in” starts Gemini in Terminal, choose “Login with Google” there – the browser opens.";
-"Nicht installiert. „Installieren“ holt Gemini CLI (braucht Node/npm) und startet die Google-Anmeldung im Browser." = "Not installed. “Install” fetches Gemini CLI (needs Node/npm) and starts the Google login in the browser.";
+"Nicht installiert. „Installieren“ holt Gemini CLI (über Homebrew oder npm) und startet die Google-Anmeldung im Browser." = "Not installed. “Install” fetches Gemini CLI (via Homebrew or npm) and starts the Google login in the browser.";
 "Schlüsselbund-Einträge: " = "Keychain items: ";
 "ja" = "yes";
 "nein" = "no";

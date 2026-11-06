@@ -55,8 +55,18 @@ enum Verbindungen {
     }
 
     static let claudeInstall = "curl -fsSL https://claude.ai/install.sh | bash && exec zsh -lc claude"
-    static let codexInstall = "npm install -g @openai/codex && codex login"
-    static let geminiInstall = "npm install -g @google/gemini-cli && gemini"
+    /// Erst Homebrew, dann npm; fehlt beides, wird Homebrew nachinstalliert (fragt nach dem Mac-Passwort).
+    static func installer(brew: String, npm: String, danach: String) -> String {
+        """
+        if command -v brew >/dev/null 2>&1; then brew install \(brew); \
+        elif command -v npm >/dev/null 2>&1; then npm install -g \(npm); \
+        else echo 'Weder Homebrew noch npm gefunden – Homebrew wird installiert (Mac-Passwort nötig).'; \
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \
+        eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)" && brew install \(brew); fi && \(danach)
+        """.replacingOccurrences(of: "\n", with: " ")
+    }
+    static var codexInstall: String { installer(brew: "--cask codex", npm: "@openai/codex", danach: "codex login") }
+    static var geminiInstall: String { installer(brew: "gemini-cli", npm: "@google/gemini-cli", danach: "gemini") }
 
     static func claude() -> Verbindung {
         guard pfad("claude") != nil else {
@@ -89,7 +99,7 @@ enum Verbindungen {
         guard let d = try? Data(contentsOf: url), let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any] else {
             return Verbindung(id: "codex", name: "Codex (ChatGPT)", angemeldet: false, konto: nil,
                               hinweis: da ? L("Installiert, aber kein Login. „Anmelden“ öffnet das Terminal und den Browser (ChatGPT-Konto).")
-                                          : L("Nicht installiert. „Installieren“ holt Codex (braucht Node/npm) und startet die Anmeldung im Browser."),
+                                          : L("Nicht installiert. „Installieren“ holt Codex (über Homebrew oder npm) und startet die Anmeldung im Browser."),
                               befehl: da ? "codex login" : codexInstall)
         }
         if let t = j["tokens"] as? [String: Any], let id = t["id_token"] as? String, let c = jwt(id) {
@@ -116,7 +126,7 @@ enum Verbindungen {
             let da = pfad("gemini") != nil
             return Verbindung(id: "gemini", name: "Gemini CLI", angemeldet: false, konto: mail,
                               hinweis: da ? L("Installiert, aber kein Login. „Anmelden“ startet Gemini im Terminal, dort „Login with Google“ wählen – der Browser öffnet sich.")
-                                          : L("Nicht installiert. „Installieren“ holt Gemini CLI (braucht Node/npm) und startet die Google-Anmeldung im Browser."),
+                                          : L("Nicht installiert. „Installieren“ holt Gemini CLI (über Homebrew oder npm) und startet die Google-Anmeldung im Browser."),
                               befehl: da ? "gemini" : geminiInstall)
         }
         return Verbindung(id: "gemini", name: "Gemini CLI", angemeldet: true, konto: mail, hinweis: "~/.gemini/oauth_creds.json", befehl: "gemini")
