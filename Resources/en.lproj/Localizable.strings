@@ -371,3 +371,6 @@
 "Mac-Passwort speichern (2)" = "save Mac password (2)";
 "Bedienungshilfen (3)" = "Accessibility (3)";
 " zeigen" = " show";
+"Das Passwort passt nicht zu deinem Mac-Konto „" = "The password does not match your Mac account “";
+"Passwort geprüft und im Schlüsselbund gespeichert." = "Password verified and stored in the keychain.";
+"Passwort stimmt, aber der Schlüsselbund nimmt es nicht an (Fehler " = "Password is correct, but the keychain refuses it (error ";

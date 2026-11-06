@@ -11,12 +11,14 @@ import IOKit
 enum Schluesselbund {
     static let dienst = "Mac Notche Entsperren"
 
-    static func speichern(_ d: Data, konto: String) -> Bool {
+    static func speichern(_ d: Data, konto: String) -> Bool { speichernStatus(d, konto: konto) == errSecSuccess }
+
+    static func speichernStatus(_ d: Data, konto: String) -> OSStatus {
         loeschen(konto: konto)
         let q: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: dienst,
                                 kSecAttrAccount as String: konto, kSecValueData as String: d,
                                 kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly]
-        return SecItemAdd(q as CFDictionary, nil) == errSecSuccess
+        return SecItemAdd(q as CFDictionary, nil)
     }
 
     static func laden(konto: String) -> Data? {
@@ -169,15 +171,27 @@ final class Entsperren: NSObject, ObservableObject, AVCaptureVideoDataOutputSamp
 
     /// Prüft das Passwort gegen das Mac-Konto, bevor es gespeichert wird.
     func passwortSpeichern(_ pw: String) {
+        // Erst über Open Directory prüfen, zur Not über dscl – auf manchen Macs (iCloud-Konto, FileVault) meldet ODNode einen Fehler, obwohl das Passwort stimmt.
+        var pruefung: String?
         do {
             let knoten = try ODNode(session: ODSession.default(), type: ODNodeType(kODNodeTypeAuthentication))
             let konto = try knoten.record(withRecordType: kODRecordTypeUsers, name: NSUserName(), attributes: nil)
             try konto.verifyPassword(pw)
-            passwortGespeichert = Schluesselbund.speichern(Data(pw.utf8), konto: "passwort")
-            status = passwortGespeichert ? "Passwort geprüft und im Schlüsselbund gespeichert." : "Speichern fehlgeschlagen."
         } catch {
-            status = "Das Passwort passt nicht zu deinem Mac-Konto."
+            let p = Process(); p.executableURL = URL(fileURLWithPath: "/usr/bin/dscl")
+            p.arguments = [".", "-authonly", NSUserName(), pw]
+            p.standardOutput = FileHandle.nullDevice; p.standardError = FileHandle.nullDevice
+            try? p.run(); p.waitUntilExit()
+            if p.terminationStatus != 0 { pruefung = "\(error.localizedDescription) (\((error as NSError).code))" }
         }
+        if let pruefung {
+            status = L("Das Passwort passt nicht zu deinem Mac-Konto „") + NSUserName() + "“: " + pruefung
+            return
+        }
+        let rc = Schluesselbund.speichernStatus(Data(pw.utf8), konto: "passwort")
+        passwortGespeichert = rc == errSecSuccess
+        status = passwortGespeichert ? L("Passwort geprüft und im Schlüsselbund gespeichert.")
+                                     : L("Passwort stimmt, aber der Schlüsselbund nimmt es nicht an (Fehler ") + "\(rc)): " + (SecCopyErrorMessageString(rc, nil) as String? ?? "")
     }
 
     func passwortLoeschen() { Schluesselbund.loeschen(konto: "passwort"); passwortGespeichert = false }
