@@ -11,6 +11,15 @@ func L(_ s: String) -> String { NSLocalizedString(s, comment: "") }
 enum Zustand { case zu, offen, meldung }
 enum Reiter: String, CaseIterable { case uebersicht = "Übersicht", mitteilungen = "Mitteilungen", wetter = "Wetter", claude = "KI", fragen = "Fragen", ablage = "Ablage", iphone = "iPhone", fokus = "Fokus", werkzeuge = "Werkzeuge" }
 
+extension Reiter {
+    /// Vom Nutzer ausgeschaltete Reiter (Einstellungen › Allgemein), Übersicht nie.
+    static var ausgeblendet: Set<Reiter> {
+        get { Set((UserDefaults.standard.string(forKey: E.reiterAus) ?? "").split(separator: ",").compactMap { Reiter(rawValue: String($0)) }).subtracting([.uebersicht]) }
+        set { UserDefaults.standard.set(newValue.map(\.rawValue).sorted().joined(separator: ","), forKey: E.reiterAus) }
+    }
+    static var sichtbar: [Reiter] { allCases.filter { !ausgeblendet.contains($0) } }
+}
+
 // MARK: - Modell
 
 final class NotchModell: ObservableObject {

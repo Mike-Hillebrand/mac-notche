@@ -50,7 +50,7 @@
 /* Live */
 "In der zugeklappten Notch" = "In the closed notch";
 "Laufende Musik (Cover und Equalizer)" = "Now playing (cover and equalizer)";
-"Claude-Auslastung" = "Claude usage";
+"KI-Auslastung (Kontingent in Prozent)" = "AI usage (quota in percent)";
 "Temperatur, wenn keine Musik läuft" = "Temperature when no music is playing";
 "Meldungen" = "Alerts";
 "Bluetooth-Gerät verbunden oder getrennt" = "Bluetooth device connected or disconnected";
@@ -348,3 +348,7 @@
 "über Internetadresse" = "via internet address";
 "eingetragen" = "entered";
 "noch nicht bestimmt" = "not determined yet";
+"Reiter in der Notch" = "Tabs in the notch";
+"Ausgeschaltete Reiter verschwinden aus der Leiste. Übersicht bleibt immer. Tastenkürzel und Ablegen öffnen einen Reiter trotzdem kurz." = "Switched-off tabs disappear from the bar. Overview always stays. Shortcuts and drops still open a tab briefly.";
+"Welche KI" = "Which AI";
+"Automatisch" = "Automatic";

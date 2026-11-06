@@ -12,7 +12,7 @@ enum E {
     static let entsperrenAktiv = "entsperren.aktiv", entsperrenSchwelle = "entsperren.schwelle"
     static let fensterAktiv = "fenster.aktiv", augenMinuten = "augen.minuten", trinkenMinuten = "trinken.minuten", bausteine = "bausteine"
     static let emojiKuerzel = "emoji.kuerzel", aktien = "aktien", notizen = "notizen"
-    static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort"
+    static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuKI = "zu.ki"
     static let sportLiga = "sport.liga", sportVereine = "sport.vereine"
     static let fensterZiehen = "fenster.ziehen", kurzbefehle = "kurzbefehle"
     static func meldung(_ art: String) -> String { "meldung.\(art)" }
@@ -113,6 +113,7 @@ struct Regler: View {
 }
 
 struct AllgemeinSeite: View {
+    @AppStorage(E.reiterAus) var reiterAus = ""  // nur damit die Schalter neu zeichnen
     @AppStorage(E.verzoegerung) var verzoegerung = 0.0
     @AppStorage(E.klickSchliesst) var klick = true
     @State private var login = SMAppService.mainApp.status == .enabled
@@ -148,6 +149,15 @@ struct AllgemeinSeite: View {
                     do { if an { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() } } catch {}
                     login = SMAppService.mainApp.status == .enabled
                 }
+        }
+        Section {
+            ForEach(Reiter.allCases.filter { $0 != .uebersicht }, id: \.self) { r in
+                Toggle(LocalizedStringKey(r.rawValue), isOn: Binding(
+                    get: { !Reiter.ausgeblendet.contains(r) },
+                    set: { an in var a = Reiter.ausgeblendet; if an { a.remove(r) } else { a.insert(r) }; Reiter.ausgeblendet = a }))
+            }
+        } header: { Text("Reiter in der Notch") } footer: {
+            Text("Ausgeschaltete Reiter verschwinden aus der Leiste. Übersicht bleibt immer. Tastenkürzel und Ablegen öffnen einen Reiter trotzdem kurz.")
         }
         Section("Verhalten") {
             Regler(titel: L("Öffnen nach"), wert: $verzoegerung, bereich: 0...1, schritt: 0.1) {
@@ -190,13 +200,20 @@ struct LiveSeite: View {
     @AppStorage("meldung.lautstaerke") var lautstaerke = true
     @AppStorage("meldung.feststell") var feststell = true
     @AppStorage("meldung.timer") var timer = true
+    @AppStorage(E.zuKI) var zuKI = "auto"
     @AppStorage("meldung.ablage") var ablage = true
     @AppStorage("meldung.termin") var termin = true
     @AppStorage("meldung.sport") var sport = true
     var body: some View {
         Section("In der zugeklappten Notch") {
             Toggle("Laufende Musik (Cover und Equalizer)", isOn: $musik)
-            Toggle("Claude-Auslastung", isOn: $claude)
+            Toggle("KI-Auslastung (Kontingent in Prozent)", isOn: $claude)
+            if claude {
+                Picker("Welche KI", selection: $zuKI) {
+                    Text("Automatisch").tag("auto")
+                    ForEach(KI.allCases) { Text($0.rawValue).tag($0.rawValue) }
+                }
+            }
             Toggle("Temperatur, wenn keine Musik läuft", isOn: $wetter)
         }
         Section {

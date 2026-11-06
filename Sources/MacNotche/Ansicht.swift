@@ -90,6 +90,26 @@ struct Kompakt: View {
     @AppStorage(E.zeigeMusik) private var zeigeMusik = true
     @AppStorage(E.zeigeClaude) private var zeigeClaude = true
     @AppStorage(E.zeigeWetter) private var zeigeWetter = true
+    @AppStorage(E.zuKI) private var zuKI = "auto"
+    @EnvironmentObject var k: AndereKIs
+
+    /// Kontingent-Paare (Kurzname, Prozent) für die gewählte KI; „auto“ nimmt die erste mit Daten.
+    private func paare(_ ki: KI) -> [(String, Double)] {
+        switch ki {
+        case .claude:
+            // 5-Std.-Fenster nur, wenn Anthropic es für den Plan mitschickt (Max 20× hat keins); Woche immer.
+            return [("5h", claude.fuenfStundenProzent), ("Wo", claude.limits.first { $0.id == "seven_day" }?.prozent)].compactMap { n, p in p.map { (n, $0) } }
+        case .chatgpt:
+            return [("5h", k.codexLimits.first { $0.id == "codex-primary" }?.prozent), ("Wo", k.codexLimits.first { $0.id == "codex-secondary" }?.prozent)].compactMap { n, p in p.map { (n, $0) } }
+        case .gemini:
+            return k.agyLimits.prefix(2).map { (String($0.name.prefix(6)), $0.prozent) }
+        }
+    }
+    private var auslastung: (KI, [(String, Double)])? {
+        let reihe: [KI] = KI(rawValue: zuKI).map { [$0] } ?? [.claude, .chatgpt, .gemini]
+        for ki in reihe { let p = paare(ki); if !p.isEmpty { return (ki, p) } }
+        return nil
+    }
 
     var body: some View {
         HStack(spacing: 8) {
@@ -109,15 +129,13 @@ struct Kompakt: View {
                     .foregroundStyle(.orange)
                 Restzeit(ende: ende)
             }
-            if zeigeClaude, !claude.limits.isEmpty {
-                // 5-Std.-Fenster nur, wenn Anthropic es für den Plan mitschickt; Woche immer.
-                ForEach([("5h", claude.fuenfStundenProzent), ("Wo", claude.limits.first { $0.id == "seven_day" }?.prozent)], id: \.0) { name, p in
-                    // Ultra hat kein 5-Stunden-Fenster mehr; dann nur die Woche zeigen.
-                    if let p {
-                        Text(name).foregroundStyle(Color.primary.opacity(0.5))
-                        Ring(anteil: p / 100).frame(width: 13, height: 13)
-                        Text("\(Int(p.rounded())) %")
-                    }
+            if zeigeClaude, let (ki, paare) = auslastung {
+                // Platz ist knapp: Symbol der KI nur, wenn ein Paar gezeigt wird; nie umbrechen.
+                if ki != .claude, paare.count < 2 { Image(systemName: ki.symbol).foregroundStyle(Color.primary.opacity(0.5)) }
+                ForEach(paare, id: \.0) { name, p in
+                    Text(name).foregroundStyle(Color.primary.opacity(0.5)).fixedSize()
+                    Ring(anteil: p / 100).frame(width: 13, height: 13)
+                    Text("\(Int(p.rounded()))%").fixedSize()
                 }
             } else if zeigeClaude, claude.fuenfStunden.gesamt > 0 {
                 Text(kurz(claude.fuenfStunden.gesamt))
@@ -182,10 +200,13 @@ struct MeldungAnsicht: View {
 
 struct Offen: View {
     @EnvironmentObject var m: NotchModell
+    @AppStorage(E.reiterAus) private var reiterAus = ""
+    // Ausgeblendete Reiter zeigen wir nur, solange sie gerade offen sind (Tastenkürzel, Ablegen).
+    private var reiter: [Reiter] { Reiter.sichtbar + (Reiter.sichtbar.contains(m.reiter) ? [] : [m.reiter]) }
     var body: some View {
         VStack(spacing: 12) {
             HStack(spacing: 4) {
-                ForEach(Reiter.allCases, id: \.self) { r in
+                ForEach(reiter, id: \.self) { r in
                     Button(LocalizedStringKey(r.rawValue)) { m.reiter = r }
                         .buttonStyle(.plain)
                         .font(.system(size: 12, weight: .semibold))
