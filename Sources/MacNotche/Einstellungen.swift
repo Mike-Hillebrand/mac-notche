@@ -12,7 +12,7 @@ enum E {
     static let entsperrenAktiv = "entsperren.aktiv", entsperrenSchwelle = "entsperren.schwelle"
     static let fensterAktiv = "fenster.aktiv", augenMinuten = "augen.minuten", trinkenMinuten = "trinken.minuten", bausteine = "bausteine"
     static let emojiKuerzel = "emoji.kuerzel", aktien = "aktien", notizen = "notizen"
-    static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuKI = "zu.ki", zuAus = "zu.aus"
+    static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuhauseWoerter = "zuhause.woerter", zuKI = "zu.ki", zuAus = "zu.aus"
     static let sportLiga = "sport.liga", sportVereine = "sport.vereine"
     static let fensterZiehen = "fenster.ziehen", kurzbefehle = "kurzbefehle"
     static func meldung(_ art: String) -> String { "meldung.\(art)" }
@@ -490,6 +490,7 @@ struct WerkzeugeSeite: View {
     @AppStorage(E.fensterAktiv) var fenster = true
     @AppStorage(E.fensterZiehen) var ziehen = true
     @AppStorage(E.kurzbefehle) var kurzbefehle = ""
+    @AppStorage(E.zuhauseWoerter) var zuhauseWoerter = ""
     @State private var alleKurzbefehle: [String] = []
     @AppStorage(E.emojiKuerzel) var emoji = true
     @AppStorage(E.augenMinuten) var augenMinuten = 20.0
@@ -563,6 +564,11 @@ struct WerkzeugeSeite: View {
             Text("Kürzel wie bei Yahoo Finance, mit Komma getrennt. Enter lädt sofort, sonst alle 15 Minuten. Leer = aus.")
         }
 
+        Section {
+            TextField("Stichwörter", text: $zuhauseWoerter, prompt: Text(Zuhause.standardWoerter))
+        } header: { Text("Reiter „Zuhause“ (HomeKit über Kurzbefehle)") } footer: {
+            Text("Zeigt Kurzbefehle aus dem Ordner „Zuhause“ der Kurzbefehle-App, sonst alle, deren Name eines dieser Wörter enthält. Kurzbefehle können HomeKit-Szenen und -Geräte schalten – so kommt dein Zuhause in die Notch.")
+        }
         Section {
             TextField("Kurzbefehle", text: $kurzbefehle, prompt: Text("Name 1, Name 2"))
         } header: { Text("Kurzbefehle in der Übersicht") } footer: {

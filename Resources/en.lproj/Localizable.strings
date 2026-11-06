@@ -374,3 +374,8 @@
 "Das Passwort passt nicht zu deinem Mac-Konto „" = "The password does not match your Mac account “";
 "Passwort geprüft und im Schlüsselbund gespeichert." = "Password verified and stored in the keychain.";
 "Passwort stimmt, aber der Schlüsselbund nimmt es nicht an (Fehler " = "Password is correct, but the keychain refuses it (error ";
+"Zuhause" = "Home";
+"Stichwörter" = "Keywords";
+"Reiter „Zuhause“ (HomeKit über Kurzbefehle)" = "“Home” tab (HomeKit via Shortcuts)";
+"Zeigt Kurzbefehle aus dem Ordner „Zuhause“ der Kurzbefehle-App, sonst alle, deren Name eines dieser Wörter enthält. Kurzbefehle können HomeKit-Szenen und -Geräte schalten – so kommt dein Zuhause in die Notch." = "Shows shortcuts from the “Zuhause” folder of the Shortcuts app, otherwise all whose name contains one of these words. Shortcuts can control HomeKit scenes and devices – that brings your home into the notch.";
+"Keine Zuhause-Kurzbefehle gefunden. In der Kurzbefehle-App einen Ordner „Zuhause“ anlegen oder Kurzbefehle mit Wörtern wie Licht, Heizung, Steckdose benennen – jeder Kurzbefehl kann HomeKit-Szenen und -Geräte schalten." = "No home shortcuts found. Create a “Zuhause” folder in the Shortcuts app or name shortcuts with words like light, heating, outlet – every shortcut can control HomeKit scenes and devices.";

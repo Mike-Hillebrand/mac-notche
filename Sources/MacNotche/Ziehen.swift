@@ -73,6 +73,14 @@ enum Kurzbefehle {
         return String(decoding: d, as: UTF8.self).split(separator: "\n").map(String.init).filter { !$0.isEmpty }
     }
 
+    /// Kurzbefehle eines Ordners; nil, wenn es den Ordner nicht gibt.
+    static func ordner(_ name: String) -> [String]? {
+        guard let d = Ablage.ausfuehren("/usr/bin/shortcuts", ["list", "--folders"]),
+              String(decoding: d, as: UTF8.self).split(separator: "\n").contains(where: { $0.trimmingCharacters(in: .whitespaces) == name }),
+              let l = Ablage.ausfuehren("/usr/bin/shortcuts", ["list", "--folder-name", name]) else { return nil }
+        return String(decoding: l, as: UTF8.self).split(separator: "\n").map(String.init).filter { !$0.isEmpty }
+    }
+
     static func gewaehlt() -> [String] {
         (UserDefaults.standard.string(forKey: E.kurzbefehle) ?? "").split(separator: ",")
             .map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
@@ -84,6 +92,52 @@ enum Kurzbefehle {
         p.arguments = ["run", name]
         p.standardOutput = FileHandle.nullDevice; p.standardError = FileHandle.nullDevice
         try? p.run()
+    }
+}
+
+// MARK: - Zuhause: HomeKit über Kurzbefehle
+
+/// HomeKit gibt es für Mac-Programme nicht direkt; die Kurzbefehle-App kann es. Wir zeigen die passenden Kurzbefehle als Kacheln.
+final class Zuhause: ObservableObject {
+    @Published var kacheln: [String] = []
+    @Published var zuletzt: String?
+    static let standardWoerter = "Heizung, Licht, Lampe, Steckdose, Szene, Rollo, Jalousie, Tür, Garage, Sauger, Wischer, Thermostat, Alarm, Kamera, Gute Nacht, Guten Morgen, Zuhause, Unterwegs"
+
+    func laden() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let alle = Kurzbefehle.alle()
+            let ordner = Kurzbefehle.ordner("Zuhause")
+            let woerter = (UserDefaults.standard.string(forKey: E.zuhauseWoerter) ?? Self.standardWoerter)
+                .split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces).lowercased() }.filter { !$0.isEmpty }
+            // Wortanfänge statt Teilstrings: „Langzeitbelichtung“ soll nicht als „Licht“ zählen.
+            let treffer = ordner ?? alle.filter { n in
+                let teile = n.lowercased().split(whereSeparator: { !$0.isLetter && !$0.isNumber }).map(String.init)
+                return woerter.contains { w in teile.contains { $0.hasPrefix(w) } || (w.contains(" ") && n.lowercased().contains(w)) }
+            }
+            DispatchQueue.main.async { self.kacheln = treffer }
+        }
+    }
+
+    func starten(_ name: String) {
+        Kurzbefehle.starten(name)
+        zuletzt = name
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { if self.zuletzt == name { self.zuletzt = nil } }
+    }
+
+    /// Symbol nach Stichwort im Namen.
+    static func symbol(_ n: String) -> String {
+        let s = n.lowercased()
+        if s.contains("heiz") || s.contains("thermo") || s.contains("temperatur") { return "thermometer.medium" }
+        if s.contains("licht") || s.contains("lampe") || s.contains("leuchte") { return "lightbulb.fill" }
+        if s.contains("steckdose") || s.contains("strom") { return "poweroutlet.type.f.fill" }
+        if s.contains("rollo") || s.contains("jalousie") || s.contains("vorhang") { return "blinds.horizontal.closed" }
+        if s.contains("tür") || s.contains("schloss") || s.contains("garage") { return "door.left.hand.closed" }
+        if s.contains("saug") || s.contains("wisch") || s.contains("roboter") { return "fan.fill" }
+        if s.contains("kamera") || s.contains("alarm") { return "video.fill" }
+        if s.contains("nacht") || s.contains("schlaf") { return "moon.fill" }
+        if s.contains("morgen") { return "sunrise.fill" }
+        if s.contains("musik") || s.contains("lautsprecher") { return "hifispeaker.fill" }
+        return "house.fill"
     }
 }
 

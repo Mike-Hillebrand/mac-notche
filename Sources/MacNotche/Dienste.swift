@@ -9,7 +9,7 @@ import CoreBluetooth
 func L(_ s: String) -> String { NSLocalizedString(s, comment: "") }
 
 enum Zustand { case zu, offen, meldung }
-enum Reiter: String, CaseIterable { case uebersicht = "Übersicht", mitteilungen = "Mitteilungen", wetter = "Wetter", claude = "KI", fragen = "Fragen", ablage = "Ablage", iphone = "iPhone", fokus = "Fokus", werkzeuge = "Werkzeuge" }
+enum Reiter: String, CaseIterable { case uebersicht = "Übersicht", mitteilungen = "Mitteilungen", wetter = "Wetter", claude = "KI", fragen = "Fragen", ablage = "Ablage", iphone = "iPhone", fokus = "Fokus", zuhause = "Zuhause", werkzeuge = "Werkzeuge" }
 
 extension Reiter {
     /// Vom Nutzer ausgeschaltete Reiter (Einstellungen › Allgemein), Übersicht nie.
@@ -43,6 +43,7 @@ final class NotchModell: ObservableObject {
     let fragen = Fragen()
     let sport = Sport()
     let ziehen = FensterZiehen()
+    let zuhause = Zuhause()
     let terminHinweis = TerminHinweis()
     let appTon = AppLautstaerke()
     let agent = Agent()

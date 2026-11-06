@@ -70,6 +70,7 @@ struct NotchAnsicht: View {
         .environmentObject(m.sport)
         .environmentObject(m.appTon)
         .environmentObject(m.systemAnzeige)
+        .environmentObject(m.zuhause)
         .environmentObject(m.agent)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onHover { m.hover($0) }
@@ -259,6 +260,7 @@ struct Offen: View {
                 case .ablage: AblageAnsicht()
                 case .iphone: IPhoneAnsicht()
                 case .fokus: FokusAnsicht()
+                case .zuhause: ZuhauseAnsicht()
                 case .werkzeuge: WerkzeugeAnsicht()
                 }
             }
@@ -1154,6 +1156,37 @@ struct AgentListe: View {
                     .disabled(agent.laeuft || !agent.schritte.contains { $0.an && $0.zustand == .offen })
             }
         }
+    }
+}
+
+struct ZuhauseAnsicht: View {
+    @EnvironmentObject var z: Zuhause
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if z.kacheln.isEmpty {
+                Text("Keine Zuhause-Kurzbefehle gefunden. In der Kurzbefehle-App einen Ordner „Zuhause“ anlegen oder Kurzbefehle mit Wörtern wie Licht, Heizung, Steckdose benennen – jeder Kurzbefehl kann HomeKit-Szenen und -Geräte schalten.")
+                    .font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.5))
+                Spacer(minLength: 0)
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 8) {
+                        ForEach(z.kacheln, id: \.self) { n in
+                            Button { z.starten(n) } label: {
+                                VStack(spacing: 6) {
+                                    Image(systemName: z.zuletzt == n ? "checkmark.circle.fill" : Zuhause.symbol(n))
+                                        .font(.system(size: 20)).foregroundStyle(z.zuletzt == n ? .green : .orange)
+                                    Text(n).font(.system(size: 11, weight: .medium)).lineLimit(2).multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: .infinity, minHeight: 64)
+                                .background(RoundedRectangle(cornerRadius: 12).fill(Color.primary.opacity(0.08)))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+            }
+        }
+        .onAppear(perform: z.laden)
     }
 }
 
