@@ -334,7 +334,8 @@ struct SchluesselZeile: View {
                 Spacer()
                 Button("Entfernen") { Schluesselbund.loeschen(konto: ki.schluesselKonto); da = false; geaendert() }
             } else {
-                SecureField("API-Schlüssel", text: $eingabe)
+                SecureField("", text: $eingabe, prompt: Text("API-Schlüssel"))
+                    .labelsHidden().textFieldStyle(.roundedBorder).frame(maxWidth: .infinity)
                 Button("Speichern") {
                     let k = eingabe.trimmingCharacters(in: .whitespacesAndNewlines)
                     if !k.isEmpty, Schluesselbund.speichern(Data(k.utf8), konto: ki.schluesselKonto) { da = true; eingabe = ""; geaendert() }
@@ -455,7 +456,9 @@ struct EntsperrenSeite: View {
                 }
             } else {
                 HStack {
-                    SecureField("Passwort deines Mac-Kontos", text: $passwort)
+                    // Im gruppierten Formular wird der Titel sonst zur Beschriftung und das Feld verschwindet.
+                    SecureField("", text: $passwort, prompt: Text("Passwort deines Mac-Kontos"))
+                        .labelsHidden().textFieldStyle(.roundedBorder).frame(maxWidth: .infinity)
                     Button("Prüfen und speichern") { ent.passwortSpeichern(passwort); passwort = "" }.disabled(passwort.isEmpty)
                 }
             }
