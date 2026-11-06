@@ -12,7 +12,7 @@ enum E {
     static let entsperrenAktiv = "entsperren.aktiv", entsperrenSchwelle = "entsperren.schwelle"
     static let fensterAktiv = "fenster.aktiv", augenMinuten = "augen.minuten", trinkenMinuten = "trinken.minuten", bausteine = "bausteine"
     static let emojiKuerzel = "emoji.kuerzel", aktien = "aktien", notizen = "notizen"
-    static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuKI = "zu.ki"
+    static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuKI = "zu.ki", zuAus = "zu.aus"
     static let sportLiga = "sport.liga", sportVereine = "sport.vereine"
     static let fensterZiehen = "fenster.ziehen", kurzbefehle = "kurzbefehle"
     static func meldung(_ art: String) -> String { "meldung.\(art)" }
@@ -201,6 +201,7 @@ struct LiveSeite: View {
     @AppStorage("meldung.feststell") var feststell = true
     @AppStorage("meldung.timer") var timer = true
     @AppStorage(E.zuKI) var zuKI = "auto"
+    @AppStorage(E.zuAus) var zuAus = ""
     @AppStorage("meldung.ablage") var ablage = true
     @AppStorage("meldung.termin") var termin = true
     @AppStorage("meldung.sport") var sport = true
@@ -212,7 +213,12 @@ struct LiveSeite: View {
                 Picker("Welche KI", selection: $zuKI) {
                     Text("Automatisch").tag("auto")
                     Text("Alle (je ein Ring, Wochenwert)").tag("alle")
-                    ForEach(KI.allCases) { Text($0.rawValue).tag($0.rawValue) }
+                    ForEach([KI.claude, .chatgpt, .gemini]) { Text($0.rawValue).tag($0.rawValue) }
+                }
+                ForEach([KI.claude, .chatgpt, .gemini]) { ki in
+                    Toggle(ki.rawValue + L(" zeigen"), isOn: Binding(
+                        get: { !zuAus.split(separator: ",").contains(Substring(ki.rawValue)) },
+                        set: { an in var a = Set(zuAus.split(separator: ",").map(String.init)); if an { a.remove(ki.rawValue) } else { a.insert(ki.rawValue) }; zuAus = a.sorted().joined(separator: ",") }))
                 }
             }
             Toggle("Temperatur, wenn keine Musik läuft", isOn: $wetter)

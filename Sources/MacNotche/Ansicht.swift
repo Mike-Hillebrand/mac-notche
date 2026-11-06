@@ -91,10 +91,12 @@ struct Kompakt: View {
     @AppStorage(E.zeigeClaude) private var zeigeClaude = true
     @AppStorage(E.zeigeWetter) private var zeigeWetter = true
     @AppStorage(E.zuKI) private var zuKI = "auto"
+    @AppStorage(E.zuAus) private var zuAus = ""  // KIs, die der Nutzer hier nicht sehen will (z. B. ohne Konto)
     @EnvironmentObject var k: AndereKIs
 
     /// Kontingent-Paare (Kurzname, Prozent) für die gewählte KI; „auto“ nimmt die erste mit Daten.
     private func paare(_ ki: KI) -> [(String, Double)] {
+        if zuAus.split(separator: ",").contains(Substring(ki.rawValue)) { return [] }
         switch ki {
         case .claude:
             // 5-Std.-Fenster nur, wenn Anthropic es für den Plan mitschickt (Max 20× hat keins); Woche immer.
