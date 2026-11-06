@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 
 struct Limit: Identifiable {
@@ -260,6 +261,19 @@ enum Selbsttest {
         precondition(r.0 == "2.6" && r.1.absoluteString == "https://x/d.dmg", "Release-Antwort")
         precondition(Verbindungen.geminiInstall.contains("brew install gemini-cli") && !Verbindungen.geminiInstall.contains("\n") && Verbindungen.codexInstall.contains("--cask codex"), "Installer")
         precondition(AndereKIs.agyLimitsLesen(["Gemini Models\tWeekly Limit Remaining\t100%\t2026-11-13T14:04:54Z", "Flash: 7,5 % used", "Resets in 3h"]).map(\.prozent) == [0, 7.5], "agy usage")
+        let call = TerminCountdown.anrufLink(url: nil, texte: ["Raum 3", "Einwahl: https://us02web.zoom.us/j/123?pwd=x (Zoom)"])
+        precondition(call?.host == "us02web.zoom.us" && TerminCountdown.anrufLink(url: URL(string: "https://example.com"), texte: [nil]) == nil, "Call-Link")
+        // OCR-Pipeline: Text in ein Bild zeichnen und wieder lesen.
+        let bild = NSImage(size: NSSize(width: 400, height: 80), flipped: false) { r in
+            NSColor.white.setFill(); r.fill()
+            ("Hallo Notch 42" as NSString).draw(at: NSPoint(x: 20, y: 20), withAttributes: [.font: NSFont.systemFont(ofSize: 32), .foregroundColor: NSColor.black])
+            return true
+        }
+        let ocrURL = FileManager.default.temporaryDirectory.appendingPathComponent("kerbe-ocr-test.png")
+        if let tiff = bild.tiffRepresentation, let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:]) { try? png.write(to: ocrURL) }
+        let ocr = Ausschnitt.text(ocrURL); try? FileManager.default.removeItem(at: ocrURL)
+        precondition(ocr.contains("Notch") && ocr.contains("42"), "OCR liest nicht: \(ocr)")
+        precondition(Ausschnitt.kurz("a\nb") == "a b" && Ausschnitt.kurz(String(repeating: "x", count: 50)).hasSuffix("…"), "kurz")
         precondition(AndereKIs.agyLimitsLesen(["Gemini Models\tWeekly Limit Remaining\t40%\t2026-11-13T14:04:54Z"]).first.map { $0.prozent == 60 && $0.reset != nil && $0.name == "Gemini Models · Woche" } == true, "agy remaining")
         precondition(Verbindungen.jwt("a.eyJlbWFpbCI6ImFAYi5jIn0.b")?["email"] as? String == "a@b.c", "JWT")
 

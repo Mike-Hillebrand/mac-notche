@@ -94,6 +94,8 @@ struct Kompakt: View {
     @AppStorage(E.zeigeMusik) private var zeigeMusik = true
     @AppStorage(E.zeigeClaude) private var zeigeClaude = true
     @AppStorage(E.zeigeWetter) private var zeigeWetter = true
+    @AppStorage(E.zeigeTermin) private var zeigeTermin = true
+    @EnvironmentObject var kalender: Kalender
     @AppStorage(E.zuKI) private var zuKI = "auto"
     @AppStorage(E.zuAus) private var zuAus = ""  // KIs, die der Nutzer hier nicht sehen will (z. B. ohne Konto)
     @EnvironmentObject var k: AndereKIs
@@ -129,7 +131,15 @@ struct Kompakt: View {
         }
     }
 
+    private func breite(_ termin: Bool) { m.zuExtraBreite = CGFloat(max(0, alle.count - 1)) * 70 + (termin ? 80 : 0) }
+
     var body: some View {
+        TimelineView(.periodic(from: .now, by: 10)) { tl in
+            inhalt(termin: zeigeTermin ? TerminCountdown.naechster(kalender.termine, jetzt: tl.date) : nil, jetzt: tl.date)
+        }
+    }
+
+    private func inhalt(termin: EKEvent?, jetzt: Date) -> some View {
         HStack(spacing: 8) {
             if zeigeMusik, let t = musik.titel, t.spielt {
                 CoverBild(groesse: 18)
@@ -142,6 +152,19 @@ struct Kompakt: View {
             }
             if wach.bis != nil { Image(systemName: "cup.and.saucer.fill").foregroundStyle(.orange) }
             Spacer()
+            if let termin {
+                // Ab 10 Minuten vorher orange; Klick öffnet den Videocall (sonst den Kalender).
+                let bald = termin.startDate.timeIntervalSince(jetzt) <= 600
+                HStack(spacing: 4) {
+                    Image(systemName: TerminCountdown.anrufLink(termin) != nil ? "video.fill" : "calendar")
+                    if termin.startDate > jetzt { Restzeit(ende: termin.startDate) } else { Text("jetzt") }
+                }
+                .foregroundStyle(bald ? Color.orange : Color.primary)
+                .fixedSize()
+                .contentShape(Rectangle())
+                .onTapGesture { TerminCountdown.oeffnen(termin) }
+                .help(termin.title ?? "")
+            }
             if let ende = fokus.ende {
                 Image(systemName: fokus.art == .fokus ? "brain.head.profile" : fokus.art == .pause ? "cup.and.saucer" : "timer")
                     .foregroundStyle(.orange)
@@ -169,9 +192,10 @@ struct Kompakt: View {
         .foregroundStyle(Color.primary)
         .padding(.horizontal, 14)
         .frame(height: m.leistenHoehe)
-        // Ab dem zweiten Ring je 70 pt mehr, damit nichts abgeschnitten wird.
-        .onAppear { m.zuExtraBreite = CGFloat(max(0, alle.count - 1)) * 70 }
-        .onChange(of: alle.count) { _, n in m.zuExtraBreite = CGFloat(max(0, n - 1)) * 70 }
+        // Ab dem zweiten Ring je 70 pt mehr, Countdown 80 pt, damit nichts abgeschnitten wird.
+        .onAppear { breite(termin != nil) }
+        .onChange(of: alle.count) { _, _ in breite(termin != nil) }
+        .onChange(of: termin?.eventIdentifier) { _, _ in breite(termin != nil) }
     }
 }
 
@@ -409,6 +433,11 @@ struct TermineKarte: View {
                         Text(e.title ?? "Ohne Titel").font(.system(size: 12, weight: .medium)).lineLimit(1)
                         Text(wann(e)).font(.system(size: 10)).foregroundStyle(Color.primary.opacity(0.55))
                     }
+                    if let u = TerminCountdown.anrufLink(e) {
+                        Spacer()
+                        Button { NSWorkspace.shared.open(u) } label: { Image(systemName: "video.fill") }
+                            .buttonStyle(.plain).foregroundStyle(.orange).help("Call beitreten")
+                    }
                 }
             }
             Text("Erinnerungen").kopf().padding(.top, 6)
@@ -560,9 +589,18 @@ struct TokenBlock: View {
 
 struct AblageAnsicht: View {
     @EnvironmentObject var a: Ablage
+    @EnvironmentObject var m: NotchModell
+    private var freistellen: some View {
+        Button { m.zustand = .zu; m.ausschnitt.starten() } label: { Label("Freistellen ⌥⌘4", systemImage: "rectangle.dashed") }
+            .buttonStyle(.plain).font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.7))
+            .help("Bereich aufziehen: Text wird erkannt und kopiert, das Bild landet hier")
+    }
     var body: some View {
         if a.dateien.isEmpty {
-            Leer(symbol: "tray.and.arrow.down", text: "Ablage ist leer", unter: "Dateien auf die Notch ziehen")
+            VStack(spacing: 8) {
+                Leer(symbol: "tray.and.arrow.down", text: "Ablage ist leer", unter: "Dateien auf die Notch ziehen")
+                freistellen
+            }
         } else {
             VStack(alignment: .leading, spacing: 10) {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -571,6 +609,7 @@ struct AblageAnsicht: View {
                 HStack {
                     Text("\(a.dateien.count == 1 ? "1 Datei" : "\(a.dateien.count) Dateien") – rausziehen zum Ablegen, Doppelklick öffnet, Rechtsklick wandelt um").kopf()
                     Spacer()
+                    freistellen
                     Button("Alle entfernen") { a.dateien.removeAll() }
                         .buttonStyle(.plain).font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.7))
                 }

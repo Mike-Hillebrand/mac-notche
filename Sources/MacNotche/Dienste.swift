@@ -46,6 +46,7 @@ final class NotchModell: ObservableObject {
     let zuhause = Zuhause()
     let diktat = Diktat()
     let downloads = DownloadsWaechter()
+    let ausschnitt = Ausschnitt()
     let terminHinweis = TerminHinweis()
     let appTon = AppLautstaerke()
     let agent = Agent()
@@ -102,6 +103,13 @@ final class NotchModell: ObservableObject {
         downloads.melden = melden
         downloads.ablage = ablage
         downloads.starten()
+        ausschnitt.melden = melden
+        ausschnitt.ablage = ablage
+        // ⌥⌘4: Bildschirm freistellen – Bereich aufziehen, Text per OCR kopieren, Bild in die Ablage.
+        Tastenkuerzel.registrieren(kVK_ANSI_4, cmdKey | optionKey) { [weak self] in
+            self?.zustand = .zu
+            self?.ausschnitt.starten()
+        }
         // ⌥⌘T: Zwischenablage-Werkstatt (markierten/kopierten Text umschreiben, übersetzen, kürzen).
         Tastenkuerzel.registrieren(kVK_ANSI_T, cmdKey | optionKey) { [weak self] in
             guard let self else { return }
@@ -302,6 +310,8 @@ final class Kalender: ObservableObject {
             DispatchQueue.main.async { self.laden() }
         }
         NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: store, queue: .main) { [weak self] _ in self?.laden() }
+        // Alle 5 Minuten neu, damit der Countdown in der zugeklappten Notch ohne Hover erscheint.
+        Timer.scheduledTimer(withTimeInterval: 300, repeats: true) { [weak self] _ in self?.laden() }
     }
 
     func laden() {

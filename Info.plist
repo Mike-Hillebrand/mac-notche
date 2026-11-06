@@ -7,7 +7,7 @@
     <key>CFBundleName</key><string>Mac Notche</string>
     <key>CFBundleDisplayName</key><string>Mac Notche</string>
     <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleShortVersionString</key><string>4.1</string>
+    <key>CFBundleShortVersionString</key><string>4.2</string>
     <key>CFBundleVersion</key><string>1</string>
     <key>CFBundleDevelopmentRegion</key><string>de</string>
     <key>CFBundleLocalizations</key><array><string>de</string><string>en</string></array>
@@ -29,6 +29,6 @@
     <key>NSCameraUsageDescription</key><string>Mac Notche zeigt dein Kamerabild im Spiegel-Werkzeug, nur solange du es einschaltest.</string>
     <key>NSBluetoothAlwaysUsageDescription</key><string>Mac Notche meldet, wenn sich ein Bluetooth-Gerät verbindet oder trennt.</string>
     <key>NSAudioCaptureUsageDescription</key><string>Mac Notche regelt die Lautstärke einzelner Apps. Dafür leitet es deren Ton durch, nichts wird gespeichert.</string>
-    <key>NSScreenCaptureUsageDescription</key><string>Mac Notche schickt auf Wunsch ein Foto deines Bildschirms an Claude, damit du Fragen dazu stellen kannst.</string>
+    <key>NSScreenCaptureUsageDescription</key><string>Mac Notche schickt auf Wunsch ein Foto deines Bildschirms an Claude und erkennt Text in Ausschnitten, die du mit ⌥⌘4 aufziehst.</string>
 </dict>
 </plist>

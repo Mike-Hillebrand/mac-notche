@@ -6,7 +6,7 @@ enum E {
     static let look = "look", breite = "breite", schatten = "schatten"
     static let verzoegerung = "verzoegerung", klickSchliesst = "klickSchliesst"
     static let updatesAuto = "updates.auto"
-    static let zeigeMusik = "zeige.musik", zeigeClaude = "zeige.claude", zeigeWetter = "zeige.wetter"
+    static let zeigeMusik = "zeige.musik", zeigeClaude = "zeige.claude", zeigeWetter = "zeige.wetter", zeigeTermin = "zeige.termin"
     static let fahrenheit = "wetter.fahrenheit", claudeIntervall = "claude.intervall"
     static let iphoneAuto = "iphone.auto"
     static let entsperrenAktiv = "entsperren.aktiv", entsperrenSchwelle = "entsperren.schwelle"
@@ -23,7 +23,7 @@ enum Einstellungen {
         UserDefaults.standard.register(defaults: [
             E.look: "schwarz", E.breite: 300.0, E.schatten: true,
             E.verzoegerung: 0.0, E.klickSchliesst: true,
-            E.zeigeMusik: true, E.zeigeClaude: true, E.zeigeWetter: true,
+            E.zeigeMusik: true, E.zeigeClaude: true, E.zeigeWetter: true, E.zeigeTermin: true,
             E.fahrenheit: false, E.claudeIntervall: 5,
             E.meldung("bluetooth"): true, E.meldung("akku"): true, E.meldung("fokus"): true,
             E.iphoneAuto: false, E.meldung("iphone"): true, E.meldung("mitteilungen"): true,
@@ -194,6 +194,7 @@ struct LiveSeite: View {
     @AppStorage(E.zeigeMusik) var musik = true
     @AppStorage(E.zeigeClaude) var claude = true
     @AppStorage(E.zeigeWetter) var wetter = true
+    @AppStorage(E.zeigeTermin) var terminCountdown = true
     @AppStorage("meldung.bluetooth") var bluetooth = true
     @AppStorage("meldung.akku") var akku = true
     @AppStorage("meldung.fokus") var fokus = true
@@ -224,6 +225,7 @@ struct LiveSeite: View {
                 }
             }
             Toggle("Temperatur, wenn keine Musik läuft", isOn: $wetter)
+            Toggle("Nächster Termin als Countdown (ab 60 Min. vorher, Klick öffnet den Call)", isOn: $terminCountdown)
         }
         Section {
             Toggle("Bluetooth-Gerät verbunden oder getrennt", isOn: $bluetooth)

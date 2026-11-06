@@ -419,3 +419,12 @@
 "Ergebnis erscheint hier." = "Result appears here.";
 "Einfügen" = "Paste";
 "Als Vorlage" = "Use as input";
+"jetzt" = "now";
+"Call beitreten" = "Join call";
+"Freistellen ⌥⌘4" = "Clip ⌥⌘4";
+"Bereich aufziehen: Text wird erkannt und kopiert, das Bild landet hier" = "Drag a region: text is recognized and copied, the image lands here";
+"Nächster Termin als Countdown (ab 60 Min. vorher, Klick öffnet den Call)" = "Next event as countdown (from 60 min before, click opens the call)";
+"Bildschirmaufnahme erlauben: Systemeinstellungen › Datenschutz" = "Allow screen recording: System Settings › Privacy";
+"Ausschnitt " = "Clip ";
+"Ausschnitt in der Ablage (kein Text erkannt)" = "Clip in the tray (no text recognized)";
+"Text kopiert: " = "Text copied: ";
