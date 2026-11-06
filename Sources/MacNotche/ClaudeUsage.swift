@@ -255,7 +255,8 @@ enum Selbsttest {
         let r = Updates.lesen(Data(rel.utf8))!
         precondition(r.0 == "2.6" && r.1.absoluteString == "https://x/d.dmg", "Release-Antwort")
         precondition(Verbindungen.geminiInstall.contains("brew install gemini-cli") && !Verbindungen.geminiInstall.contains("\n") && Verbindungen.codexInstall.contains("--cask codex"), "Installer")
-        precondition(AndereKIs.agyLimitsLesen(["Gemini 3.1 Pro: 42% used", "Resets in 3h", "Flash 7,5 %"]).map(\.prozent) == [42, 7.5], "agy usage")
+        precondition(AndereKIs.agyLimitsLesen(["Gemini Models\tWeekly Limit Remaining\t100%\t2026-11-13T14:04:54Z", "Flash: 7,5 % used", "Resets in 3h"]).map(\.prozent) == [0, 7.5], "agy usage")
+        precondition(AndereKIs.agyLimitsLesen(["Gemini Models\tWeekly Limit Remaining\t40%\t2026-11-13T14:04:54Z"]).first.map { $0.prozent == 60 && $0.reset != nil && $0.name == "Gemini Models" } == true, "agy remaining")
         precondition(Verbindungen.jwt("a.eyJlbWFpbCI6ImFAYi5jIn0.b")?["email"] as? String == "a@b.c", "JWT")
 
         let ordner = FileManager.default.temporaryDirectory.appendingPathComponent("kerbe-test-\(UUID().uuidString)/p")

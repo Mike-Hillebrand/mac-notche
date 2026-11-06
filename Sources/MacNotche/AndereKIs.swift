@@ -68,15 +68,20 @@ final class AndereKIs: ObservableObject {
 
     // MARK: Antigravity
 
-    /// Zeilen wie „Gemini 3.1 Pro: 42% used“ → Balken; alles ohne Prozentzahl bleibt Text.
+    /// Antigravity-Zeilen, tab-getrennt: „Gemini Models<TAB>Weekly Limit Remaining<TAB>100%<TAB>2026-11-13T14:04:54Z“.
+    /// „Remaining“ wird zu Verbrauch umgerechnet; freie Zeilen mit Prozent gelten als Verbrauch.
     static func agyLimitsLesen(_ zeilen: [String]) -> [Limit] {
-        let muster = try! NSRegularExpression(pattern: "^(.*?)[:\\s]+(\\d{1,3}(?:[.,]\\d+)?)\\s*%")
+        let muster = try! NSRegularExpression(pattern: "(\\d{1,3}(?:[.,]\\d+)?)\\s*%")
+        let iso = ISO8601DateFormatter()
         return zeilen.compactMap { z in
-            guard let m = muster.firstMatch(in: z, range: NSRange(z.startIndex..., in: z)),
-                  let n = Range(m.range(at: 1), in: z), let w = Range(m.range(at: 2), in: z),
-                  let p = Double(z[w].replacingOccurrences(of: ",", with: ".")) else { return nil }
-            let name = z[n].trimmingCharacters(in: .whitespacesAndNewlines)
-            return Limit(id: "agy." + name, name: name.isEmpty ? "Gemini" : name, prozent: p, reset: nil)
+            guard let m = muster.firstMatch(in: z, range: NSRange(z.startIndex..., in: z)), let w = Range(m.range(at: 1), in: z),
+                  let wert = Double(z[w].replacingOccurrences(of: ",", with: ".")) else { return nil }
+            let spalten = z.split(separator: "\t").map { $0.trimmingCharacters(in: .whitespaces) }
+            var name = spalten.first ?? ""
+            if spalten.count < 2, let n = Range(m.range, in: z) { name = z[..<n.lowerBound].trimmingCharacters(in: CharacterSet(charactersIn: ": \t")) }
+            let rest = z.lowercased().contains("remaining") || z.lowercased().contains("verbleib")
+            let reset = spalten.compactMap { iso.date(from: $0) }.first
+            return Limit(id: "agy." + name, name: name.isEmpty ? "Gemini" : name, prozent: rest ? max(0, 100 - wert) : wert, reset: reset)
         }
     }
 

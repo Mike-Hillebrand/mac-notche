@@ -45,6 +45,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // receive(on:) – @Published feuert vor dem Speichern; erst danach animiert anpassen.
         modell.$zustand.removeDuplicates().receive(on: DispatchQueue.main).sink { [weak self] z in self?.anpassen(z) }.store(in: &abos)
+        modell.$zuExtraBreite.removeDuplicates().receive(on: DispatchQueue.main).sink { [weak self] _ in if self?.modell.zustand == .zu { self?.anpassen(.zu) } }.store(in: &abos)
         NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main) { [weak self] _ in
             guard let self else { return }
             self.anpassen(self.modell.zustand)
@@ -99,7 +100,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let leiste = max(24, s.frame.maxY - s.visibleFrame.maxY)
         modell.leistenHoehe = leiste
         let g: CGSize = switch z {
-        case .zu: CGSize(width: UserDefaults.standard.double(forKey: E.breite), height: leiste)
+        case .zu: CGSize(width: UserDefaults.standard.double(forKey: E.breite) + modell.zuExtraBreite, height: leiste)
         case .meldung: CGSize(width: 440, height: leiste + 44)
         case .offen: CGSize(width: 780, height: 290 + ((s.safeAreaInsets.top > 0) ? leiste : 0))
         }

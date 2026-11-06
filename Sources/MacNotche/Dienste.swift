@@ -25,6 +25,8 @@ extension Reiter {
 final class NotchModell: ObservableObject {
     @Published var zustand: Zustand = .zu
     @Published var reiter: Reiter = .uebersicht
+    /// Zusätzliche Breite der zugeklappten Notch, wenn mehrere KI-Ringe gezeigt werden.
+    @Published var zuExtraBreite: CGFloat = 0
     @Published var meldung: (symbol: String, text: String)?
     @Published var meldungWert: Double?
     @Published var leistenHoehe: CGFloat = 24

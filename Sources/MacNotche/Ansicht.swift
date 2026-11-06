@@ -106,9 +106,19 @@ struct Kompakt: View {
         }
     }
     private var auslastung: (KI, [(String, Double)])? {
+        guard zuKI != "alle" else { return nil }
         let reihe: [KI] = KI(rawValue: zuKI).map { [$0] } ?? [.claude, .chatgpt, .gemini]
         for ki in reihe { let p = paare(ki); if !p.isEmpty { return (ki, p) } }
         return nil
+    }
+    /// „Alle“: je KI ein Ring mit dem Wochenwert (sonst dem ersten Wert), kompakt.
+    private var alle: [(KI, Double)] {
+        guard zuKI == "alle" else { return [] }
+        return KI.allCases.compactMap { ki in
+            let p = paare(ki)
+            guard let w = p.first(where: { $0.0 == "Wo" }) ?? p.first else { return nil }
+            return (ki, w.1)
+        }
     }
 
     var body: some View {
@@ -129,7 +139,13 @@ struct Kompakt: View {
                     .foregroundStyle(.orange)
                 Restzeit(ende: ende)
             }
-            if zeigeClaude, let (ki, paare) = auslastung {
+            if zeigeClaude, !alle.isEmpty {
+                ForEach(alle, id: \.0) { ki, p in
+                    Image(systemName: ki.symbol).foregroundStyle(Color.primary.opacity(0.5))
+                    Ring(anteil: p / 100).frame(width: 13, height: 13)
+                    Text("\(Int(p.rounded()))%").fixedSize()
+                }
+            } else if zeigeClaude, let (ki, paare) = auslastung {
                 // Platz ist knapp: Symbol der KI nur, wenn ein Paar gezeigt wird; nie umbrechen.
                 if ki != .claude, paare.count < 2 { Image(systemName: ki.symbol).foregroundStyle(Color.primary.opacity(0.5)) }
                 ForEach(paare, id: \.0) { name, p in
@@ -145,6 +161,9 @@ struct Kompakt: View {
         .foregroundStyle(Color.primary)
         .padding(.horizontal, 14)
         .frame(height: m.leistenHoehe)
+        // Ab dem zweiten Ring je 70 pt mehr, damit nichts abgeschnitten wird.
+        .onAppear { m.zuExtraBreite = CGFloat(max(0, alle.count - 1)) * 70 }
+        .onChange(of: alle.count) { _, n in m.zuExtraBreite = CGFloat(max(0, n - 1)) * 70 }
     }
 }
 

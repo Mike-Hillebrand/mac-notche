@@ -211,6 +211,7 @@ struct LiveSeite: View {
             if claude {
                 Picker("Welche KI", selection: $zuKI) {
                     Text("Automatisch").tag("auto")
+                    Text("Alle (je ein Ring, Wochenwert)").tag("alle")
                     ForEach(KI.allCases) { Text($0.rawValue).tag($0.rawValue) }
                 }
             }
