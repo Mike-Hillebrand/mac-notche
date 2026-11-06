@@ -263,7 +263,7 @@ struct VerbindungenSeite: View {
             }
         } footer: {
             VStack(alignment: .trailing, spacing: 6) {
-                Text("Jede Anmeldung läuft über das Werkzeug selbst (Claude Code, Codex, Gemini CLI) im Terminal und Browser. Mac Notche speichert keine Passwörter und liest nur, was die Werkzeuge ablegen. Ohne Claude-Code-Login zeigt die Notch kein Claude-Kontingent.")
+                Text("Jede Anmeldung läuft über das Werkzeug selbst (Claude Code, Codex, Antigravity CLI) im Terminal und Browser. Mac Notche speichert keine Passwörter und liest nur, was die Werkzeuge ablegen. Ohne Claude-Code-Login zeigt die Notch kein Claude-Kontingent.")
                 Text(diagnose).font(.system(size: 10, design: .monospaced)).textSelection(.enabled)
             }
         }

@@ -418,7 +418,7 @@ struct ClaudeAnsicht: View {
                     .font(.system(size: 9)).foregroundStyle(Color.primary.opacity(0.4))
             }
             .frame(width: 220, alignment: .leading)
-            if k.codexDa || k.geminiDa {
+            if k.codexDa || k.geminiDa || k.agyUsage != nil {
                 Rectangle().fill(Color.primary.opacity(0.12)).frame(width: 1)
                 VStack(alignment: .leading, spacing: 10) {
                     if k.codexDa {
@@ -426,7 +426,13 @@ struct ClaudeAnsicht: View {
                         ForEach(k.codexLimits) { LimitBalken(l: $0) }
                         TokenZeile(titel: "Heute", s: k.codexHeute)
                     }
-                    if k.geminiDa {
+                    if let z = k.agyUsage {
+                        Text("Gemini · Antigravity").kopf().padding(.top, k.codexDa ? 4 : 0)
+                        ForEach(k.agyLimits) { LimitBalken(l: $0) }
+                        if k.agyLimits.isEmpty {
+                            ForEach(z, id: \.self) { Text($0).font(.system(size: 10)).foregroundStyle(Color.primary.opacity(0.7)).lineLimit(1) }
+                        }
+                    } else if k.geminiDa {
                         Text("Gemini CLI").kopf().padding(.top, k.codexDa ? 4 : 0)
                         TokenZeile(titel: "Heute", s: k.geminiHeute)
                     }

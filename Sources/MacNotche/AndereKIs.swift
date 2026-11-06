@@ -8,6 +8,10 @@ final class AndereKIs: ObservableObject {
     @Published var codexPlan: String?
     @Published var codexHeute = TokenSumme()
     @Published var geminiHeute = TokenSumme()
+    /// Antigravity CLI: Zeilen aus „agy -p /usage“ (nil = nicht installiert oder nicht angemeldet).
+    @Published var agyUsage: [String]?
+    @Published var agyLimits: [Limit] = []
+    private var agyStand = Date.distantPast
 
     private static let home = FileManager.default.homeDirectoryForCurrentUser
     private static let codexOrdner = home.appendingPathComponent(".codex/sessions")
@@ -22,6 +26,16 @@ final class AndereKIs: ObservableObject {
     }
 
     func aktualisieren() {
+        if Date().timeIntervalSince(agyStand) > 600 {
+            agyStand = Date()
+            DispatchQueue.global(qos: .utility).async {
+                let u = Verbindungen.agyUsage()
+                let zeilen = u.flatMap { $0.angemeldet ? $0.text : nil }?
+                    .split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+                let limits = zeilen.map(Self.agyLimitsLesen) ?? []
+                DispatchQueue.main.async { self.agyUsage = zeilen.map { Array($0.prefix(6)) }; self.agyLimits = limits }
+            }
+        }
         Self.warteschlange.async {
             let fm = FileManager.default
             let heute = Calendar.current.startOfDay(for: Date())
@@ -50,6 +64,20 @@ final class AndereKIs: ObservableObject {
         // Beide Ordner teilen sich den Speicher, also nur den eigenen Teil ersetzen.
         zwischenspeicher = zwischenspeicher.filter { !$0.key.path.hasPrefix(ordner.path) }.merging(neu) { $1 }
         return neu.values.map(\.text)
+    }
+
+    // MARK: Antigravity
+
+    /// Zeilen wie „Gemini 3.1 Pro: 42% used“ → Balken; alles ohne Prozentzahl bleibt Text.
+    static func agyLimitsLesen(_ zeilen: [String]) -> [Limit] {
+        let muster = try! NSRegularExpression(pattern: "^(.*?)[:\\s]+(\\d{1,3}(?:[.,]\\d+)?)\\s*%")
+        return zeilen.compactMap { z in
+            guard let m = muster.firstMatch(in: z, range: NSRange(z.startIndex..., in: z)),
+                  let n = Range(m.range(at: 1), in: z), let w = Range(m.range(at: 2), in: z),
+                  let p = Double(z[w].replacingOccurrences(of: ",", with: ".")) else { return nil }
+            let name = z[n].trimmingCharacters(in: .whitespacesAndNewlines)
+            return Limit(id: "agy." + name, name: name.isEmpty ? "Gemini" : name, prozent: p, reset: nil)
+        }
     }
 
     // MARK: Codex

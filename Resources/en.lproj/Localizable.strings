@@ -111,7 +111,7 @@
 "Prüfen" = "Check";
 "Anmelden" = "Sign in";
 "Neu anmelden" = "Sign in again";
-"Jede Anmeldung läuft über das Werkzeug selbst (Claude Code, Codex, Gemini CLI) im Terminal und Browser. Mac Notche speichert keine Passwörter und liest nur, was die Werkzeuge ablegen. Ohne Claude-Code-Login zeigt die Notch kein Claude-Kontingent." = "Each login goes through the tool itself (Claude Code, Codex, Gemini CLI) in Terminal and browser. Mac Notche stores no passwords and only reads what the tools save. Without a Claude Code login the notch shows no Claude quota.";
+"Jede Anmeldung läuft über das Werkzeug selbst (Claude Code, Codex, Antigravity CLI) im Terminal und Browser. Mac Notche speichert keine Passwörter und liest nur, was die Werkzeuge ablegen. Ohne Claude-Code-Login zeigt die Notch kein Claude-Kontingent." = "Each login goes through the tool itself (Claude Code, Codex, Antigravity CLI) in Terminal and browser. Mac Notche stores no passwords and only reads what the tools save. Without a Claude Code login the notch shows no Claude quota.";
 "Schlüsselbund: " = "Keychain: ";
 "Anmeldung abgelaufen – Claude Code erneuert sie beim nächsten Start." = "Login expired – Claude Code renews it on next start.";
 "Kein Login gefunden. Claude Code installieren und einmal „claude“ im Terminal starten, dort anmelden." = "No login found. Install Claude Code, run “claude” once in Terminal and sign in there.";
@@ -320,3 +320,9 @@
 "nein" = "no";
 "Claude Code ist angemeldet, aber der Schlüsselbund-Eintrag ist für Mac Notche nicht lesbar. Einstellungen › Verbindungen." = "Claude Code is signed in, but Mac Notche cannot read the keychain item. Settings › Connections.";
 "Kein 5-Stunden-Fenster in diesem Plan – nur das Wochenlimit zählt." = "No 5-hour window in this plan – only the weekly limit counts.";
+"Gemini CLI nimmt seit Juni 2026 keine privaten Google-Konten mehr an. Nachfolger ist Antigravity CLI („agy“) – „Installieren“ holt es und öffnet die Google-Anmeldung im Browser." = "Gemini CLI stopped accepting personal Google accounts in June 2026. Its successor is Antigravity CLI (“agy”) – “Install” fetches it and opens the Google login in the browser.";
+"Nicht installiert. „Installieren“ holt Antigravity CLI (Googles Nachfolger von Gemini CLI) und öffnet die Google-Anmeldung im Browser." = "Not installed. “Install” fetches Antigravity CLI (Google's successor to Gemini CLI) and opens the Google login in the browser.";
+"agy antwortet nicht. Einmal „agy“ im Terminal starten." = "agy does not respond. Run “agy” once in Terminal.";
+"Installiert, aber nicht angemeldet. „Anmelden“ startet agy im Terminal, der Browser öffnet sich für das Google-Konto." = "Installed but not signed in. “Sign in” starts agy in Terminal; the browser opens for your Google account.";
+"Google-Konto im Schlüsselbund (Antigravity)" = "Google account in keychain (Antigravity)";
+"Gemini · Antigravity" = "Gemini · Antigravity";

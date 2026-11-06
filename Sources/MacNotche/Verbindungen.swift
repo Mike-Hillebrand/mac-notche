@@ -22,23 +22,33 @@ enum Verbindungen {
         func kurz(_ p: String?) -> String { p.map { $0.replacingOccurrences(of: home, with: "~") } ?? "–" }
         let eintraege = ClaudeUsage.schluesselbundDienste().count
         let datei = FileManager.default.fileExists(atPath: home + "/.claude/.credentials.json")
-        return "claude: \(kurz(pfad("claude"))) · codex: \(kurz(pfad("codex"))) · gemini: \(kurz(pfad("gemini"))) · "
+        return "claude: \(kurz(pfad("claude"))) · codex: \(kurz(pfad("codex"))) · agy: \(kurz(pfad("agy"))) · "
             + L("Schlüsselbund-Einträge: ") + "\(eintraege) · credentials.json: " + (datei ? L("ja") : L("nein"))
     }
 
     /// Login-Shell, damit PATH wie im Terminal gilt (nvm, ~/.local/bin).
-    static func shell(_ befehl: String, sekunden: Double = 20) -> String? {
+    static func shell(_ befehl: String, sekunden: Double = 20, mitFehlern: Bool = false) -> String? {
         let p = Process()
         p.executableURL = URL(fileURLWithPath: "/bin/zsh")
-        p.arguments = ["-lc", befehl]
+        // exec: das Werkzeug ersetzt die Shell, damit SIGKILL nach der Frist wirklich das Werkzeug trifft.
+        p.arguments = ["-lc", "exec " + befehl]
         let pipe = Pipe()
-        p.standardOutput = pipe; p.standardError = FileHandle.nullDevice
+        p.standardOutput = pipe; p.standardError = mitFehlern ? pipe : FileHandle.nullDevice
+        p.standardInput = FileHandle.nullDevice
         guard (try? p.run()) != nil else { return nil }
-        let frist = DispatchWorkItem { if p.isRunning { p.terminate() } }
-        DispatchQueue.global().asyncAfter(deadline: .now() + sekunden, execute: frist)
-        let d = pipe.fileHandleForReading.readDataToEndOfFile()
-        p.waitUntilExit(); frist.cancel()
-        return p.terminationStatus == 0 ? String(decoding: d, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines) : nil
+        // Lesen auf einem Nebenthread: Werkzeuge wie agy warten sonst ewig auf den Browser.
+        let schloss = NSLock(); var daten = Data(); let fertig = DispatchSemaphore(value: 0)
+        DispatchQueue.global(qos: .utility).async {
+            let d = pipe.fileHandleForReading.readDataToEndOfFile()
+            schloss.lock(); daten = d; schloss.unlock(); fertig.signal()
+        }
+        if fertig.wait(timeout: .now() + sekunden) == .timedOut {
+            kill(p.processIdentifier, SIGKILL)
+            _ = fertig.wait(timeout: .now() + 2)
+        }
+        p.waitUntilExit()
+        schloss.lock(); let text = String(decoding: daten, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines); schloss.unlock()
+        return p.terminationStatus == 0 || mitFehlern ? text : nil
     }
 
     static func pfad(_ werkzeug: String) -> String? {
@@ -117,19 +127,36 @@ enum Verbindungen {
                           hinweis: L("auth.json ohne Anmeldung."), befehl: "codex login")
     }
 
+    static let agyInstall = "curl -fsSL https://antigravity.google/cli/install.sh | bash && exec zsh -lc agy"
+
+    /// Antigravity CLI: „agy -p /usage“ antwortet mit dem Kontingent oder (auf stderr) mit „Authentication required“.
+    /// Ohne Login wartet agy auf den Browser, daher kurze Frist.
+    static func agyUsage() -> (angemeldet: Bool, text: String)? {
+        guard pfad("agy") != nil, let t = shell("agy -p /usage --output-format text --print-timeout 10s 2>&1", sekunden: 12, mitFehlern: true) else { return nil }
+        let an = !t.contains("Authentication required") && !t.contains("authentication required")
+        return (an, t)
+    }
+
     static func gemini() -> Verbindung {
-        let konten = home.appendingPathComponent(".gemini/google_accounts.json")
-        let creds = home.appendingPathComponent(".gemini/oauth_creds.json")
-        let mail = (try? Data(contentsOf: konten)).flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }?["active"] as? String
-        guard let d = try? Data(contentsOf: creds), let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any],
-              j["refresh_token"] is String else {
-            let da = pfad("gemini") != nil
-            return Verbindung(id: "gemini", name: "Gemini CLI", angemeldet: false, konto: mail,
-                              hinweis: da ? L("Installiert, aber kein Login. „Anmelden“ startet Gemini im Terminal, dort „Login with Google“ wählen – der Browser öffnet sich.")
-                                          : L("Nicht installiert. „Installieren“ holt Gemini CLI (über Homebrew oder npm) und startet die Google-Anmeldung im Browser."),
-                              befehl: da ? "gemini" : geminiInstall)
+        let name = "Gemini (Antigravity CLI)"
+        guard pfad("agy") != nil else {
+            let altesCli = pfad("gemini") != nil
+            return Verbindung(id: "gemini", name: name, angemeldet: false, konto: nil,
+                              hinweis: altesCli
+                                ? L("Gemini CLI nimmt seit Juni 2026 keine privaten Google-Konten mehr an. Nachfolger ist Antigravity CLI („agy“) – „Installieren“ holt es und öffnet die Google-Anmeldung im Browser.")
+                                : L("Nicht installiert. „Installieren“ holt Antigravity CLI (Googles Nachfolger von Gemini CLI) und öffnet die Google-Anmeldung im Browser."),
+                              befehl: agyInstall)
         }
-        return Verbindung(id: "gemini", name: "Gemini CLI", angemeldet: true, konto: mail, hinweis: "~/.gemini/oauth_creds.json", befehl: "gemini")
+        guard let u = agyUsage() else {
+            return Verbindung(id: "gemini", name: name, angemeldet: false, konto: nil, hinweis: L("agy antwortet nicht. Einmal „agy“ im Terminal starten."), befehl: "agy")
+        }
+        if !u.angemeldet {
+            return Verbindung(id: "gemini", name: name, angemeldet: false, konto: nil,
+                              hinweis: L("Installiert, aber nicht angemeldet. „Anmelden“ startet agy im Terminal, der Browser öffnet sich für das Google-Konto."), befehl: "agy")
+        }
+        let erste = u.text.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.first { !$0.isEmpty } ?? ""
+        return Verbindung(id: "gemini", name: name, angemeldet: true, konto: erste.count < 60 ? erste : nil,
+                          hinweis: L("Google-Konto im Schlüsselbund (Antigravity)"), befehl: "agy")
     }
 
     static func grok() -> Verbindung {
