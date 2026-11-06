@@ -28,7 +28,7 @@ enum Skin: String, CaseIterable, Identifiable {
         case .angedockt: (0, 0, 0, 0)
         case .katze: (12, 4, 0, 34)
         case .dackel: (18, 14, 34, 46)
-        case .bulldogge: (12, 8, 0, 30)
+        case .bulldogge: (14, 8, 6, 22)
         case .tropfend: (0, 30, 0, 0)
         }
     }
@@ -85,24 +85,35 @@ struct Tier: View {
                             }
                             .offset(x: -b * 0.12, y: h * 0.06)
                         } else {
-                            // Liegende Bulldogge: kleine Ohren, helle Schnauze unten, Pfoten unter dem Kopf
-                            Ohr().fill(fuellung).frame(width: 10, height: 9).offset(x: -kopf * 0.32, y: -kopf * 0.5)
-                            Ohr().fill(fuellung).frame(width: 10, height: 9).offset(x: kopf * 0.32, y: -kopf * 0.5)
-                            Capsule().fill(fell).frame(width: kopf * 0.5, height: 8).offset(x: -kopf * 0.1, y: kopf * 0.56)
-                            Capsule().fill(fell).frame(width: kopf * 0.5, height: 8).offset(x: kopf * 0.35, y: kopf * 0.56)
+                            // Bulldogge von vorn: breiter Kopf, Faltohren mit rosa Innenseite, helle Lefzen und Blesse, schwarze Nase
+                            let b = kopf * 1.3, rosa = Color(red: 0.93, green: 0.70, blue: 0.78)
+                            Capsule().fill(fell).frame(width: kopf * 0.5, height: 8).offset(x: -kopf * 0.15, y: kopf * 0.58)
+                            Capsule().fill(fell).frame(width: kopf * 0.5, height: 8).offset(x: kopf * 0.3, y: kopf * 0.58)
+                            ForEach([-1.0, 1.0], id: \.self) { s in
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 5).fill(fuellung).frame(width: kopf * 0.3, height: kopf * 0.38)
+                                    RoundedRectangle(cornerRadius: 3).fill(rosa).frame(width: kopf * 0.16, height: kopf * 0.24).offset(y: 2)
+                                }
+                                .rotationEffect(.degrees(s * 28))
+                                .offset(x: s * b * 0.42, y: -kopf * 0.36)
+                            }
+                            RoundedRectangle(cornerRadius: kopf * 0.36).fill(fuellung).frame(width: b, height: kopf)
+                            // Lefzen: helle breite Fläche unten, Blesse hoch bis zur Stirn
+                            Ellipse().fill(fell).frame(width: b * 0.92, height: kopf * 0.62).offset(y: kopf * 0.22)
+                            Capsule().fill(fell).frame(width: kopf * 0.16, height: kopf * 0.55).offset(y: -kopf * 0.12)
+                            // Stirnfalte
+                            Capsule().fill(Color.black.opacity(0.35)).frame(width: kopf * 0.34, height: 2).offset(y: -kopf * 0.3)
+                            // Nase und Maul
+                            RoundedRectangle(cornerRadius: 4).fill(Color(white: 0.12)).frame(width: kopf * 0.3, height: kopf * 0.2).offset(y: kopf * 0.06)
+                            Capsule().fill(Color.black.opacity(0.45)).frame(width: 2, height: kopf * 0.14).offset(y: kopf * 0.22)
                         }
-                        if art != .dackel { RoundedRectangle(cornerRadius: kopf * 0.34).fill(fuellung).frame(width: kopf, height: kopf) }
-                        if art == .bulldogge {
-                            Capsule().fill(fell).frame(width: kopf * 0.42, height: kopf * 0.28).offset(x: -kopf * 0.1, y: kopf * 0.22)
-                            Circle().fill(Color(white: 0.25)).frame(width: 6, height: 6).offset(x: -kopf * 0.28, y: kopf * 0.2)
-                            HStack(spacing: kopf * 0.2) { Circle().fill(fell).frame(width: 5, height: 5); Circle().fill(fell).frame(width: 5, height: 5) }.offset(y: -kopf * 0.28)
-                        }
+                        if art == .katze { RoundedRectangle(cornerRadius: kopf * 0.34).fill(fuellung).frame(width: kopf, height: kopf) }
                         if art != .dackel {
-                            HStack(spacing: kopf * 0.14) {
+                            HStack(spacing: art == .bulldogge ? kopf * 0.3 : kopf * 0.14) {
                                 Auge(blick: b, zu: blinzelt)
                                 Auge(blick: b, zu: blinzelt)
                             }
-                            .offset(y: -kopf * 0.06)
+                            .offset(y: art == .bulldogge ? -kopf * 0.12 : -kopf * 0.06)
                         }
                     }
                     .frame(width: kopf, height: kopf)
@@ -123,13 +134,11 @@ struct Tier: View {
                                 .position(x: g.size.width + 18, y: hoehe / 2 - 4)
                             Capsule().fill(fell).frame(width: 18, height: 8).position(x: g.size.width - 6, y: hoehe + 1)
                         } else {
-                            // Ringelrute mit heller Spitze, wippt
-                            ZStack {
-                                Circle().stroke(fuellung, lineWidth: 7).frame(width: 18, height: 18)
-                                Circle().fill(fell).frame(width: 7, height: 7).offset(x: 6, y: -6)
-                            }
-                            .rotationEffect(.degrees(wedel), anchor: .bottomLeading)
-                            .position(x: g.size.width + 8, y: hoehe / 2 - 8)
+                            // kleiner Kringel als Schwanz, zuckt
+                            Kringel().stroke(fuellung, style: StrokeStyle(lineWidth: 5, lineCap: .round))
+                                .frame(width: 16, height: 16)
+                                .rotationEffect(.degrees(wedel * 0.6), anchor: .bottomLeading)
+                                .position(x: g.size.width + 4, y: hoehe / 2 - 10)
                             // Hinterpfote
                             Capsule().fill(fell).frame(width: 16, height: 7).position(x: g.size.width - 2, y: hoehe + 1)
                         }
@@ -213,6 +222,17 @@ struct DackelOhr: Shape {
         p.addQuadCurve(to: punkt(r, 0, 70), control: punkt(r, 0, 100))
         p.addQuadCurve(to: punkt(r, 30, 0), control: punkt(r, 0, 20))
         p.closeSubpath()
+        return p
+    }
+}
+
+/// Kleiner Schwanzkringel: Dreiviertelkreis, der nach innen einrollt.
+struct Kringel: Shape {
+    func path(in r: CGRect) -> Path {
+        var p = Path()
+        p.move(to: CGPoint(x: r.minX, y: r.maxY))
+        p.addQuadCurve(to: CGPoint(x: r.midX, y: r.minY + 2), control: CGPoint(x: r.minX, y: r.minY))
+        p.addArc(center: CGPoint(x: r.midX + 2, y: r.midY), radius: r.width * 0.3, startAngle: .degrees(-100), endAngle: .degrees(200), clockwise: false)
         return p
     }
 }
