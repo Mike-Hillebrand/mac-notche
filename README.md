@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 3.0.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 3.1.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -16,7 +16,7 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 | Mitteilungen | Mitteilungen des Macs, Antworten auf iMessage und SMS direkt aus der Notch |
 | Wetter | Aktuell und Vorhersage (Open-Meteo, ohne Schlüssel) |
 | KI | Claude-Plan-Limits, Token und Kosten von Claude Code, Codex (ChatGPT-Limits) und Gemini über Antigravity CLI |
-| Fragen | Claude fragen – als Text, mit Bildschirmfoto, oder als Aufgabe (Claude plant Schritte, du bestätigst, die App führt aus) |
+| Fragen | Claude, Gemini (Antigravity) oder ChatGPT (Codex) fragen – als Text, mit Bildschirmfoto, oder als Aufgabe (Claude plant Schritte, du bestätigst, die App führt aus) |
 | Ablage | Dateien ablegen, umwandeln (PNG/JPEG/HEIC), DMG installieren, per AirDrop senden |
 | iPhone | Fotos vom iPhone am Kabel übernehmen |
 | Fokus | Timer, Fokus 25+5, braunes Rauschen, Augen- und Trinkpause, Ton-Ausgabe, Lautstärke pro App, Notizen |

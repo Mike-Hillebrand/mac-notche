@@ -8,40 +8,96 @@ struct WetterTag: Identifiable { let id: String; let datum: Date; let code: Int;
 final class Wetter: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var jetzt: WetterJetzt?
     @Published var tage: [WetterTag] = []
-    @Published var ort = "Chemnitz"
+    @Published var ort = "…"
+    /// Woher der Ort stammt: "system", "ip", "manuell" oder "" (noch keiner).
+    @Published var quelle = ""
 
     private let standort = CLLocationManager()
-    // ponytail: ohne Standortfreigabe gilt Chemnitz.
-    private var koordinate = CLLocationCoordinate2D(latitude: 50.83, longitude: 12.92)
+    private var koordinate: CLLocationCoordinate2D?
+    private var ipVersucht = false
 
     func starten() {
         standort.delegate = self
         standort.desiredAccuracy = kCLLocationAccuracyKilometer
-        standort.requestWhenInUseAuthorization()
-        laden()
-        Timer.scheduledTimer(withTimeInterval: 900, repeats: true) { [weak self] _ in
-            self?.standort.requestLocation()
-            self?.laden()
+        ortBestimmen()
+        Timer.scheduledTimer(withTimeInterval: 900, repeats: true) { [weak self] _ in self?.ortBestimmen() }
+        NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            guard let self else { return }
+            let m = Self.manuellerOrt
+            if (m == nil) != (self.quelle != "manuell") || (m != nil && m != self.gesucht) { self.ortBestimmen() }
         }
     }
 
+    private var gesucht: String?
+
+    static var manuellerOrt: String? {
+        let o = UserDefaults.standard.string(forKey: E.wetterOrt)?.trimmingCharacters(in: .whitespaces) ?? ""
+        return o.isEmpty ? nil : o
+    }
+
+    /// Reihenfolge: eingetragener Ort → Systemortung → Standort aus der Internetadresse.
+    func ortBestimmen() {
+        if let m = Self.manuellerOrt { if m != gesucht { gesucht = m; ortSuchen(m) } else { laden() }; return }
+        if quelle == "manuell" { quelle = ""; koordinate = nil; gesucht = nil }
+        standort.requestWhenInUseAuthorization()
+        if ![.notDetermined, .denied, .restricted].contains(standort.authorizationStatus) { standort.requestLocation() }
+        else if standort.authorizationStatus != .notDetermined { perIP() }
+        laden()
+    }
+
     func locationManagerDidChangeAuthorization(_ m: CLLocationManager) {
+        guard Self.manuellerOrt == nil else { return }
         if ![.notDetermined, .denied, .restricted].contains(m.authorizationStatus) { m.requestLocation() }
+        else if m.authorizationStatus != .notDetermined { perIP() }
     }
 
     func locationManager(_ m: CLLocationManager, didUpdateLocations orte: [CLLocation]) {
-        guard let p = orte.last else { return }
-        koordinate = p.coordinate
+        guard Self.manuellerOrt == nil, let p = orte.last else { return }
+        koordinate = p.coordinate; quelle = "system"
         laden()
         CLGeocoder().reverseGeocodeLocation(p) { marken, _ in
             if let n = marken?.first?.locality { DispatchQueue.main.async { self.ort = n } }
         }
     }
 
-    func locationManager(_ m: CLLocationManager, didFailWithError fehler: Error) {}
+    // Kein Wi-Fi (Ethernet-iMac) oder Ortung aus: Systemortung scheitert still → Internetadresse.
+    func locationManager(_ m: CLLocationManager, didFailWithError fehler: Error) { if Self.manuellerOrt == nil { perIP() } }
+
+    private func perIP() {
+        guard quelle != "system", !ipVersucht || koordinate == nil else { return }
+        ipVersucht = true
+        URLSession.shared.dataTask(with: URL(string: "https://ipwho.is/?fields=success,latitude,longitude,city")!) { d, _, _ in
+            guard let d, let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any], j["success"] as? Bool == true,
+                  let la = (j["latitude"] as? NSNumber)?.doubleValue, let lo = (j["longitude"] as? NSNumber)?.doubleValue else { return }
+            DispatchQueue.main.async {
+                guard self.quelle != "system", Self.manuellerOrt == nil else { return }
+                self.koordinate = CLLocationCoordinate2D(latitude: la, longitude: lo); self.quelle = "ip"
+                self.ort = j["city"] as? String ?? self.ort
+                self.laden()
+            }
+        }.resume()
+    }
+
+    /// Ortsname → Koordinate über Open-Meteo-Geocoding.
+    private func ortSuchen(_ name: String) {
+        guard let n = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: "https://geocoding-api.open-meteo.com/v1/search?name=\(n)&count=1&language=de") else { return }
+        URLSession.shared.dataTask(with: url) { d, _, _ in
+            guard let d, let j = try? JSONSerialization.jsonObject(with: d) as? [String: Any],
+                  let e = (j["results"] as? [[String: Any]])?.first,
+                  let la = (e["latitude"] as? NSNumber)?.doubleValue, let lo = (e["longitude"] as? NSNumber)?.doubleValue else {
+                DispatchQueue.main.async { self.ort = name + " ?"; self.quelle = "manuell" }; return
+            }
+            DispatchQueue.main.async {
+                self.koordinate = CLLocationCoordinate2D(latitude: la, longitude: lo); self.quelle = "manuell"
+                self.ort = e["name"] as? String ?? name
+                self.laden()
+            }
+        }.resume()
+    }
 
     func laden() {
-        let k = koordinate
+        guard let k = koordinate else { return }
         let url = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(k.latitude)&longitude=\(k.longitude)"
             + "&current=temperature_2m,weather_code,is_day"
             + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max"

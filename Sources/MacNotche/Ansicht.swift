@@ -1008,13 +1008,23 @@ struct FragenAnsicht: View {
                 }
                 .pickerStyle(.segmented).labelsHidden().controlSize(.small).frame(width: 230)
                 .onChange(of: art) { _, n in f.mitBildschirm = n == 1; fokus = true }
+                if art != 2 {
+                    Menu {
+                        ForEach(KI.allCases) { k in Button { f.ki = k } label: { Label(k.rawValue, systemImage: k.symbol) } }
+                    } label: {
+                        HStack(spacing: 3) { Image(systemName: f.ki.symbol); Text(f.ki.rawValue); Image(systemName: "chevron.down").font(.system(size: 8)) }
+                            .font(.system(size: 11, weight: .medium)).foregroundStyle(Color.primary.opacity(0.8))
+                    }
+                    .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+                    .help(L("Welche KI antwortet"))
+                }
                 if art == 2 {
                     TextField("Was soll Claude auf dem Mac erledigen?", text: $agent.aufgabe)
                         .textFieldStyle(.plain).font(.system(size: 13)).focused($fokus).onSubmit { agent.planen() }
                     if agent.plant { ProgressView().controlSize(.small); Button("Stopp") { agent.abbrechen() }.buttonStyle(.plain).font(.system(size: 11)) }
                     else { Button("Planen") { agent.planen() }.controlSize(.small).disabled(agent.aufgabe.isEmpty || agent.laeuft) }
                 } else {
-                    TextField(art == 1 ? L("Frag Claude zu deinem Bildschirm …") : L("Frag Claude …"), text: $f.frage)
+                    TextField(art == 1 ? L("Frag ") + f.ki.rawValue + L(" zu deinem Bildschirm …") : L("Frag ") + f.ki.rawValue + " …", text: $f.frage)
                         .textFieldStyle(.plain).font(.system(size: 13)).focused($fokus).onSubmit { f.senden() }
                     if f.laeuft { ProgressView().controlSize(.small); Button("Stopp") { f.stopp() }.buttonStyle(.plain).font(.system(size: 11)) }
                     else {
@@ -1032,9 +1042,9 @@ struct FragenAnsicht: View {
 
     @ViewBuilder private var antwortBereich: some View {
         if f.antwort.isEmpty {
-            Text(f.laeuft ? (art == 1 ? L("Bildschirm wird fotografiert und an Claude geschickt …") : L("Claude denkt nach …"))
-                 : art == 1 ? "Claude bekommt ein Foto deines Bildschirms und beantwortet deine Frage dazu."
-                 : "Enter schickt die Frage ab. ⌥⌘K öffnet diesen Reiter von überall.")
+            Text(f.laeuft ? (art == 1 ? L("Bildschirm wird fotografiert und an ") + f.ki.rawValue + L(" geschickt …") : f.ki.rawValue + L(" denkt nach …"))
+                 : art == 1 ? f.ki.rawValue + L(" bekommt ein Foto deines Bildschirms und beantwortet deine Frage dazu.")
+                 : L("Enter schickt die Frage ab. ⌥⌘K öffnet diesen Reiter von überall."))
                 .font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.45))
             Spacer(minLength: 0)
         } else {
@@ -1044,6 +1054,7 @@ struct FragenAnsicht: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             HStack {
+                Label(L("Antwort von ") + f.antwortVon.rawValue, systemImage: f.antwortVon.symbol).foregroundStyle(Color.primary.opacity(0.45))
                 Spacer()
                 Button("Kopieren") { NSPasteboard.general.clearContents(); NSPasteboard.general.setString(f.antwort, forType: .string) }
                 Button("Neue Frage") { f.frage = ""; f.antwort = ""; fokus = true }

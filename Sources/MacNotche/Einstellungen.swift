@@ -12,7 +12,7 @@ enum E {
     static let entsperrenAktiv = "entsperren.aktiv", entsperrenSchwelle = "entsperren.schwelle"
     static let fensterAktiv = "fenster.aktiv", augenMinuten = "augen.minuten", trinkenMinuten = "trinken.minuten", bausteine = "bausteine"
     static let emojiKuerzel = "emoji.kuerzel", aktien = "aktien", notizen = "notizen"
-    static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell"
+    static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort"
     static let sportLiga = "sport.liga", sportVereine = "sport.vereine"
     static let fensterZiehen = "fenster.ziehen", kurzbefehle = "kurzbefehle"
     static func meldung(_ art: String) -> String { "meldung.\(art)" }
@@ -32,7 +32,7 @@ enum Einstellungen {
             E.bausteine: [";mfg": "Mit freundlichen Grüßen", ";vg": "Viele Grüße"],
             E.meldung("lautstaerke"): true, E.meldung("feststell"): true, E.meldung("timer"): true,
             E.meldung("augen"): false, E.meldung("trinken"): true, E.meldung("update"): true, E.updatesAuto: true, E.meldung("ablage"): true,
-            E.leisteAktiv: true, E.leisteSekunden: 10.0, E.fragenModell: "sonnet",
+            E.leisteAktiv: true, E.leisteSekunden: 10.0, E.fragenModell: "sonnet", E.fragenKI: "Claude",
             E.sportLiga: "bl1", E.sportVereine: "", E.meldung("sport"): true,
             E.fensterZiehen: true, E.kurzbefehle: "", E.meldung("termin"): true,
             "ecke.ol": "Nichts", "ecke.or": "Nichts", "ecke.ul": "Nichts", "ecke.ur": "Nichts",
@@ -219,18 +219,26 @@ struct LiveSeite: View {
 
 struct WetterSeite: View {
     @AppStorage(E.fahrenheit) var fahrenheit = false
+    @AppStorage(E.wetterOrt) var wetterOrt = ""
+    @EnvironmentObject var w: Wetter
     var body: some View {
         Section {
+            TextField("Ort (leer = automatisch)", text: $wetterOrt, prompt: Text("z. B. Berlin"))
+            LabeledContent("Aktueller Ort") {
+                Text(w.ort + " · " + (w.quelle == "system" ? L("Systemortung") : w.quelle == "ip" ? L("über Internetadresse") : w.quelle == "manuell" ? L("eingetragen") : L("noch nicht bestimmt")))
+                    .foregroundStyle(.secondary)
+            }
             Picker("Einheit", selection: $fahrenheit) {
                 Text("Celsius").tag(false)
                 Text("Fahrenheit").tag(true)
             }
             .pickerStyle(.segmented)
         } footer: {
-            Text("Daten von Open-Meteo, kostenlos und ohne Konto. Ohne Standortfreigabe gilt Chemnitz.")
+            Text("Daten von Open-Meteo, kostenlos und ohne Konto. Ort: zuerst dein Eintrag, sonst die Ortung des Macs (Systemeinstellungen › Datenschutz › Ortungsdienste), sonst grob über die Internetadresse.")
         }
     }
 }
+
 
 struct VerbindungenSeite: View {
     @AppStorage(E.claudeIntervall) var intervall = 5
@@ -430,6 +438,7 @@ struct WerkzeugeSeite: View {
     @AppStorage(E.leisteAktiv) var leiste = true
     @AppStorage(E.leisteSekunden) var leisteSekunden = 10.0
     @AppStorage(E.fragenModell) var fragenModell = "sonnet"
+    @AppStorage(E.fragenKI) var fragenKI = "Claude"
     @AppStorage(E.sportLiga) var sportLiga = "bl1"
     @AppStorage(E.sportVereine) var sportVereine = ""
     @AppStorage("ecke.ol") var eckeOL = "Nichts"
@@ -518,6 +527,9 @@ struct WerkzeugeSeite: View {
         }
 
         Section {
+            Picker("Antwortet im Reiter „Fragen“", selection: $fragenKI) {
+                ForEach(KI.allCases) { Text($0.rawValue).tag($0.rawValue) }
+            }
             Picker("Modell", selection: $fragenModell) {
                 Text("Haiku – am schnellsten").tag("haiku")
                 Text("Sonnet – ausgewogen").tag("sonnet")

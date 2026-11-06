@@ -56,6 +56,74 @@ enum ClaudeAufruf {
     }
 }
 
+// MARK: - Welche KI antwortet im Reiter „Fragen“
+
+enum KI: String, CaseIterable, Identifiable {
+    case claude = "Claude", gemini = "Gemini", chatgpt = "ChatGPT"
+    var id: String { rawValue }
+    var symbol: String { switch self { case .claude: "sparkle"; case .gemini: "circle.hexagongrid"; case .chatgpt: "bubble.left.and.text.bubble.right" } }
+    var werkzeug: String { switch self { case .claude: "claude"; case .gemini: "agy"; case .chatgpt: "codex" } }
+    var kannBild: Bool { self != .gemini }
+    static var gewaehlt: KI { KI(rawValue: UserDefaults.standard.string(forKey: E.fragenKI) ?? "") ?? .claude }
+}
+
+/// Antworten über Antigravity CLI (Gemini) und Codex (ChatGPT) – beide ohne Werkzeuge, nur Text.
+enum AndereAufruf {
+    @discardableResult
+    static func senden(_ ki: KI, _ text: String, system: String, bild: Data?, fertig: @escaping (String) -> Void) -> Process? {
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: "/bin/zsh")
+        var bildPfad: String?
+        if let bild {
+            let u = FileManager.default.temporaryDirectory.appendingPathComponent("kerbe-frage.jpg")
+            try? bild.write(to: u); bildPfad = u.path
+        }
+        let ausgabe = FileManager.default.temporaryDirectory.appendingPathComponent("kerbe-antwort.txt").path
+        try? FileManager.default.removeItem(atPath: ausgabe)
+        let prompt = system + "\n\n" + text
+        func q(_ s: String) -> String { "'" + s.replacingOccurrences(of: "'", with: "'\\''") + "'" }
+        let befehl: String
+        switch ki {
+        case .gemini:
+            befehl = "exec agy -p \(q(prompt)) --output-format json --print-timeout 180s </dev/null"
+        case .chatgpt:
+            befehl = "exec codex exec --ignore-user-config --ephemeral -s read-only --skip-git-repo-check -o \(q(ausgabe))"
+                + (bildPfad.map { " -i \(q($0))" } ?? "") + " \(q(prompt)) </dev/null"
+        case .claude:
+            return ClaudeAufruf.senden(text, system: system, bild: bild, fertig: fertig)
+        }
+        p.arguments = ["-lc", befehl]
+        p.currentDirectoryURL = FileManager.default.temporaryDirectory
+        let raus = Pipe(); p.standardOutput = raus; p.standardError = raus
+        p.terminationHandler = { pr in
+            let roh = String(decoding: raus.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+            if let bildPfad { try? FileManager.default.removeItem(atPath: bildPfad) }
+            var antwort: String
+            if pr.terminationReason == .uncaughtSignal { antwort = L("Abgebrochen.") }
+            else if roh.contains("command not found") { antwort = L("\(ki.rawValue) ist nicht eingerichtet. Einstellungen › Verbindungen.") }
+            else if roh.lowercased().contains("authentication required") || roh.contains("Not logged in") {
+                antwort = L("\(ki.rawValue) ist nicht angemeldet. Einstellungen › Verbindungen › Anmelden.")
+            } else {
+                switch ki {
+                case .gemini:
+                    let zeile = roh.split(separator: "\n").last { $0.hasPrefix("{") }.map(String.init) ?? ""
+                    let j = try? JSONSerialization.jsonObject(with: Data(zeile.utf8)) as? [String: Any]
+                    antwort = (j?["response"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+                        ?? (j?["error"] as? String) ?? roh.trimmingCharacters(in: .whitespacesAndNewlines)
+                case .chatgpt:
+                    antwort = (try? String(contentsOfFile: ausgabe, encoding: .utf8))?.trimmingCharacters(in: .whitespacesAndNewlines)
+                        ?? roh.split(separator: "\n").filter { !$0.contains("ERROR") }.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+                case .claude: antwort = roh
+                }
+                if antwort.isEmpty { antwort = L("Keine Antwort erhalten.") }
+            }
+            DispatchQueue.main.async { fertig(antwort) }
+        }
+        do { try p.run() } catch { fertig("Start fehlgeschlagen: \(error.localizedDescription)"); return nil }
+        return p
+    }
+}
+
 // MARK: - Agent: Aufgabe planen, Schritte bestätigen, ausführen (wie „Blip“)
 
 final class Agent: ObservableObject {

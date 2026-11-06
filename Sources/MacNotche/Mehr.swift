@@ -164,6 +164,8 @@ final class Fragen: ObservableObject {
     @Published var antwort = ""
     @Published var laeuft = false
     @Published var mitBildschirm = false
+    @Published var ki: KI = KI.gewaehlt { didSet { UserDefaults.standard.set(ki.rawValue, forKey: E.fragenKI) } }
+    @Published var antwortVon: KI = .claude
     private var prozess: Process?
 
     static var claudePfad: String? {
@@ -179,15 +181,16 @@ final class Fragen: ObservableObject {
         guard !f.isEmpty, !laeuft else { return }
         var bild: Data?
         if mitBildschirm {
+            guard ki.kannBild else { antwort = L("Bildschirm-Fragen gehen nur mit Claude oder ChatGPT – Gemini (agy) nimmt kein Bild an."); return }
             bild = ClaudeAufruf.bildschirmfoto()
             guard bild != nil else {
                 antwort = "Dafür braucht Mac Notche die Erlaubnis „Bildschirmaufnahme“ (Systemeinstellungen › Datenschutz & Sicherheit). Danach noch einmal fragen."
                 return
             }
         }
-        laeuft = true; antwort = ""
+        laeuft = true; antwort = ""; antwortVon = ki
         let system = Self.system + (bild != nil ? " Du siehst ein Foto des aktuellen Bildschirms des Nutzers; beziehe dich darauf." : "")
-        prozess = ClaudeAufruf.senden(f, system: system, bild: bild) { [weak self] a in
+        prozess = AndereAufruf.senden(ki, f, system: system, bild: bild) { [weak self] a in
             self?.antwort = a
             self?.laeuft = false
         }

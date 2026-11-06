@@ -70,7 +70,7 @@
 "Einheit" = "Unit";
 "Celsius" = "Celsius";
 "Fahrenheit" = "Fahrenheit";
-"Daten von Open-Meteo, kostenlos und ohne Konto. Ohne Standortfreigabe gilt Chemnitz." = "Data from Open-Meteo, free and without an account. Without location access, Chemnitz is used.";
+"Daten von Open-Meteo, kostenlos und ohne Konto. Ort: zuerst dein Eintrag, sonst die Ortung des Macs (Systemeinstellungen › Datenschutz › Ortungsdienste), sonst grob über die Internetadresse." = "Data from Open-Meteo, free and without an account. Location: your entry first, then the Mac’s Location Services (System Settings › Privacy › Location Services), otherwise roughly via your internet address.";
 
 /* iPhone */
 "Verbunden per Kabel" = "Connected via cable";
@@ -326,3 +326,25 @@
 "Installiert, aber nicht angemeldet. „Anmelden“ startet agy im Terminal, der Browser öffnet sich für das Google-Konto." = "Installed but not signed in. “Sign in” starts agy in Terminal; the browser opens for your Google account.";
 "Google-Konto im Schlüsselbund (Antigravity)" = "Google account in keychain (Antigravity)";
 "Gemini · Antigravity" = "Gemini · Antigravity";
+"Antwortet im Reiter „Fragen“" = "Answers in the “Ask” tab";
+"Welche KI antwortet" = "Which AI answers";
+"Frag " = "Ask ";
+" zu deinem Bildschirm …" = " about your screen …";
+"Bildschirm wird fotografiert und an " = "Taking a screenshot and sending it to ";
+" geschickt …" = " …";
+" denkt nach …" = " is thinking …";
+" bekommt ein Foto deines Bildschirms und beantwortet deine Frage dazu." = " gets a photo of your screen and answers your question about it.";
+"Enter schickt die Frage ab. ⌥⌘K öffnet diesen Reiter von überall." = "Enter sends the question. ⌥⌘K opens this tab from anywhere.";
+"Antwort von " = "Answer from ";
+"Bildschirm-Fragen gehen nur mit Claude oder ChatGPT – Gemini (agy) nimmt kein Bild an." = "Screen questions work with Claude or ChatGPT only – Gemini (agy) does not accept images.";
+"Abgebrochen." = "Cancelled.";
+"%@ ist nicht eingerichtet. Einstellungen › Verbindungen." = "%@ is not set up. Settings › Connections.";
+"%@ ist nicht angemeldet. Einstellungen › Verbindungen › Anmelden." = "%@ is not signed in. Settings › Connections › Sign in.";
+"Keine Antwort erhalten." = "No answer received.";
+"Ort (leer = automatisch)" = "Location (empty = automatic)";
+"z. B. Berlin" = "e.g. Berlin";
+"Aktueller Ort" = "Current location";
+"Systemortung" = "system location";
+"über Internetadresse" = "via internet address";
+"eingetragen" = "entered";
+"noch nicht bestimmt" = "not determined yet";
