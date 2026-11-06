@@ -49,6 +49,8 @@ struct NotchAnsicht: View {
             case .offen: Offen()
             }
         }
+        // Inhalt nie über die runden Ecken hinaus zeichnen (sonst wirken sie abgeschnitten).
+        .clipShape(UnevenRoundedRectangle(bottomLeadingRadius: m.zustand == .offen ? 24 : 12, bottomTrailingRadius: m.zustand == .offen ? 24 : 12))
         .environmentObject(m.musik)
         .environmentObject(m.kalender)
         .environmentObject(m.claude)
@@ -464,7 +466,7 @@ struct ClaudeAnsicht: View {
             .frame(width: 220, alignment: .leading)
             if k.codexDa || k.geminiDa || k.agyUsage != nil {
                 Rectangle().fill(Color.primary.opacity(0.12)).frame(width: 1)
-                VStack(alignment: .leading, spacing: 10) {
+                ScrollView(.vertical, showsIndicators: false) { VStack(alignment: .leading, spacing: 10) {
                     if k.codexDa {
                         Text("Codex" + (k.codexPlan.map { " · ChatGPT \($0.capitalized)" } ?? "")).kopf()
                         ForEach(k.codexLimits) { LimitBalken(l: $0) }
@@ -480,7 +482,7 @@ struct ClaudeAnsicht: View {
                         Text("Gemini CLI").kopf().padding(.top, k.codexDa ? 4 : 0)
                         TokenZeile(titel: "Heute", s: k.geminiHeute)
                     }
-                }
+                } }
                 .frame(width: 200, alignment: .leading)
             }
         }
