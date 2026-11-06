@@ -59,11 +59,23 @@ enum ClaudeAufruf {
 // MARK: - Welche KI antwortet im Reiter „Fragen“
 
 enum KI: String, CaseIterable, Identifiable {
-    case claude = "Claude", gemini = "Gemini", chatgpt = "ChatGPT"
+    case claude = "Claude", gemini = "Gemini", chatgpt = "ChatGPT", grok = "Grok", perplexity = "Perplexity", mistral = "Mistral"
     var id: String { rawValue }
-    var symbol: String { switch self { case .claude: "sparkle"; case .gemini: "circle.hexagongrid"; case .chatgpt: "bubble.left.and.text.bubble.right" } }
-    var werkzeug: String { switch self { case .claude: "claude"; case .gemini: "agy"; case .chatgpt: "codex" } }
-    var kannBild: Bool { self != .gemini }
+    var symbol: String {
+        switch self {
+        case .claude: "sparkle"; case .gemini: "circle.hexagongrid"; case .chatgpt: "bubble.left.and.text.bubble.right"
+        case .grok: "xmark.circle"; case .perplexity: "magnifyingglass.circle"; case .mistral: "wind"
+        }
+    }
+    var werkzeug: String { switch self { case .claude: "claude"; case .gemini: "agy"; case .chatgpt: "codex"; default: "" } }
+    /// Läuft über einen API-Schlüssel (pro Anfrage bezahlt) statt über ein Abo-Werkzeug.
+    var perSchluessel: Bool { self == .grok || self == .perplexity || self == .mistral }
+    var kannBild: Bool { self != .gemini && self != .perplexity }
+    var schluesselKonto: String { "api." + rawValue }
+    var schluesselSeite: String {
+        switch self { case .grok: "https://console.x.ai"; case .perplexity: "https://www.perplexity.ai/settings/api"; case .mistral: "https://console.mistral.ai/api-keys"; default: "" }
+    }
+    var schluesselDa: Bool { Schluesselbund.laden(konto: schluesselKonto) != nil }
     static var gewaehlt: KI { KI(rawValue: UserDefaults.standard.string(forKey: E.fragenKI) ?? "") ?? .claude }
 }
 
@@ -91,6 +103,8 @@ enum AndereAufruf {
                 + (bildPfad.map { " -i \(q($0))" } ?? "") + " \(q(prompt)) </dev/null"
         case .claude:
             return ClaudeAufruf.senden(text, system: system, bild: bild, fertig: fertig)
+        case .grok, .perplexity, .mistral:
+            api(ki, text, system: system, bild: bild, fertig: fertig); return nil
         }
         p.arguments = ["-lc", befehl]
         p.currentDirectoryURL = FileManager.default.temporaryDirectory
@@ -113,7 +127,7 @@ enum AndereAufruf {
                 case .chatgpt:
                     antwort = (try? String(contentsOfFile: ausgabe, encoding: .utf8))?.trimmingCharacters(in: .whitespacesAndNewlines)
                         ?? roh.split(separator: "\n").filter { !$0.contains("ERROR") }.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
-                case .claude: antwort = roh
+                case .claude, .grok, .perplexity, .mistral: antwort = roh
                 }
                 if antwort.isEmpty { antwort = L("Keine Antwort erhalten.") }
             }
@@ -121,6 +135,58 @@ enum AndereAufruf {
         }
         do { try p.run() } catch { fertig("Start fehlgeschlagen: \(error.localizedDescription)"); return nil }
         return p
+    }
+}
+
+// MARK: - Antworten über API-Schlüssel (xAI, Perplexity, Mistral)
+
+extension AndereAufruf {
+    static func api(_ ki: KI, _ text: String, system: String, bild: Data?, fertig: @escaping (String) -> Void) {
+        guard let d = Schluesselbund.laden(konto: ki.schluesselKonto), let key = String(data: d, encoding: .utf8), !key.isEmpty else {
+            fertig(L("Kein API-Schlüssel für ") + ki.rawValue + L(" hinterlegt. Einstellungen › Verbindungen.")); return
+        }
+        var r: URLRequest
+        var koerper: [String: Any]
+        switch ki {
+        case .perplexity:
+            r = URLRequest(url: URL(string: "https://api.perplexity.ai/v1/agent")!)
+            koerper = ["effort": "fast", "input": system + "\n\n" + text]
+        default:
+            r = URLRequest(url: URL(string: ki == .grok ? "https://api.x.ai/v1/chat/completions" : "https://api.mistral.ai/v1/chat/completions")!)
+            var inhalt: [[String: Any]] = [["type": "text", "text": text]]
+            if let bild { inhalt.insert(["type": "image_url", "image_url": ["url": "data:image/jpeg;base64," + bild.base64EncodedString()]], at: 0) }
+            koerper = ["model": ki == .grok ? "grok-4.7" : "mistral-large-latest",
+                       "messages": [["role": "system", "content": system], ["role": "user", "content": inhalt]]]
+        }
+        r.httpMethod = "POST"
+        r.setValue("Bearer " + key, forHTTPHeaderField: "Authorization")
+        r.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        r.httpBody = try? JSONSerialization.data(withJSONObject: koerper)
+        r.timeoutInterval = 120
+        URLSession.shared.dataTask(with: r) { daten, antwort, fehler in
+            let text = Self.antwortLesen(ki, daten: daten, code: (antwort as? HTTPURLResponse)?.statusCode, fehler: fehler)
+            DispatchQueue.main.async { fertig(text) }
+        }.resume()
+    }
+
+    static func antwortLesen(_ ki: KI, daten: Data?, code: Int?, fehler: Error?) -> String {
+        if let fehler { return L("Keine Verbindung: ") + fehler.localizedDescription }
+        let j = daten.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }
+        if let code, code != 200 {
+            let m = (j?["error"] as? [String: Any])?["message"] as? String ?? j?["error"] as? String ?? j?["message"] as? String
+                ?? daten.map { String(decoding: $0.prefix(200), as: UTF8.self) } ?? ""
+            return code == 401 || code == 403 ? L("API-Schlüssel für ") + ki.rawValue + L(" wird abgelehnt. Einstellungen › Verbindungen.") : "\(ki.rawValue) \(code): \(m)"
+        }
+        if ki == .perplexity {
+            if let t = j?["output_text"] as? String, !t.isEmpty { return t }
+            let teile = (j?["output"] as? [[String: Any]] ?? []).flatMap { $0["content"] as? [[String: Any]] ?? [] }
+                .filter { $0["type"] as? String == "output_text" }.compactMap { $0["text"] as? String }
+            if !teile.isEmpty { return teile.joined(separator: "\n") }
+        } else if let c = ((j?["choices"] as? [[String: Any]])?.first?["message"] as? [String: Any])?["content"] {
+            if let t = c as? String { return t }
+            if let teile = c as? [[String: Any]] { return teile.compactMap { $0["text"] as? String }.joined(separator: "\n") }
+        }
+        return L("Keine Antwort erhalten.")
     }
 }
 

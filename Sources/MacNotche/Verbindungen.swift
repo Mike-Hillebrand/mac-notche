@@ -14,7 +14,7 @@ struct Verbindung: Identifiable {
 enum Verbindungen {
     private static let home = FileManager.default.homeDirectoryForCurrentUser
 
-    static func alle() -> [Verbindung] { [claude(), codex(), gemini(), grok()] }
+    static func alle() -> [Verbindung] { [claude(), codex(), gemini()] + [KI.grok, .perplexity, .mistral].map(schluessel) }
 
     /// Eine Zeile für die Fehlersuche: was die App auf diesem Mac sieht.
     static func diagnose() -> String {
@@ -159,10 +159,13 @@ enum Verbindungen {
                           hinweis: L("Google-Konto im Schlüsselbund (Antigravity)"), befehl: "agy")
     }
 
-    static func grok() -> Verbindung {
-        Verbindung(id: "grok", name: "Grok (xAI)", angemeldet: false, konto: nil,
-                   hinweis: L("Kein lokales Werkzeug und keine öffentliche Schnittstelle für das Kontingent eines Grok-Abos. Sobald xAI eines anbietet, kommt es dazu."),
-                   befehl: nil)
+    /// Anbieter ohne Abo-Werkzeug: Antworten über eigenen API-Schlüssel, Kontingent nicht auslesbar.
+    static func schluessel(_ ki: KI) -> Verbindung {
+        let da = ki.schluesselDa
+        return Verbindung(id: ki.rawValue, name: ki.rawValue + (ki == .grok ? " (xAI)" : ""), angemeldet: da, konto: da ? L("API-Schlüssel") : nil,
+                          hinweis: da ? L("Antwortet im Reiter „Fragen“, pro Anfrage bezahlt. Kein Kontingent-Ring, da der Anbieter kein Abo-Kontingent verrät.")
+                                      : L("Kein Abo-Werkzeug. Mit eigenem API-Schlüssel (unten eintragen) antwortet er im Reiter „Fragen“, pro Anfrage bezahlt."),
+                          befehl: nil)
     }
 
     /// Nutzdaten eines JWT (ohne Prüfung der Signatur – wir lesen nur, was das Werkzeug selbst gespeichert hat).

@@ -103,6 +103,8 @@ struct Kompakt: View {
             return [("5h", k.codexLimits.first { $0.id == "codex-primary" }?.prozent), ("Wo", k.codexLimits.first { $0.id == "codex-secondary" }?.prozent)].compactMap { n, p in p.map { (n, $0) } }
         case .gemini:
             return k.agyLimits.prefix(2).map { (String($0.name.prefix(6)), $0.prozent) }
+        case .grok, .perplexity, .mistral:
+            return []  // kein Abo-Kontingent auslesbar
         }
     }
     private var auslastung: (KI, [(String, Double)])? {

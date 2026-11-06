@@ -294,6 +294,11 @@ struct VerbindungenSeite: View {
             }
         }
         Section {
+            ForEach([KI.grok, .perplexity, .mistral]) { ki in SchluesselZeile(ki: ki) { laden() } }
+        } header: { Text("API-Schlüssel (pro Anfrage bezahlt)") } footer: {
+            Text("Schlüssel liegen nur im Schlüsselbund dieses Macs. Die Seite zum Erstellen öffnet sich über den Link.")
+        }
+        Section {
             Picker("Plan-Limits abrufen alle", selection: $intervall) {
                 ForEach([5, 10, 15, 30], id: \.self) { Text("\($0) Min.").tag($0) }
             }
@@ -307,6 +312,30 @@ struct VerbindungenSeite: View {
             let l = Verbindungen.alle(), d = Verbindungen.diagnose()
             DispatchQueue.main.async { liste = l; diagnose = d }
         }
+    }
+}
+
+struct SchluesselZeile: View {
+    let ki: KI
+    var geaendert: () -> Void
+    @State private var eingabe = ""
+    @State private var da = false
+    var body: some View {
+        HStack {
+            Link(ki.rawValue, destination: URL(string: ki.schluesselSeite)!).frame(width: 90, alignment: .leading)
+            if da {
+                Label("Hinterlegt", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
+                Spacer()
+                Button("Entfernen") { Schluesselbund.loeschen(konto: ki.schluesselKonto); da = false; geaendert() }
+            } else {
+                SecureField("API-Schlüssel", text: $eingabe)
+                Button("Speichern") {
+                    let k = eingabe.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !k.isEmpty, Schluesselbund.speichern(Data(k.utf8), konto: ki.schluesselKonto) { da = true; eingabe = ""; geaendert() }
+                }.disabled(eingabe.isEmpty)
+            }
+        }
+        .onAppear { da = ki.schluesselDa }
     }
 }
 
@@ -435,6 +464,12 @@ struct EntsperrenSeite: View {
         }
         Section {
             Toggle("Mit Gesicht entsperren", isOn: $aktiv).disabled(!bereit && !aktiv)
+            if !bereit && !aktiv {
+                Text(L("Fehlt noch: ") + [ent.modellBereit ? nil : L("Gesichtsmodell"), ent.eingelernt > 0 ? nil : L("Gesicht einlernen (1)"),
+                                          ent.passwortGespeichert ? nil : L("Mac-Passwort speichern (2)"), ent.bedienungshilfen ? nil : L("Bedienungshilfen (3)")]
+                        .compactMap { $0 }.joined(separator: ", "))
+                    .font(.caption).foregroundStyle(.orange)
+            }
             if !ent.status.isEmpty { Text(ent.status).font(.caption) }
             if !ent.modellBereit { Text("Das Gesichtsmodell fehlt in dieser App-Version.").foregroundStyle(.red) }
         }
