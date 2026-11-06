@@ -74,6 +74,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 try? text.write(toFile: "/tmp/kerbe-aufgabe.txt", atomically: true, encoding: .utf8)
             }
         }
+        // Test: --meldung <art> <symbol> <text> [wert]
+        if let i = args.firstIndex(of: "--meldung"), i + 3 < args.count {
+            modell.zeigeMeldung(args[i + 1], args[i + 2], args[i + 3], wert: i + 4 < args.count ? Double(args[i + 4]) : nil)
+        }
         if let i = args.firstIndex(of: "--frage"), i + 1 < args.count {
             modell.fragen.frage = args[i + 1]
             modell.fragen.senden()
@@ -99,10 +103,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let s = NSScreen.screens.first else { return }
         let leiste = max(24, s.frame.maxY - s.visibleFrame.maxY)
         modell.leistenHoehe = leiste
+        // Je Seite ein „Ohr“ dazu, damit der Inhalt so breit bleibt wie bisher.
+        let ohren = 2 * Island.ohr
         let g: CGSize = switch z {
-        case .zu: CGSize(width: UserDefaults.standard.double(forKey: E.breite) + modell.zuExtraBreite, height: leiste)
-        case .meldung: CGSize(width: 440, height: leiste + 44)
-        case .offen: CGSize(width: 780, height: 290 + ((s.safeAreaInsets.top > 0) ? leiste : 0))
+        case .zu: CGSize(width: UserDefaults.standard.double(forKey: E.breite) + modell.zuExtraBreite + ohren, height: leiste)
+        case .meldung: CGSize(width: 440 + ohren, height: leiste + 48)
+        case .offen: CGSize(width: 780 + ohren, height: 290 + ((s.safeAreaInsets.top > 0) ? leiste : 0))
         }
         let r = NSRect(x: s.frame.midX - g.width / 2, y: s.frame.maxY - g.height, width: g.width, height: g.height)
         panel.setFrame(r, display: true, animate: panel.frame.width > 0)

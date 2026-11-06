@@ -19,6 +19,32 @@ extension Text {
     func kopf() -> some View { font(.system(size: 11, weight: .semibold)).foregroundStyle(Color.primary.opacity(0.5)) }
 }
 
+// MARK: - Island-Form
+
+/// Dynamic-Island-Profil: oben weiche „Ohren“, die in die Bildschirmkante auslaufen, unten große Rundungen.
+struct Island: Shape {
+    var unten: CGFloat
+    static let ohr: CGFloat = 12
+    var animatableData: CGFloat { get { unten } set { unten = newValue } }
+
+    func path(in r: CGRect) -> Path {
+        let o = Self.ohr, u = min(unten, (r.height - o) / 2, (r.width - 2 * o) / 2)
+        var p = Path()
+        p.move(to: CGPoint(x: r.minX, y: r.minY))
+        p.addLine(to: CGPoint(x: r.maxX, y: r.minY))
+        // rechtes Ohr: konkav von der Kante in den Körper
+        p.addRelativeArc(center: CGPoint(x: r.maxX, y: r.minY + o), radius: o, startAngle: .degrees(270), delta: .degrees(-90))
+        p.addLine(to: CGPoint(x: r.maxX - o, y: r.maxY - u))
+        p.addRelativeArc(center: CGPoint(x: r.maxX - o - u, y: r.maxY - u), radius: u, startAngle: .degrees(0), delta: .degrees(90))
+        p.addLine(to: CGPoint(x: r.minX + o + u, y: r.maxY))
+        p.addRelativeArc(center: CGPoint(x: r.minX + o + u, y: r.maxY - u), radius: u, startAngle: .degrees(90), delta: .degrees(90))
+        p.addLine(to: CGPoint(x: r.minX + o, y: r.minY + o))
+        p.addRelativeArc(center: CGPoint(x: r.minX, y: r.minY + o), radius: o, startAngle: .degrees(0), delta: .degrees(-90))
+        p.closeSubpath()
+        return p
+    }
+}
+
 // MARK: - Wurzel
 
 struct NotchAnsicht: View {
@@ -38,19 +64,22 @@ struct NotchAnsicht: View {
         }
     }
 
+    private var unten: CGFloat { switch m.zustand { case .offen: 28; case .meldung: 20; case .zu: 14 } }
+
     var body: some View {
         ZStack(alignment: .top) {
-            UnevenRoundedRectangle(bottomLeadingRadius: m.zustand == .offen ? 24 : 12,
-                                   bottomTrailingRadius: m.zustand == .offen ? 24 : 12)
-                .fill(hintergrund)
-            switch m.zustand {
-            case .zu: Kompakt()
-            case .meldung: MeldungAnsicht()
-            case .offen: Offen()
+            Island(unten: unten).fill(hintergrund)
+            Group {
+                switch m.zustand {
+                case .zu: Kompakt()
+                case .meldung: MeldungAnsicht()
+                case .offen: Offen()
+                }
             }
+            .padding(.horizontal, Island.ohr)  // Inhalt bleibt neben den Ohren
         }
-        // Inhalt nie über die runden Ecken hinaus zeichnen (sonst wirken sie abgeschnitten).
-        .clipShape(UnevenRoundedRectangle(bottomLeadingRadius: m.zustand == .offen ? 24 : 12, bottomTrailingRadius: m.zustand == .offen ? 24 : 12))
+        // Inhalt nie über die Form hinaus zeichnen (sonst wirken die Ecken abgeschnitten).
+        .clipShape(Island(unten: unten))
         .environmentObject(m.musik)
         .environmentObject(m.kalender)
         .environmentObject(m.claude)
@@ -229,23 +258,49 @@ struct Equalizer: View {
 
 struct MeldungAnsicht: View {
     @EnvironmentObject var m: NotchModell
+    /// Akzentfarbe wie bei der Dynamic Island: Laden grün, Akku schwach rot, Timer/Termin orange, Download blau.
+    private var farbe: Color? {
+        let s = m.meldung?.symbol ?? ""
+        switch m.meldungArt {
+        case "akku": return s.contains("bolt") || s.contains("100") ? .green : s.contains("25") ? .red : nil
+        case "timer", "termin", "ausschnitt", "lautstaerke": return .orange
+        case "download", "ablage": return .blue
+        case "bluetooth": return s.contains("slash") ? nil : .green
+        default: return nil
+        }
+    }
+    /// „Akku schwach – 14 %“ → Titel „Akku schwach“, Wert „14 %“ in der Akzentfarbe.
+    private var teile: (String, String?) {
+        let t = m.meldung?.text ?? ""
+        if let r = t.range(of: " – ") { return (String(t[..<r.lowerBound]), String(t[r.upperBound...])) }
+        if let r = t.range(of: ": ") { return (String(t[..<r.lowerBound]), String(t[r.upperBound...])) }
+        return (t, nil)
+    }
     var body: some View {
         VStack {
             Spacer(minLength: m.leistenHoehe)
-            HStack(spacing: 10) {
-                Image(systemName: m.meldung?.symbol ?? "info.circle").font(.system(size: 16))
-                Text(m.meldung?.text ?? "").font(.system(size: 13, weight: .medium))
-                    .lineLimit(1).minimumScaleFactor(0.75)
+            HStack(spacing: 12) {
+                Image(systemName: m.meldung?.symbol ?? "info.circle").font(.system(size: 20))
+                    .symbolRenderingMode(.hierarchical).foregroundStyle(farbe ?? Color.primary)
+                VStack(alignment: .leading, spacing: 1) {
+                    HStack(spacing: 6) {
+                        Text(teile.0).font(.system(size: 13, weight: .semibold)).lineLimit(1)
+                        if let w = teile.1, w.count <= 6 { Text(w).font(.system(size: 13, weight: .semibold)).foregroundStyle(farbe ?? Color.primary) }
+                    }
+                    if let w = teile.1, w.count > 6 { Text(w).font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.6)).lineLimit(1) }
+                }
+                .minimumScaleFactor(0.8)
                 Spacer()
                 if let w = m.meldungWert {
                     Capsule().fill(Color.primary.opacity(0.2)).frame(width: 120, height: 6)
-                        .overlay(alignment: .leading) { Capsule().fill(Color.primary).frame(width: 120 * min(max(w, 0), 1), height: 6) }
+                        .overlay(alignment: .leading) { Capsule().fill(farbe ?? Color.primary).frame(width: 120 * min(max(w, 0), 1), height: 6) }
                 }
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 12)
         }
         .foregroundStyle(Color.primary)
+        .background { if farbe == .red { Color.red.opacity(0.18) } }
     }
 }
 

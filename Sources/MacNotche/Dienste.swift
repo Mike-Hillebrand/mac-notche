@@ -28,6 +28,7 @@ final class NotchModell: ObservableObject {
     /// Zusätzliche Breite der zugeklappten Notch, wenn mehrere KI-Ringe gezeigt werden.
     @Published var zuExtraBreite: CGFloat = 0
     @Published var meldung: (symbol: String, text: String)?
+    @Published var meldungArt = ""
     @Published var meldungWert: Double?
     @Published var leistenHoehe: CGFloat = 24
     /// MacBook mit echter Notch: die Reiterleiste rutscht unter die Notch, sonst verdeckt sie die mittleren Reiter.
@@ -172,6 +173,7 @@ final class NotchModell: ObservableObject {
     func zeigeMeldung(_ art: String, _ symbol: String, _ text: String, wert: Double? = nil) {
         guard zustand != .offen, UserDefaults.standard.bool(forKey: E.meldung(art)) else { return }
         meldung = (symbol, text)
+        meldungArt = art
         meldungWert = wert
         zustand = .meldung
         // Lautstärke und Feststelltaste sind kurze Anzeigen, alles andere bleibt 3 Sekunden.
