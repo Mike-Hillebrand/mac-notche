@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.5.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.6.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -24,7 +24,7 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 | Zuhause | HomeKit über Kurzbefehle: Szenen und Geräte als Kacheln (Ordner „Zuhause“ oder Stichwörter) |
 | Werkzeuge | Spiegel (Kamera), Wach halten, Zwischenablage-Verlauf |
 
-**Formen (Einstellungen › Aussehen):** Angedockt (Island mit Ohren), Katze und Hund (schwebend, blinzeln, wedeln, schauen der Maus nach), Tropfend.
+**Formen (Einstellungen › Aussehen):** Angedockt (Island mit Ohren), Katze, Dackel und Bulldogge (schwebend, blinzeln, wedeln, schauen der Maus nach), Tropfend; Körperfarbe wählbar (Schwarz, Anthrazit, Nachtblau, Tannengrün, Weinrot, Schokolade, Lila, Signalorange, Pink).
 
 **Im Hintergrund:** Lautstärke- und Feststell-Anzeige, Bluetooth- und Akku-Meldungen, Termin-Hinweis, Termin-Countdown in der zugeklappten Notch (ab 60 Min. vorher, ab 10 Min. orange, Klick öffnet Zoom/Teams/Meet), Downloads-Wächter (neue Datei → Meldung und Ablage), Fenster einrasten (per ⌃⌥-Tastenkürzel oder Ziehen an den Rand), Textbausteine und Emoji-Kürzel (`;mfg`, `:herz:`), Menüleisten-Symbole ausblenden, Bildschirmecken mit Aktionen, Gesicht entsperren.
 

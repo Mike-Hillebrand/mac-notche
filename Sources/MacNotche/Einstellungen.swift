@@ -3,7 +3,7 @@ import ServiceManagement
 
 /// Schlüssel für UserDefaults.
 enum E {
-    static let look = "look", breite = "breite", schatten = "schatten", skin = "skin"
+    static let look = "look", breite = "breite", schatten = "schatten", skin = "skin", farbe = "farbe"
     static let verzoegerung = "verzoegerung", klickSchliesst = "klickSchliesst"
     static let updatesAuto = "updates.auto"
     static let zeigeMusik = "zeige.musik", zeigeClaude = "zeige.claude", zeigeWetter = "zeige.wetter", zeigeTermin = "zeige.termin"
@@ -21,7 +21,7 @@ enum E {
 enum Einstellungen {
     static func registrieren() {
         UserDefaults.standard.register(defaults: [
-            E.look: "schwarz", E.skin: "Angedockt", E.breite: 300.0, E.schatten: true,
+            E.look: "schwarz", E.skin: "Angedockt", E.farbe: "000000", E.breite: 300.0, E.schatten: true,
             E.verzoegerung: 0.0, E.klickSchliesst: true,
             E.zeigeMusik: true, E.zeigeClaude: true, E.zeigeWetter: true, E.zeigeTermin: true,
             E.fahrenheit: false, E.claudeIntervall: 5,
@@ -173,16 +173,30 @@ struct AussehenSeite: View {
     @AppStorage(E.breite) var breite = 300.0
     @AppStorage(E.schatten) var schatten = true
     @AppStorage(E.skin) var skin = "Angedockt"
+    @AppStorage(E.farbe) var farbe = "000000"
     var body: some View {
         Section("Form") {
             Picker("Form", selection: $skin) {
                 Text("Angedockt – Island mit weichen Ohren").tag(Skin.angedockt.rawValue)
                 Text("Katze – schwebend, blinzelt und wedelt").tag(Skin.katze.rawValue)
-                Text("Hund – schwebend, liegt und döst, wippt mit der Ringelrute").tag(Skin.dackel.rawValue)
+                Text("Dackel – schwebend, lange Schnauze, Schlappohr, wedelt mit der Rute").tag(Skin.dackel.rawValue)
+                Text("Bulldogge – schwebend, liegt und döst, wippt mit der Ringelrute").tag(Skin.bulldogge.rawValue)
                 Text("Tropfend – zähflüssig, ab und zu fällt ein Tropfen").tag(Skin.tropfend.rawValue)
             }
             .pickerStyle(.radioGroup)
             Text("Die Tiere schauen deiner Maus nach. Aufgeklappt wird jede Form zum runden Fenster.")
+                .font(.caption).foregroundStyle(.secondary)
+        }
+        Section("Farbe") {
+            HStack(spacing: 10) {
+                ForEach(Farbe.liste, id: \.hex) { f in
+                    Circle().fill(Farbe.color(f.hex)).frame(width: 26, height: 26)
+                        .overlay(Circle().stroke(Color.primary.opacity(farbe == f.hex ? 0.9 : 0.15), lineWidth: farbe == f.hex ? 3 : 1))
+                        .help(f.name)
+                        .onTapGesture { farbe = f.hex }
+                }
+            }
+            Text("Gilt für den Stil „Schwarz“ und die Tiere. Aktuell: " + (Farbe.liste.first { $0.hex == farbe }?.name ?? farbe))
                 .font(.caption).foregroundStyle(.secondary)
         }
         Section("Look") {

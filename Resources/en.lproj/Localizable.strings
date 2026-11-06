@@ -435,6 +435,9 @@
 "Form" = "Shape";
 "Angedockt – Island mit weichen Ohren" = "Docked – island with soft ears";
 "Katze – schwebend, blinzelt und wedelt" = "Cat – floating, blinks and wags";
-"Hund – schwebend, liegt und döst, wippt mit der Ringelrute" = "Dog – floating, dozing, curly tail wags";
+"Dackel – schwebend, lange Schnauze, Schlappohr, wedelt mit der Rute" = "Dachshund – floating, long snout, floppy ear, wagging tail";
+"Bulldogge – schwebend, liegt und döst, wippt mit der Ringelrute" = "Bulldog – floating, dozing, curly tail wags";
 "Tropfend – zähflüssig, ab und zu fällt ein Tropfen" = "Dripping – viscous, a drop falls now and then";
 "Die Tiere schauen deiner Maus nach. Aufgeklappt wird jede Form zum runden Fenster." = "The animals follow your mouse. Opened, every shape becomes the rounded panel.";
+"Farbe" = "Color";
+"Gilt für den Stil „Schwarz“ und die Tiere. Aktuell: " = "Applies to the “Black” style and the animals. Current: ";

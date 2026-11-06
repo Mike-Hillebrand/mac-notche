@@ -52,6 +52,7 @@ struct NotchAnsicht: View {
     @State private var ziel = false
     @AppStorage(E.look) private var look = "schwarz"
     @AppStorage(E.skin) private var skinRaw = "Angedockt"
+    @AppStorage(E.farbe) private var farbe = "000000"
     @Environment(\.colorScheme) private var system
 
     private var schema: ColorScheme {
@@ -59,7 +60,7 @@ struct NotchAnsicht: View {
     }
     private var hintergrund: AnyShapeStyle {
         switch look {
-        case "schwarz": AnyShapeStyle(Color.black)
+        case "schwarz": AnyShapeStyle(Farbe.color(farbe))
         case "glas": AnyShapeStyle(.ultraThinMaterial)
         default: AnyShapeStyle(Color(nsColor: .windowBackgroundColor))
         }
@@ -95,7 +96,7 @@ struct NotchAnsicht: View {
             if skin.schwebend, !offen { Tier(art: skin, fuellung: hintergrund, hoehe: m.leistenHoehe) }
             else if skin == .tropfend, !offen { Tropfen(fuellung: hintergrund).frame(height: r.unten).offset(y: m.zustand == .meldung ? m.leistenHoehe + 48 : m.leistenHoehe) }
         }
-        .padding(.top, r.oben).padding(.bottom, offen ? 0 : r.unten).padding(.trailing, offen ? r.rechts / 2 : r.rechts).padding(.leading, offen ? r.rechts / 2 : 0)
+        .padding(.top, r.oben).padding(.bottom, offen ? 0 : r.unten).padding(.trailing, offen ? (r.rechts + r.links) / 2 : r.rechts).padding(.leading, offen ? (r.rechts + r.links) / 2 : r.links)
         .environmentObject(m.musik)
         .environmentObject(m.kalender)
         .environmentObject(m.claude)
