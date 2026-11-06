@@ -14,7 +14,23 @@ struct Verbindung: Identifiable {
 enum Verbindungen {
     private static let home = FileManager.default.homeDirectoryForCurrentUser
 
-    static func alle() -> [Verbindung] { [claude(), codex(), gemini()] + [KI.grok, .perplexity, .mistral].map(schluessel) }
+    static func alle() -> [Verbindung] { [claude(), codex(), gemini()] + [KI.grok, .perplexity, .mistral].map(schluessel) + [iphoneWLAN()] }
+
+    /// iPhone über WLAN: braucht libimobiledevice (Homebrew) und den Finder-Schalter „Dieses iPhone anzeigen, wenn WLAN aktiv ist“.
+    static func iphoneWLAN() -> Verbindung {
+        let name = L("iPhone über WLAN")
+        guard IPhoneWLAN.installiert else {
+            return Verbindung(id: "iphone", name: name, angemeldet: false, konto: nil,
+                              hinweis: L("libimobiledevice fehlt. „Installieren“ holt es über Homebrew; danach im Finder beim iPhone WLAN-Sync einschalten (einmal per Kabel koppeln)."),
+                              befehl: IPhoneWLAN.install)
+        }
+        guard let u = IPhoneWLAN.udid() else {
+            return Verbindung(id: "iphone", name: name, angemeldet: false, konto: nil,
+                              hinweis: L("Werkzeuge da, aber kein iPhone im Netz. Im Finder beim iPhone „Dieses iPhone anzeigen, wenn WLAN aktiv ist“ einschalten, gleiches WLAN, einmal entsperren."), befehl: nil)
+        }
+        let info = IPhoneWLAN.info(u)
+        return Verbindung(id: "iphone", name: name, angemeldet: true, konto: info.name, hinweis: L("Im Netz erreichbar") + (info.akku.map { " · Akku \($0) %" } ?? ""), befehl: nil)
+    }
 
     /// Eine Zeile für die Fehlersuche: was die App auf diesem Mac sieht.
     static func diagnose() -> String {

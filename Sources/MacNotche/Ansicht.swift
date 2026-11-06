@@ -778,9 +778,9 @@ struct IPhoneAnsicht: View {
         if let name = i.name {
             HStack(alignment: .top, spacing: 22) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Verbunden per Kabel").kopf()
+                    Text(i.wlan ? L("Verbunden über WLAN") : L("Verbunden per Kabel")).kopf()
                     HStack(spacing: 12) {
-                        Image(systemName: "iphone").font(.system(size: 34))
+                        Image(systemName: i.wlan ? "iphone.radiowaves.left.and.right" : "iphone").font(.system(size: 34))
                         VStack(alignment: .leading, spacing: 3) {
                             Text(name).font(.system(size: 15, weight: .semibold))
                             if let a = i.akku {
@@ -799,10 +799,10 @@ struct IPhoneAnsicht: View {
                     if let f = i.fortschritt {
                         ProgressView(value: Double(f.fertig), total: Double(max(f.gesamt, 1)))
                         Text("\(f.fertig) von \(f.gesamt) …").font(.system(size: 12).monospacedDigit())
-                    } else if i.neue.isEmpty {
+                    } else if i.anzahlNeu == 0 {
                         Text("Keine neuen Fotos.").font(.system(size: 12)).foregroundStyle(Color.primary.opacity(0.6))
                     } else {
-                        Text("\(i.neue.count) neue Fotos und Videos").font(.system(size: 13, weight: .medium))
+                        Text("\(i.anzahlNeu) neue Fotos und Videos").font(.system(size: 13, weight: .medium))
                         HStack {
                             Button("Jetzt übernehmen") { i.importieren() }
                             Button("Vorhandene ignorieren") { i.alleBekannt() }
@@ -814,7 +814,7 @@ struct IPhoneAnsicht: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         } else {
-            Leer(symbol: "iphone", text: "Kein iPhone verbunden", unter: "Per Kabel anschließen, entsperren und „Vertrauen“ tippen")
+            Leer(symbol: "iphone", text: "Kein iPhone verbunden", unter: IPhoneWLAN.installiert ? "Per Kabel anschließen oder im Finder „Dieses iPhone anzeigen, wenn WLAN aktiv ist“ einschalten" : "Per Kabel anschließen, entsperren und „Vertrauen“ tippen – WLAN unter Einstellungen › Verbindungen")
         }
     }
 }

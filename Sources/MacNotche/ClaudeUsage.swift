@@ -264,6 +264,10 @@ enum Selbsttest {
         let t1 = FokusTimer.schnell("15 min Tee"), t2 = FokusTimer.schnell("1,5 h Wäsche"), t3 = FokusTimer.schnell("90s")
         precondition(t1?.minuten == 15 && t1?.name == "Tee" && t2?.minuten == 90 && t2?.name == "Wäsche" && t3?.minuten == 1.5 && t3?.name == "", "Schnell-Timer")
         precondition(FokusTimer.schnell("Wie spät ist es in 15 min?") == nil && FokusTimer.schnell("3 Minuten") != nil, "Schnell-Timer nein/ja")
+        let z = IPhoneWLAN.zeileLesen("-rw-r--r--    1 mobile mobile    1897323 07 Oct 2026 13:32:52 IMG_4305.JPG")
+        precondition(z?.name == "IMG_4305.JPG" && z?.groesse == 1897323 && z.map { Calendar.current.component(.month, from: $0.datum) } == 10, "afc ls -l")
+        precondition(IPhoneWLAN.zeileLesen("drwxr-xr-x 2 mobile mobile 64 07 Oct 2026 13:32:52 .MISC") == nil, "afc Ordner")
+        precondition(IPhoneWLAN.afcBereinigen("\u{1B}[0;30m\u{1B}[47mafc:\u{1B}[m\u{1B}[1;33m\u{1B}[44m/\u{1B}[m > 109APPLE\n105APPLE\n") == ["109APPLE", "105APPLE"], "afc bereinigen")
         let call = TerminCountdown.anrufLink(url: nil, texte: ["Raum 3", "Einwahl: https://us02web.zoom.us/j/123?pwd=x (Zoom)"])
         precondition(call?.host == "us02web.zoom.us" && TerminCountdown.anrufLink(url: URL(string: "https://example.com"), texte: [nil]) == nil, "Call-Link")
         // OCR-Pipeline: Text in ein Bild zeichnen und wieder lesen.

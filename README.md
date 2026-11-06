@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.7.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.8.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -19,10 +19,40 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 | Fragen | Claude, Gemini (Antigravity), ChatGPT (Codex) oder per API-Schlüssel Grok, Perplexity, Mistral fragen; Text-Werkstatt (⌥⌘T): kopierten Text umschreiben, kürzen, übersetzen und zurück einfügen – als Text, mit Bildschirmfoto, oder als Aufgabe (Claude plant Schritte, du bestätigst, die App führt aus) |
 | Notiz | Schnellnotiz mit Diktat (Apple-Spracherkennung, lokal), sichern in Apple Notizen oder als Markdown in einen Ordner |
 | Ablage | Dateien ablegen, umwandeln (PNG/JPEG/HEIC), DMG installieren, per AirDrop senden; Freistellen (⌥⌘4): Bildschirmbereich aufziehen, Text wird erkannt und kopiert, das Bild liegt in der Ablage |
-| iPhone | Fotos vom iPhone am Kabel übernehmen |
+| iPhone | Name, Akku und neue Fotos per Kabel oder über WLAN (Finder-WLAN-Sync + libimobiledevice), Übernahme in die Fotos-App |
 | Fokus | Timer (auch per Text im Reiter Fragen: „15 min Tee“ läuft in der Leiste), Fokus 25+5, braunes Rauschen, Augen- und Trinkpause, Ton-Ausgabe, Lautstärke pro App, Notizen |
 | Zuhause | HomeKit über Kurzbefehle: Szenen und Geräte als Kacheln (Ordner „Zuhause“ oder Stichwörter) |
 | Werkzeuge | Spiegel (Kamera), Wach halten, Zwischenablage-Verlauf |
+
+## Bilder
+
+| | |
+|---|---|
+| ![Katze](docs/bilder/skin-katze.png) Zugeklappt als Katze: Musik, KI-Kontingent | ![Angedockt](docs/bilder/skin-angedockt.png) Angedockt mit weichen Ohren |
+| ![Dackel](docs/bilder/skin-dackel.png) Dackel | ![Bulldogge](docs/bilder/skin-bulldogge.png) Bulldogge |
+| ![Tropfend](docs/bilder/skin-tropfend.png) Tropfend | ![Akku](docs/bilder/meldung-akku.png) Meldung: Akku schwach |
+| ![Download](docs/bilder/meldung-download.png) Meldung: Download fertig | ![AirPods](docs/bilder/meldung-airpods.png) Meldung: AirPods verbunden |
+
+![iPhone über WLAN](docs/bilder/iphone.png)
+*iPhone über WLAN: Name, Akku, neue Fotos in die Fotos-App übernehmen*
+
+![Schnell-Timer](docs/bilder/timer-text.png)
+*Reiter Fragen: „15 min Tee“ startet einen Timer, sonst antwortet die gewählte KI*
+
+![Ablage](docs/bilder/reiter-ablage.png)
+*Ablage mit Freistellen (⌥⌘4): Bildschirmbereich aufziehen, Text wird erkannt und kopiert*
+
+![KI](docs/bilder/reiter-ki.png)
+*Reiter KI: Kontingente und Token von Claude, Codex und Antigravity*
+
+![Notiz](docs/bilder/reiter-notiz.png)
+*Reiter Notiz: Diktat, in Apple Notizen oder als Markdown in einen Ordner*
+
+![Zuhause](docs/bilder/reiter-zuhause.png)
+*Reiter Zuhause: Kurzbefehle aus der Kurzbefehle-App als Kacheln*
+
+![Einstellungen](docs/bilder/einstellungen-aussehen.png)
+*Einstellungen › Aussehen: Form und Farbe*
 
 **Formen (Einstellungen › Aussehen):** Angedockt (Island mit Ohren), Katze, Dackel und Bulldogge (schwebend, blinzeln, wedeln, schauen der Maus nach), Tropfend; Körperfarbe wählbar (Schwarz, Anthrazit, Nachtblau, Tannengrün, Weinrot, Schokolade, Lila, Signalorange, Pink).
 

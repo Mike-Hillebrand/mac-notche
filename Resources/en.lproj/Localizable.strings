@@ -441,3 +441,13 @@
 "Die Tiere schauen deiner Maus nach. Aufgeklappt wird jede Form zum runden Fenster." = "The animals follow your mouse. Opened, every shape becomes the rounded panel.";
 "Farbe" = "Color";
 "Gilt für den Stil „Schwarz“ und die Tiere. Aktuell: " = "Applies to the “Black” style and the animals. Current: ";
+"Verbunden über WLAN" = "Connected via Wi-Fi";
+"Verbunden per Kabel" = "Connected via cable";
+"über WLAN verbunden" = "connected via Wi-Fi";
+"nicht mehr im WLAN" = "no longer on Wi-Fi";
+"iPhone über WLAN" = "iPhone via Wi-Fi";
+"Im Netz erreichbar" = "Reachable on the network";
+"libimobiledevice fehlt. „Installieren“ holt es über Homebrew; danach im Finder beim iPhone WLAN-Sync einschalten (einmal per Kabel koppeln)." = "libimobiledevice is missing. “Install” gets it via Homebrew; then enable Wi-Fi sync for the iPhone in Finder (pair once via cable).";
+"Werkzeuge da, aber kein iPhone im Netz. Im Finder beim iPhone „Dieses iPhone anzeigen, wenn WLAN aktiv ist“ einschalten, gleiches WLAN, einmal entsperren." = "Tools present, but no iPhone on the network. In Finder enable “Show this iPhone when on Wi-Fi”, same Wi-Fi, unlock once.";
+"Per Kabel anschließen oder im Finder „Dieses iPhone anzeigen, wenn WLAN aktiv ist“ einschalten" = "Connect via cable or enable “Show this iPhone when on Wi-Fi” in Finder";
+"Per Kabel anschließen, entsperren und „Vertrauen“ tippen – WLAN unter Einstellungen › Verbindungen" = "Connect via cable, unlock and tap “Trust” – Wi-Fi under Settings › Connections";
