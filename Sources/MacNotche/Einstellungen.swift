@@ -13,7 +13,7 @@ enum E {
     static let fensterAktiv = "fenster.aktiv", augenMinuten = "augen.minuten", trinkenMinuten = "trinken.minuten", bausteine = "bausteine"
     static let emojiKuerzel = "emoji.kuerzel", aktien = "aktien", notizen = "notizen"
     static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuhauseWoerter = "zuhause.woerter", notizOrdner = "notiz.ordner", diktatSprache = "diktat.sprache", downloadsAblage = "downloads.ablage", zuKI = "zu.ki", zuAus = "zu.aus"
-    static let sportLiga = "sport.liga", sportVereine = "sport.vereine", geraet = "geraet", notchHoehe = "notch.hoehe"
+    static let sportLiga = "sport.liga", sportVereine = "sport.vereine", geraet = "geraet", notchHoehe = "notch.hoehe", zuhauseAuswahl = "zuhause.auswahl"
     static let fensterZiehen = "fenster.ziehen", kurzbefehle = "kurzbefehle"
     static func meldung(_ art: String) -> String { "meldung.\(art)" }
 }
@@ -572,6 +572,8 @@ struct WerkzeugeSeite: View {
     @AppStorage(E.fensterZiehen) var ziehen = true
     @AppStorage(E.kurzbefehle) var kurzbefehle = ""
     @AppStorage(E.zuhauseWoerter) var zuhauseWoerter = ""
+    @AppStorage(E.zuhauseAuswahl) var zuhauseAuswahl = ""
+    private var auswahlListe: [String] { zuhauseAuswahl.split(separator: "\n").map(String.init).filter { !$0.isEmpty } }
     @AppStorage(E.notizOrdner) var notizOrdner = ""
     @AppStorage(E.diktatSprache) var diktatSprache = "de-DE"
     @State private var alleKurzbefehle: [String] = []
@@ -656,9 +658,27 @@ struct WerkzeugeSeite: View {
             Text("„In Ordner“ legt eine Markdown-Datei mit Datum und Frontmatter ab; leer = Vault-Inbox, sonst ~/Dokumente/Notizen. Erste Nutzung fragt nach Mikrofon und Spracherkennung.")
         }
         Section {
-            TextField("Stichwörter", text: $zuhauseWoerter, prompt: Text(Zuhause.standardWoerter))
-        } header: { Text("Reiter „Zuhause“ (HomeKit über Kurzbefehle)") } footer: {
-            Text("Zeigt Kurzbefehle aus dem Ordner „Zuhause“ der Kurzbefehle-App, sonst alle, deren Name eines dieser Wörter enthält. Kurzbefehle können HomeKit-Szenen und -Geräte schalten – so kommt dein Zuhause in die Notch.")
+            if alleKurzbefehle.isEmpty {
+                Text("Kurzbefehle werden geladen …").foregroundStyle(.secondary)
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 2) {
+                        ForEach(alleKurzbefehle, id: \.self) { n in
+                            Toggle(n, isOn: Binding(get: { auswahlListe.contains(n) }, set: { an in
+                                var l = auswahlListe
+                                if an { if !l.contains(n) { l.append(n) } } else { l.removeAll { $0 == n } }
+                                zuhauseAuswahl = l.joined(separator: "\n")
+                            })).toggleStyle(.checkbox)
+                        }
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                }.frame(maxHeight: 220)
+                Text(auswahlListe.isEmpty ? L("Nichts angehakt – es gelten Ordner „Zuhause“ oder die Stichwörter.") : "\(auswahlListe.count) " + L("Kurzbefehle im Reiter „Zuhause“"))
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            TextField("Stichwörter (ohne Haken)", text: $zuhauseWoerter, prompt: Text(Zuhause.standardWoerter))
+            Button("Kurzbefehle-App öffnen") { NSWorkspace.shared.open(URL(string: "shortcuts://")!) }
+        } header: { Text("Reiter „Zuhause“ (Home-App über Kurzbefehle)") } footer: {
+            Text("Angehakte Kurzbefehle werden Kacheln im Reiter „Zuhause“ der Notch. Die Home-App gibt ihre Geräte nur an App-Store-Apps frei; der Weg geht über Kurzbefehle: in der Kurzbefehle-App einen Kurzbefehl mit der Aktion „Zuhause steuern“ anlegen (Szene oder Gerät), dann hier anhaken. Ohne Haken gelten der Ordner „Zuhause“ oder die Stichwörter.")
         }
         Section {
             TextField("Kurzbefehle", text: $kurzbefehle, prompt: Text("Name 1, Name 2"))

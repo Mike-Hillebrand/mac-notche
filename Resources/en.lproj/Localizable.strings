@@ -480,3 +480,5 @@
 "Sehr schlank (26 pt)" = "Very slim (26 pt)";
 "Flach (22 pt)" = "Flat (22 pt)";
 "Gilt für die zugeklappte Notch; auf dem MacBook sollte sie nicht dünner als die Kamera-Notch sein." = "Applies to the closed notch; on a MacBook it should not be thinner than the camera notch.";
+"Bild ließ sich nicht laden." = "Could not load image.";
+"Bild ließ sich nicht anpassen." = "Could not fit image.";

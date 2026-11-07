@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.22.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.23.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -21,7 +21,7 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 | Ablage | Dateien ablegen, umwandeln (PNG/JPEG/HEIC), DMG installieren, per AirDrop senden; Freistellen (⌥⌘4): Bildschirmbereich aufziehen, Text wird erkannt und kopiert, das Bild liegt in der Ablage |
 | iPhone | Name, Akku und neue Fotos per Kabel oder über WLAN (Finder-WLAN-Sync + libimobiledevice), Übernahme in die Fotos-App |
 | Fokus | Timer (auch per Text im Reiter Fragen: „15 min Tee“ läuft in der Leiste), Fokus 25+5, braunes Rauschen, Augen- und Trinkpause, Ton-Ausgabe, Lautstärke pro App, Notizen |
-| Zuhause | HomeKit über Kurzbefehle: Szenen und Geräte als Kacheln (Ordner „Zuhause“ oder Stichwörter) |
+| Zuhause | Home-App über Kurzbefehle: in den Einstellungen Kurzbefehle anhaken (sonst Ordner „Zuhause“ oder Stichwörter), sie werden Kacheln |
 | Werkzeuge | Spiegel (Kamera), Wach halten, Zwischenablage-Verlauf |
 
 ## Bilder
@@ -58,7 +58,7 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 
 Katze und die drei Hunde stammen aus Vektorvorlagen.
 
-**Hintergründe (Einstellungen › Hintergründe):** 14 Schreibtischhintergründe in 5K, bei denen die Notch Teil des Bildes ist (Katze, Tropfen, Taschenlampe, Planeten, Insel, Glasbruch, Hängekatze, Programmierer, Weizenfeld, Astronaut, Katzen am Schreibtisch, Weltraum, Sonnenuntergang, Dschungel); ein Klick setzt sie; eigene Bilder im Ordner Bilder › Mac Notche › Hintergründe erscheinen ebenfalls.
+**Hintergründe (Einstellungen › Hintergründe):** sechs Schreibtischhintergründe in 5K, deren Dekor an der Notch ansetzt (Katze, Tropfen, Taschenlampe, Planeten, Insel, Glasbruch) – die Notch selbst bleibt die echte mit deinem Skin; ein Klick setzt sie passgenau je Bildschirm; eigene Bilder im Ordner Bilder › Mac Notche › Hintergründe erscheinen ebenfalls.
 
 **Im Hintergrund:** Lautstärke- und Feststell-Anzeige, Bluetooth- und Akku-Meldungen, Termin-Hinweis, Termin-Countdown in der zugeklappten Notch (ab 60 Min. vorher, ab 10 Min. orange, Klick öffnet Zoom/Teams/Meet), Downloads-Wächter (neue Datei → Meldung und Ablage), Fenster einrasten (per ⌃⌥-Tastenkürzel oder Ziehen an den Rand), Textbausteine und Emoji-Kürzel (`;mfg`, `:herz:`), Menüleisten-Symbole ausblenden, Bildschirmecken mit Aktionen, Gesicht entsperren.
 

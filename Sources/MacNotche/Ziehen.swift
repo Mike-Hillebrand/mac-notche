@@ -110,7 +110,9 @@ final class Zuhause: ObservableObject {
             let woerter = (UserDefaults.standard.string(forKey: E.zuhauseWoerter) ?? Self.standardWoerter)
                 .split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces).lowercased() }.filter { !$0.isEmpty }
             // Wortanfänge statt Teilstrings: „Langzeitbelichtung“ soll nicht als „Licht“ zählen.
-            let treffer = ordner ?? alle.filter { n in
+            let auswahl = (UserDefaults.standard.string(forKey: E.zuhauseAuswahl) ?? "").split(separator: "\n").map(String.init).filter { !$0.isEmpty }
+            // Angehakte Kurzbefehle aus den Einstellungen haben Vorrang vor Ordner und Stichwörtern.
+            let treffer = !auswahl.isEmpty ? auswahl.filter { alle.isEmpty || alle.contains($0) } : ordner ?? alle.filter { n in
                 let teile = n.lowercased().split(whereSeparator: { !$0.isLetter && !$0.isNumber }).map(String.init)
                 return woerter.contains { w in teile.contains { $0.hasPrefix(w) } || (w.contains(" ") && n.lowercased().contains(w)) }
             }
