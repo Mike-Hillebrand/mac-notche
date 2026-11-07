@@ -95,7 +95,7 @@ struct NotchAnsicht: View {
         .clipShape(form)
         .overlay(alignment: .bottom) {
             // Saum hängt an der Unterkante des Körpers und ragt um r.unten darunter.
-            if skin == .tropfend, !offen { Tropfen(fuellung: hintergrund).frame(height: r.unten).offset(y: r.unten) }
+            if skin == .tropfend, !offen { Tropfen(fuellung: hintergrund).frame(height: r.unten).padding(.horizontal, Island.ohr + 12).offset(y: r.unten) }
         }
         .overlay {
             if skin.tier, !offen { Tier(art: skin, fuellung: hintergrund, hoehe: m.leistenHoehe) }
