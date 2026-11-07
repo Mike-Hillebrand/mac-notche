@@ -425,6 +425,24 @@ struct InfoSeite: View {
                 Link("Mike Hillebrand Media", destination: URL(string: "https://mikehillebrand.com")!)
             }
             .font(.system(size: 12)).foregroundStyle(.secondary)
+            HStack(spacing: 10) {
+                Link(destination: URL(string: "https://github.com/Mike-Hillebrand/mac-notche")!) {
+                    Label("Mac Notche auf GitHub", systemImage: "chevron.left.forwardslash.chevron.right")
+                }
+                Text("·").foregroundStyle(.tertiary)
+                Link(destination: URL(string: "https://github.com/Mike-Hillebrand/mac-notche/releases/latest")!) {
+                    Label("Neueste Version laden", systemImage: "arrow.down.circle")
+                }
+            }
+            .font(.system(size: 12))
+            HStack(spacing: 6) {
+                Text("⭐").font(.system(size: 13))
+                Text("Gefällt dir Mac Notche? Ein Stern auf GitHub hilft, dass andere die App finden.")
+                Link("Stern geben", destination: URL(string: "https://github.com/Mike-Hillebrand/mac-notche")!)
+            }
+            .font(.system(size: 12)).foregroundStyle(.secondary)
+            Text("Frei und quelloffen (MIT). Fehler oder Wünsche: Issues auf GitHub.")
+                .font(.system(size: 11)).foregroundStyle(.tertiary)
             Text("© \(String(Calendar.current.component(.year, from: Date()))) Mike Hillebrand · Chemnitz")
                 .font(.system(size: 11)).foregroundStyle(.tertiary)
         }
