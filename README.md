@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.15.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.16.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -54,9 +54,9 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 ![Einstellungen](docs/bilder/einstellungen-aussehen.png)
 *Einstellungen › Aussehen: Form und Farbe*
 
-**Formen (Einstellungen › Aussehen):** Angedockt (Island mit Ohren), Katze, Dackel und Bulldogge (schwebend oder oben angedockt, blinzeln, wedeln, schauen der Maus nach), Tropfend; Körperfarbe wählbar (Schwarz, Anthrazit, Nachtblau, Tannengrün, Weinrot, Schokolade, Lila, Signalorange, Pink).
+**Formen (Einstellungen › Aussehen):** Angedockt (Island mit Ohren), Katze, Dackel, Dogge und Frenchy (schwebend oder oben angedockt, blinzeln, wedeln, schauen der Maus nach), Tropfend; Körperfarbe wählbar (Schwarz, Anthrazit, Nachtblau, Tannengrün, Weinrot, Schokolade, Lila, Signalorange, Pink).
 
-Die Köpfe von Katze und Mops stammen aus Vektorvorlagen (Mops: „Flat Pug Collection“, designed by Freepik).
+Katze und die drei Hunde stammen aus Vektorvorlagen.
 
 **Im Hintergrund:** Lautstärke- und Feststell-Anzeige, Bluetooth- und Akku-Meldungen, Termin-Hinweis, Termin-Countdown in der zugeklappten Notch (ab 60 Min. vorher, ab 10 Min. orange, Klick öffnet Zoom/Teams/Meet), Downloads-Wächter (neue Datei → Meldung und Ablage), Fenster einrasten (per ⌃⌥-Tastenkürzel oder Ziehen an den Rand), Textbausteine und Emoji-Kürzel (`;mfg`, `:herz:`), Menüleisten-Symbole ausblenden, Bildschirmecken mit Aktionen, Gesicht entsperren.
 

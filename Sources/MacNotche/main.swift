@@ -113,7 +113,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         case .offen: CGSize(width: 780 + ohren, height: 290 + (Geraet.echteNotch ? leiste : 0))
         }
         // Skins brauchen Platz für Ohren, Schwanz, Beine oder Tropfen.
-        let rand = Skin.gewaehlt.rand
+        let rand = Skin.gewaehlt.rand(leiste: leiste)
         g.width += rand.rechts + rand.links
         g.height += rand.oben + (z == .offen ? 0 : rand.unten)
         let r = NSRect(x: s.frame.midX - g.width / 2, y: s.frame.maxY - g.height, width: g.width, height: g.height)
