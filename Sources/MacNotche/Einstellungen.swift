@@ -3,7 +3,7 @@ import ServiceManagement
 
 /// Schlüssel für UserDefaults.
 enum E {
-    static let look = "look", breite = "breite", schatten = "schatten", skin = "skin", farbe = "farbe", skinDock = "skin.dock"
+    static let look = "look", breite = "breite", schatten = "schatten", skin = "skin", farbe = "farbe", skinDock = "skin.dock", leuchten = "leuchten"
     static let verzoegerung = "verzoegerung", klickSchliesst = "klickSchliesst"
     static let updatesAuto = "updates.auto"
     static let zeigeMusik = "zeige.musik", zeigeClaude = "zeige.claude", zeigeWetter = "zeige.wetter", zeigeTermin = "zeige.termin"
@@ -185,6 +185,7 @@ struct AussehenSeite: View {
     @AppStorage(E.skin) var skin = "Angedockt"
     @AppStorage(E.farbe) var farbe = "000000"
     @AppStorage(E.skinDock) var dock = false
+    @AppStorage(E.leuchten) var leuchten = false
     var body: some View {
         Section("Form") {
             Picker("Form", selection: $skin) {
@@ -201,6 +202,9 @@ struct AussehenSeite: View {
             }
             Text("Die Tiere schauen deiner Maus nach. Aufgeklappt wird jede Form zum runden Fenster.")
                 .font(.caption).foregroundStyle(.secondary)
+        }
+        Section("Leuchten") {
+            Toggle("Farbiges Leuchten um die Notch (wie Siri, Farben wandern langsam)", isOn: $leuchten)
         }
         Section("Farbe") {
             HStack(spacing: 10) {

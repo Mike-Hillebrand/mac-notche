@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.18.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.19.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -54,7 +54,7 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 ![Einstellungen](docs/bilder/einstellungen-aussehen.png)
 *Einstellungen › Aussehen: Form und Farbe*
 
-**Formen (Einstellungen › Aussehen):** Angedockt (Island mit Ohren), Katze, Dackel, Dogge und Frenchy (schwebend oder oben angedockt, blinzeln, wedeln, schauen der Maus nach), Tropfend; Körperfarbe wählbar (Schwarz, Anthrazit, Nachtblau, Tannengrün, Weinrot, Schokolade, Lila, Signalorange, Pink).
+**Formen (Einstellungen › Aussehen):** Angedockt (Island mit Ohren), Katze, Dackel, Dogge und Frenchy (schwebend oder oben angedockt, blinzeln, wedeln, schauen der Maus nach), Tropfend; farbiges Siri-Leuchten um die Notch zuschaltbar; Körperfarbe wählbar (Schwarz, Anthrazit, Nachtblau, Tannengrün, Weinrot, Schokolade, Lila, Signalorange, Pink).
 
 Katze und die drei Hunde stammen aus Vektorvorlagen.
 

@@ -115,6 +115,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Skins brauchen Platz für Ohren, Schwanz, Beine oder Tropfen.
         let rand = Skin.gewaehlt.rand(leiste: leiste)
         g.width += rand.rechts + rand.links
+        if Leuchten.an { g.width += 2 * Leuchten.rand; g.height += Leuchten.rand }
         g.height += rand.oben + (z == .offen ? 0 : rand.unten)
         let r = NSRect(x: s.frame.midX - g.width / 2, y: s.frame.maxY - g.height, width: g.width, height: g.height)
         panel.setFrame(r, display: true, animate: panel.frame.width > 0)

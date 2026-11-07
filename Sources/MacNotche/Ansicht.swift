@@ -54,6 +54,7 @@ struct NotchAnsicht: View {
     @AppStorage(E.skin) private var skinRaw = "Angedockt"
     @AppStorage(E.farbe) private var farbe = "000000"
     @AppStorage(E.skinDock) private var skinDock = false
+    @AppStorage(E.leuchten) private var leuchten = false
     @Environment(\.colorScheme) private var system
 
     private var schema: ColorScheme {
@@ -93,6 +94,7 @@ struct NotchAnsicht: View {
         }
         // Inhalt nie über die Form hinaus zeichnen (sonst wirken die Ecken abgeschnitten).
         .clipShape(form)
+        .background { if leuchten { Leuchten(form: form) } }
         .overlay(alignment: .bottom) {
             // Saum hängt an der Unterkante des Körpers und ragt um r.unten darunter.
             if skin == .tropfend, !offen { Tropfen(fuellung: hintergrund).frame(height: r.unten).padding(.horizontal, Island.ohr + 12).offset(y: r.unten) }
@@ -105,6 +107,7 @@ struct NotchAnsicht: View {
             if skin.tier, skin != .dackel, !offen { Tier(art: skin, fuellung: hintergrund, hoehe: m.leistenHoehe) }
         }
         .padding(.top, r.oben).padding(.bottom, offen ? 0 : r.unten).padding(.trailing, offen ? (r.rechts + r.links) / 2 : r.rechts).padding(.leading, offen ? (r.rechts + r.links) / 2 : r.links)
+        .padding(.horizontal, leuchten ? Leuchten.rand : 0).padding(.bottom, leuchten ? Leuchten.rand : 0)
         .environmentObject(m.musik)
         .environmentObject(m.kalender)
         .environmentObject(m.claude)
