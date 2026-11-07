@@ -13,7 +13,7 @@ enum E {
     static let fensterAktiv = "fenster.aktiv", augenMinuten = "augen.minuten", trinkenMinuten = "trinken.minuten", bausteine = "bausteine"
     static let emojiKuerzel = "emoji.kuerzel", aktien = "aktien", notizen = "notizen"
     static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuhauseWoerter = "zuhause.woerter", notizOrdner = "notiz.ordner", diktatSprache = "diktat.sprache", downloadsAblage = "downloads.ablage", zuKI = "zu.ki", zuAus = "zu.aus"
-    static let sportLiga = "sport.liga", sportVereine = "sport.vereine", geraet = "geraet"
+    static let sportLiga = "sport.liga", sportVereine = "sport.vereine", geraet = "geraet", notchHoehe = "notch.hoehe"
     static let fensterZiehen = "fenster.ziehen", kurzbefehle = "kurzbefehle"
     static func meldung(_ art: String) -> String { "meldung.\(art)" }
 }
@@ -119,6 +119,7 @@ struct AllgemeinSeite: View {
     @AppStorage(E.verzoegerung) var verzoegerung = 0.0
     @AppStorage(E.klickSchliesst) var klick = true
     @AppStorage(E.geraet) var geraet = "auto"
+    @AppStorage(E.notchHoehe) var notchHoehe = 0.0
     @State private var login = SMAppService.mainApp.status == .enabled
     @State private var sprache = (UserDefaults.standard.stringArray(forKey: "AppleLanguages")?.first).flatMap { ["de", "en"].first(where: $0.hasPrefix) } ?? ""
     @State private var neustart = false
@@ -130,6 +131,14 @@ struct AllgemeinSeite: View {
                 Text("iMac, Mac Studio, Monitor – ohne Notch").tag("imac")
             }
             Text(Geraet.echteNotch ? L("Erkannt: echte Notch, Breite ") + "\(Int(Geraet.luecke)) pt" : L("Erkannt: kein Kamera-Ausschnitt"))
+                .font(.caption).foregroundStyle(.secondary)
+            Picker("Höhe zugeklappt", selection: $notchHoehe) {
+                Text("Wie die Menüleiste").tag(0.0)
+                Text("Schlank (30 pt)").tag(30.0)
+                Text("Sehr schlank (26 pt)").tag(26.0)
+                Text("Flach (22 pt)").tag(22.0)
+            }
+            Text("Gilt für die zugeklappte Notch; auf dem MacBook sollte sie nicht dünner als die Kamera-Notch sein.")
                 .font(.caption).foregroundStyle(.secondary)
         }
         Section("Sprache") {

@@ -17,14 +17,27 @@ enum Hintergruende {
         }
     }
 
+    static let eigeneOrdner = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Pictures/Mac Notche/Hintergründe", isDirectory: true)
+
+    /// Eigene Bilder aus dem Ordner (JPEG/PNG/HEIC), die nicht aus der App stammen.
+    static var eigene: [(name: String, url: URL)] {
+        let mitgeliefert = Set(reihenfolge.map { $0 + ".jpg" })
+        let dateien = (try? FileManager.default.contentsOfDirectory(at: eigeneOrdner, includingPropertiesForKeys: nil)) ?? []
+        return dateien.filter { ["jpg", "jpeg", "png", "heic"].contains($0.pathExtension.lowercased()) && !mitgeliefert.contains($0.lastPathComponent) }
+            .sorted { $0.lastPathComponent < $1.lastPathComponent }
+            .map { ($0.deletingPathExtension().lastPathComponent, $0) }
+    }
+
     /// Kopiert das Bild nach ~/Pictures/Mac Notche/Hintergründe und setzt es auf allen Bildschirmen.
     static func setzen(_ url: URL) -> String? {
-        let ziel = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Pictures/Mac Notche/Hintergründe", isDirectory: true)
+        let ziel = eigeneOrdner
         do {
             try FileManager.default.createDirectory(at: ziel, withIntermediateDirectories: true)
             let datei = ziel.appendingPathComponent(url.lastPathComponent)
-            if FileManager.default.fileExists(atPath: datei.path) { try FileManager.default.removeItem(at: datei) }
-            try FileManager.default.copyItem(at: url, to: datei)
+            if datei != url {
+                if FileManager.default.fileExists(atPath: datei.path) { try FileManager.default.removeItem(at: datei) }
+                try FileManager.default.copyItem(at: url, to: datei)
+            }
             for s in NSScreen.screens {
                 try NSWorkspace.shared.setDesktopImageURL(datei, for: s, options: [.imageScaling: NSImageScaling.scaleProportionallyUpOrDown.rawValue, .allowClipping: true])
             }
@@ -39,10 +52,25 @@ struct HintergruendeSeite: View {
     private let spalten = [GridItem(.adaptive(minimum: 150), spacing: 12)]
     var body: some View {
         Section {
-            Text("14 Hintergründe in 5K (5120 × 2880), bei denen die Notch Teil des Bildes ist. Klick setzt den Hintergrund auf allen Bildschirmen; die Datei landet in Bilder › Mac Notche › Hintergründe.")
+            Text("14 Hintergründe in 5K (5120 × 2880), bei denen die Notch Teil des Bildes ist. Klick setzt den Hintergrund auf allen Bildschirmen; die Datei landet in Bilder › Mac Notche › Hintergründe. Eigene Bilder in diesem Ordner erscheinen hier ebenfalls.")
                 .font(.caption).foregroundStyle(.secondary)
+            raster(Hintergruende.alle)
+            if !Hintergruende.eigene.isEmpty {
+                Text("Eigene Bilder aus dem Ordner").font(.system(size: 12, weight: .semibold)).padding(.top, 6)
+                raster(Hintergruende.eigene)
+            }
+            if let hinweis { Text(hinweis).font(.caption).foregroundStyle(.orange) }
+            if let gesetzt { Text(L("Gesetzt: ") + (Hintergruende.titel[gesetzt] ?? gesetzt)).font(.caption).foregroundStyle(.secondary) }
+            Button("Ordner im Finder zeigen") {
+                try? FileManager.default.createDirectory(at: Hintergruende.eigeneOrdner, withIntermediateDirectories: true)
+                NSWorkspace.shared.open(Hintergruende.eigeneOrdner)
+            }
+        }
+    }
+
+    private func raster(_ liste: [(name: String, url: URL)]) -> some View {
             LazyVGrid(columns: spalten, spacing: 12) {
-                ForEach(Hintergruende.alle, id: \.name) { h in
+                ForEach(liste, id: \.name) { h in
                     Button {
                         hinweis = Hintergruende.setzen(h.url)
                         gesetzt = hinweis == nil ? h.name : nil
@@ -58,13 +86,5 @@ struct HintergruendeSeite: View {
                     .help("Als Schreibtischhintergrund setzen")
                 }
             }
-            if let hinweis { Text(hinweis).font(.caption).foregroundStyle(.orange) }
-            if let gesetzt { Text(L("Gesetzt: ") + (Hintergruende.titel[gesetzt] ?? gesetzt)).font(.caption).foregroundStyle(.secondary) }
-            Button("Ordner im Finder zeigen") {
-                let o = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Pictures/Mac Notche/Hintergründe")
-                try? FileManager.default.createDirectory(at: o, withIntermediateDirectories: true)
-                NSWorkspace.shared.open(o)
-            }
-        }
     }
 }

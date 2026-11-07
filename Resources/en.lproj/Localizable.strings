@@ -472,4 +472,11 @@
 "Gesetzt: " = "Set: ";
 "Ordner im Finder zeigen" = "Show folder in Finder";
 "Als Schreibtischhintergrund setzen" = "Set as desktop wallpaper";
-"14 Hintergründe in 5K (5120 × 2880), bei denen die Notch Teil des Bildes ist. Klick setzt den Hintergrund auf allen Bildschirmen; die Datei landet in Bilder › Mac Notche › Hintergründe." = "14 wallpapers in 5K (5120 × 2880) where the notch is part of the picture. Click sets it on all displays; the file is saved to Pictures › Mac Notche › Wallpapers.";
+"14 Hintergründe in 5K (5120 × 2880), bei denen die Notch Teil des Bildes ist. Klick setzt den Hintergrund auf allen Bildschirmen; die Datei landet in Bilder › Mac Notche › Hintergründe. Eigene Bilder in diesem Ordner erscheinen hier ebenfalls." = "14 wallpapers in 5K (5120 × 2880) where the notch is part of the picture. Click sets it on all displays; the file is saved to Pictures › Mac Notche › Wallpapers. Your own images in that folder appear here too.";
+"Eigene Bilder aus dem Ordner" = "Your own images from the folder";
+"Höhe zugeklappt" = "Height when closed";
+"Wie die Menüleiste" = "Same as the menu bar";
+"Schlank (30 pt)" = "Slim (30 pt)";
+"Sehr schlank (26 pt)" = "Very slim (26 pt)";
+"Flach (22 pt)" = "Flat (22 pt)";
+"Gilt für die zugeklappte Notch; auf dem MacBook sollte sie nicht dünner als die Kamera-Notch sein." = "Applies to the closed notch; on a MacBook it should not be thinner than the camera notch.";
