@@ -3,8 +3,8 @@ import SwiftUI
 
 /// Mitgelieferte Schreibtischhintergründe: das Motiv setzt oben mittig an der Notch an, die Notch selbst malt die App.
 enum Hintergruende {
-    static let titel: [String: String] = ["farbroller": "Farbroller", "bert": "Bert"]
-    static let reihenfolge = ["farbroller", "bert"]
+    static let titel: [String: String] = ["farbroller": "Farbroller", "erni": "Erni", "taschenlampe": "Taschenlampe"]
+    static let reihenfolge = ["farbroller", "erni", "taschenlampe"]
 
     static var alle: [(name: String, url: URL)] {
         guard let ordner = Bundle.main.resourceURL?.appendingPathComponent("Hintergruende") else { return [] }
