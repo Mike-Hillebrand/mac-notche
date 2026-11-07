@@ -96,7 +96,7 @@ struct NotchAnsicht: View {
             if skin.schwebend, !offen { Tier(art: skin, fuellung: hintergrund, hoehe: m.leistenHoehe) }
             else if skin == .tropfend, !offen { Tropfen(fuellung: hintergrund).frame(height: r.unten).offset(y: m.zustand == .meldung ? m.leistenHoehe + 48 : m.leistenHoehe) }
         }
-        .padding(.top, r.oben + (skin.schwebend && Geraet.echteNotch && !offen ? m.leistenHoehe : 0)).padding(.bottom, offen ? 0 : r.unten).padding(.trailing, offen ? (r.rechts + r.links) / 2 : r.rechts).padding(.leading, offen ? (r.rechts + r.links) / 2 : r.links)
+        .padding(.top, r.oben).padding(.bottom, offen ? 0 : r.unten).padding(.trailing, offen ? (r.rechts + r.links) / 2 : r.rechts).padding(.leading, offen ? (r.rechts + r.links) / 2 : r.links)
         .environmentObject(m.musik)
         .environmentObject(m.kalender)
         .environmentObject(m.claude)

@@ -116,8 +116,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let rand = Skin.gewaehlt.rand
         g.width += rand.rechts + rand.links
         g.height += rand.oben + (z == .offen ? 0 : rand.unten)
-        // Schwebende Tiere rutschen auf dem MacBook unter die Kamera-Notch.
-        if Skin.gewaehlt.schwebend, Geraet.echteNotch, z != .offen { g.height += leiste }
         let r = NSRect(x: s.frame.midX - g.width / 2, y: s.frame.maxY - g.height, width: g.width, height: g.height)
         panel.setFrame(r, display: true, animate: panel.frame.width > 0)
     }
