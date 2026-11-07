@@ -190,9 +190,9 @@ struct AussehenSeite: View {
             Picker("Form", selection: $skin) {
                 Text("Angedockt – Island mit weichen Ohren").tag(Skin.angedockt.rawValue)
                 Text("Katze – blinzelt und wedelt").tag(Skin.katze.rawValue)
-                Text("Dackel – langer Körper unter der Notch, Beine baumeln").tag(Skin.dackel.rawValue)
-                Text("Dogge – sitzt mit Zunge, Kringelschwanz").tag(Skin.bulldogge.rawValue)
-                Text("Frenchy – Fledermausohren, schaut hinter der Notch hervor").tag(Skin.frenchy.rawValue)
+                Text("Dackel – Kopf im Profil, wedelt mit der Rute").tag(Skin.dackel.rawValue)
+                Text("Dogge – Kopf mit Zunge, Kringelschwanz").tag(Skin.bulldogge.rawValue)
+                Text("Frenchy – Kopf mit Fledermausohren").tag(Skin.frenchy.rawValue)
                 Text("Tropfend – zähflüssig, ab und zu fällt ein Tropfen").tag(Skin.tropfend.rawValue)
             }
             .pickerStyle(.radioGroup)
