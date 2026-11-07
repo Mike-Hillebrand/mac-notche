@@ -77,7 +77,7 @@ enum Skin: String, CaseIterable, Identifiable {
             let k = kopfMasse(leiste: leiste), cy = kopfMitteY(leiste: leiste)
             let oben = max(0, k.hoehe / 2 - cy)                 // so weit ragt der Kopf über die Oberkante
             let unten = max(0, cy + k.hoehe / 2 - leiste) + 4   // so weit hängt er unter der Leiste
-            return (oben, unten, k.breite / 2 + 2, self == .frenchy ? 12 : self == .katze ? 34 : 46)
+            return (oben, unten, k.breite / 2 + 2, self == .frenchy ? 12 : self == .katze ? 38 : 46)
         }
     }
 }
@@ -127,10 +127,10 @@ struct Tier: View {
                     Group {
                         // Alle Schwänze setzen am Körperende an und hängen nach unten; sie pendeln um den Ansatz.
                         if art == .katze {
-                            Katzenschwanz().stroke(fuellung, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                                .frame(width: 30, height: 30)
-                                .rotationEffect(.degrees(wedel * 0.7), anchor: .topLeading)
-                                .position(x: g.size.width + 12, y: hoehe / 2 + 12)
+                            Katzenschwanz().stroke(fuellung, style: StrokeStyle(lineWidth: 7, lineCap: .round))
+                                .frame(width: 34, height: 26)
+                                .rotationEffect(.degrees(wedel * 0.5), anchor: .topLeading)
+                                .position(x: g.size.width + 15, y: hoehe / 2 + 9)
                         } else if art == .dackel {
                             Dackelrute().stroke(fuellung, style: StrokeStyle(lineWidth: 5, lineCap: .round))
                                 .frame(width: 42, height: 30)
@@ -245,11 +245,12 @@ struct Dackelrute: Shape {
 }
 
 struct Katzenschwanz: Shape {
+    /// Aus dem Körperende nach rechts, dann nach unten und unter dem Ende wieder nach links eingerollt.
     func path(in r: CGRect) -> Path {
         var p = Path()
-        p.move(to: CGPoint(x: r.minX, y: r.minY + 3))
-        p.addQuadCurve(to: CGPoint(x: r.midX - 2, y: r.maxY - 4), control: CGPoint(x: r.minX + 2, y: r.maxY - 2))
-        p.addQuadCurve(to: CGPoint(x: r.maxX - 3, y: r.midY + 2), control: CGPoint(x: r.maxX, y: r.maxY + 2))
+        p.move(to: CGPoint(x: r.minX, y: r.minY + 4))
+        p.addCurve(to: CGPoint(x: r.maxX - 3, y: r.midY + 2), control1: CGPoint(x: r.midX + 6, y: r.minY), control2: CGPoint(x: r.maxX - 2, y: r.minY + 4))
+        p.addCurve(to: CGPoint(x: r.minX + 8, y: r.maxY - 3), control1: CGPoint(x: r.maxX - 4, y: r.maxY + 2), control2: CGPoint(x: r.midX - 2, y: r.maxY + 2))
         return p
     }
 }
