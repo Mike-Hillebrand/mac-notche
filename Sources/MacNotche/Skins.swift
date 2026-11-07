@@ -1,5 +1,26 @@
 import SwiftUI
 
+// MARK: - Gerät: echte Notch (MacBook) oder freier Bildschirmrand (iMac, Studio, Monitor)
+
+enum Geraet {
+    /// „auto“ erkennt die Notch über den sicheren Bereich; „macbook“/„imac“ erzwingen.
+    static var echteNotch: Bool {
+        switch UserDefaults.standard.string(forKey: E.geraet) ?? "auto" {
+        case "macbook": return true
+        case "imac": return false
+        default: return (NSScreen.screens.first?.safeAreaInsets.top ?? 0) > 0
+        }
+    }
+    /// Breite der Kamera-Notch plus Rand; unter ihr darf zugeklappt nichts stehen.
+    static var luecke: CGFloat {
+        guard echteNotch else { return 0 }
+        if let s = NSScreen.screens.first, let l = s.auxiliaryTopLeftArea, let r = s.auxiliaryTopRightArea, s.frame.width - l.width - r.width > 50 {
+            return s.frame.width - l.width - r.width + 16
+        }
+        return 200  // erzwungen oder unbekannt: typische MacBook-Notch
+    }
+}
+
 // MARK: - Farben für den Körper (Stil „Schwarz“ und Tiere)
 
 enum Farbe {

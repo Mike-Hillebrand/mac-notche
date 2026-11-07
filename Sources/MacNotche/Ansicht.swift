@@ -96,7 +96,7 @@ struct NotchAnsicht: View {
             if skin.schwebend, !offen { Tier(art: skin, fuellung: hintergrund, hoehe: m.leistenHoehe) }
             else if skin == .tropfend, !offen { Tropfen(fuellung: hintergrund).frame(height: r.unten).offset(y: m.zustand == .meldung ? m.leistenHoehe + 48 : m.leistenHoehe) }
         }
-        .padding(.top, r.oben).padding(.bottom, offen ? 0 : r.unten).padding(.trailing, offen ? (r.rechts + r.links) / 2 : r.rechts).padding(.leading, offen ? (r.rechts + r.links) / 2 : r.links)
+        .padding(.top, r.oben + (skin.schwebend && Geraet.echteNotch && !offen ? m.leistenHoehe : 0)).padding(.bottom, offen ? 0 : r.unten).padding(.trailing, offen ? (r.rechts + r.links) / 2 : r.rechts).padding(.leading, offen ? (r.rechts + r.links) / 2 : r.links)
         .environmentObject(m.musik)
         .environmentObject(m.kalender)
         .environmentObject(m.claude)
@@ -177,7 +177,19 @@ struct Kompakt: View {
         }
     }
 
-    private func breite(_ termin: Bool) { m.zuExtraBreite = CGFloat(max(0, alle.count - 1)) * 70 + (termin ? 80 : 0) + (fokus.name.isEmpty ? 0 : CGFloat(min(fokus.name.count, 12)) * 7) }
+    @AppStorage(E.breite) private var basisBreite = 300.0
+    @AppStorage(E.skin) private var skinRaw = "Angedockt"
+    @State private var linksBreite: CGFloat = 0
+    @State private var rechtsBreite: CGFloat = 0
+    /// Fenster so breit wie nötig: gemessener Inhalt links und rechts, Lücke unter der Kamera-Notch, Ränder.
+    private func anpassen() {
+        let schwebend = (Skin(rawValue: skinRaw) ?? .angedockt).schwebend
+        let rand = schwebend ? m.leistenHoehe + 14 + 12 : 2 * Island.ohr
+        // 28 = Innenabstand, dazu Stack-Abstände und Mindestbreite der Spacer (mit Lücke zwei Spacer).
+        let luft: CGFloat = Geraet.luecke > 0 ? 48 : 24
+        let noetig = linksBreite + rechtsBreite + Geraet.luecke + 28 + luft + rand + 4
+        m.zuExtraBreite = max(0, noetig - basisBreite)
+    }
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 10)) { tl in
@@ -187,6 +199,7 @@ struct Kompakt: View {
 
     private func inhalt(termin: EKEvent?, jetzt: Date) -> some View {
         HStack(spacing: 8) {
+            HStack(spacing: 8) {
             if zeigeMusik, let t = musik.titel, t.spielt {
                 CoverBild(groesse: 18)
                 Equalizer()
@@ -197,7 +210,13 @@ struct Kompakt: View {
                 Image(systemName: "sparkle").foregroundStyle(Color.primary.opacity(0.5))
             }
             if wach.bis != nil { Image(systemName: "cup.and.saucer.fill").foregroundStyle(.orange) }
+            }
+            .fixedSize()
+            .breiteMessen { linksBreite = $0 }
             Spacer()
+            // MacBook: unter der Kamera-Notch bleibt die Mitte leer.
+            if Geraet.luecke > 0 { Color.clear.frame(width: Geraet.luecke); Spacer() }
+            HStack(spacing: 8) {
             if let termin {
                 // Ab 10 Minuten vorher orange; Klick öffnet den Videocall (sonst den Kalender).
                 let bald = termin.startDate.timeIntervalSince(jetzt) <= 600
@@ -234,16 +253,29 @@ struct Kompakt: View {
             } else if zeigeClaude, claude.fuenfStunden.gesamt > 0 {
                 Text(kurz(claude.fuenfStunden.gesamt))
             }
+            }
+            .fixedSize()
+            .breiteMessen { rechtsBreite = $0 }
         }
         .font(.system(size: 11, weight: .semibold).monospacedDigit())
         .foregroundStyle(Color.primary)
         .padding(.horizontal, 14)
         .frame(height: m.leistenHoehe)
-        // Ab dem zweiten Ring je 70 pt mehr, Countdown 80 pt, damit nichts abgeschnitten wird.
-        .onAppear { breite(termin != nil) }
-        .onChange(of: alle.count) { _, _ in breite(termin != nil) }
-        .onChange(of: termin?.eventIdentifier) { _, _ in breite(termin != nil) }
-        .onChange(of: fokus.name) { _, _ in breite(termin != nil) }
+        .onAppear { anpassen() }
+        .onChange(of: linksBreite + rechtsBreite) { _, _ in anpassen() }
+        .onChange(of: skinRaw) { _, _ in anpassen() }
+    }
+}
+
+private struct BreiteKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+extension View {
+    /// Meldet die eigene Breite, ohne das Layout zu beeinflussen.
+    func breiteMessen(_ tun: @escaping (CGFloat) -> Void) -> some View {
+        background(GeometryReader { g in Color.clear.preference(key: BreiteKey.self, value: g.size.width) })
+            .onPreferenceChange(BreiteKey.self, perform: tun)
     }
 }
 

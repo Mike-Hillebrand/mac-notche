@@ -106,14 +106,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Je Seite ein „Ohr“ dazu, damit der Inhalt so breit bleibt wie bisher.
         let ohren = 2 * Island.ohr
         var g: CGSize = switch z {
-        case .zu: CGSize(width: UserDefaults.standard.double(forKey: E.breite) + modell.zuExtraBreite + ohren, height: leiste)
+        // MacBook: Platz für die Kamera-Notch in der Mitte plus je 130 pt Inhalt daneben.
+        // Die Ansicht misst ihren Inhalt und meldet den Mehrbedarf (Ringe, Countdown, Kamera-Lücke, Tierkopf) als zuExtraBreite.
+        case .zu: CGSize(width: UserDefaults.standard.double(forKey: E.breite) + modell.zuExtraBreite, height: leiste)
         case .meldung: CGSize(width: 440 + ohren, height: leiste + 48)
-        case .offen: CGSize(width: 780 + ohren, height: 290 + ((s.safeAreaInsets.top > 0) ? leiste : 0))
+        case .offen: CGSize(width: 780 + ohren, height: 290 + (Geraet.echteNotch ? leiste : 0))
         }
         // Skins brauchen Platz für Ohren, Schwanz, Beine oder Tropfen.
         let rand = Skin.gewaehlt.rand
         g.width += rand.rechts + rand.links
         g.height += rand.oben + (z == .offen ? 0 : rand.unten)
+        // Schwebende Tiere rutschen auf dem MacBook unter die Kamera-Notch.
+        if Skin.gewaehlt.schwebend, Geraet.echteNotch, z != .offen { g.height += leiste }
         let r = NSRect(x: s.frame.midX - g.width / 2, y: s.frame.maxY - g.height, width: g.width, height: g.height)
         panel.setFrame(r, display: true, animate: panel.frame.width > 0)
     }

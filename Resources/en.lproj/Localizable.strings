@@ -451,3 +451,10 @@
 "Werkzeuge da, aber kein iPhone im Netz. Im Finder beim iPhone „Dieses iPhone anzeigen, wenn WLAN aktiv ist“ einschalten, gleiches WLAN, einmal entsperren." = "Tools present, but no iPhone on the network. In Finder enable “Show this iPhone when on Wi-Fi”, same Wi-Fi, unlock once.";
 "Per Kabel anschließen oder im Finder „Dieses iPhone anzeigen, wenn WLAN aktiv ist“ einschalten" = "Connect via cable or enable “Show this iPhone when on Wi-Fi” in Finder";
 "Per Kabel anschließen, entsperren und „Vertrauen“ tippen – WLAN unter Einstellungen › Verbindungen" = "Connect via cable, unlock and tap “Trust” – Wi-Fi under Settings › Connections";
+"Gerät" = "Device";
+"Bildschirm" = "Display";
+"Automatisch erkennen" = "Detect automatically";
+"MacBook mit Notch – Mitte bleibt frei" = "MacBook with notch – center stays empty";
+"iMac, Mac Studio, Monitor – ohne Notch" = "iMac, Mac Studio, monitor – no notch";
+"Erkannt: echte Notch, Breite " = "Detected: real notch, width ";
+"Erkannt: kein Kamera-Ausschnitt" = "Detected: no camera cutout";

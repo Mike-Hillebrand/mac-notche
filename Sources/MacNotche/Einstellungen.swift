@@ -13,7 +13,7 @@ enum E {
     static let fensterAktiv = "fenster.aktiv", augenMinuten = "augen.minuten", trinkenMinuten = "trinken.minuten", bausteine = "bausteine"
     static let emojiKuerzel = "emoji.kuerzel", aktien = "aktien", notizen = "notizen"
     static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuhauseWoerter = "zuhause.woerter", notizOrdner = "notiz.ordner", diktatSprache = "diktat.sprache", downloadsAblage = "downloads.ablage", zuKI = "zu.ki", zuAus = "zu.aus"
-    static let sportLiga = "sport.liga", sportVereine = "sport.vereine"
+    static let sportLiga = "sport.liga", sportVereine = "sport.vereine", geraet = "geraet"
     static let fensterZiehen = "fenster.ziehen", kurzbefehle = "kurzbefehle"
     static func meldung(_ art: String) -> String { "meldung.\(art)" }
 }
@@ -116,10 +116,20 @@ struct AllgemeinSeite: View {
     @AppStorage(E.reiterAus) var reiterAus = ""  // nur damit die Schalter neu zeichnen
     @AppStorage(E.verzoegerung) var verzoegerung = 0.0
     @AppStorage(E.klickSchliesst) var klick = true
+    @AppStorage(E.geraet) var geraet = "auto"
     @State private var login = SMAppService.mainApp.status == .enabled
     @State private var sprache = (UserDefaults.standard.stringArray(forKey: "AppleLanguages")?.first).flatMap { ["de", "en"].first(where: $0.hasPrefix) } ?? ""
     @State private var neustart = false
     var body: some View {
+        Section("Gerät") {
+            Picker("Bildschirm", selection: $geraet) {
+                Text("Automatisch erkennen").tag("auto")
+                Text("MacBook mit Notch – Mitte bleibt frei").tag("macbook")
+                Text("iMac, Mac Studio, Monitor – ohne Notch").tag("imac")
+            }
+            Text(Geraet.echteNotch ? L("Erkannt: echte Notch, Breite ") + "\(Int(Geraet.luecke)) pt" : L("Erkannt: kein Kamera-Ausschnitt"))
+                .font(.caption).foregroundStyle(.secondary)
+        }
         Section("Sprache") {
             Picker("Sprache", selection: $sprache) {
                 Text("System").tag("")

@@ -32,7 +32,7 @@ final class NotchModell: ObservableObject {
     @Published var meldungWert: Double?
     @Published var leistenHoehe: CGFloat = 24
     /// MacBook mit echter Notch: die Reiterleiste rutscht unter die Notch, sonst verdeckt sie die mittleren Reiter.
-    var echteNotch: CGFloat { (NSScreen.screens.first?.safeAreaInsets.top ?? 0) > 0 ? leistenHoehe : 0 }
+    var echteNotch: CGFloat { Geraet.echteNotch ? leistenHoehe : 0 }
 
     let musik = Musik()
     let kalender = Kalender()
