@@ -41,13 +41,14 @@ enum Einstellungen {
 }
 
 enum Seite: String, CaseIterable, Identifiable {
-    case allgemein = "Allgemein", aussehen = "Aussehen", live = "Live-Aktivitäten", mitteilungen = "Mitteilungen"
+    case allgemein = "Allgemein", aussehen = "Aussehen", hintergrund = "Hintergründe", live = "Live-Aktivitäten", mitteilungen = "Mitteilungen"
     case wetter = "Wetter", iphone = "iPhone", werkzeuge = "Werkzeuge", entsperren = "Gesicht entsperren", claude = "Verbindungen", info = "Über Mac Notche"
     var id: String { rawValue }
     var symbol: String {
         switch self {
         case .allgemein: "gearshape"
         case .aussehen: "paintbrush"
+        case .hintergrund: "photo.on.rectangle.angled"
         case .live: "bell.badge"
         case .mitteilungen: "message"
         case .wetter: "cloud.sun"
@@ -78,6 +79,7 @@ struct EinstellungenAnsicht: View {
                 switch seite ?? .allgemein {
                 case .allgemein: AllgemeinSeite()
                 case .aussehen: AussehenSeite()
+                case .hintergrund: HintergruendeSeite()
                 case .live: LiveSeite()
                 case .mitteilungen: MitteilungenSeite()
                 case .wetter: WetterSeite()

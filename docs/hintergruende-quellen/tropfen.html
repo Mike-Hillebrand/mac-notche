@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;width:5120px;height:2880px;overflow:hidden}svg{display:block}</style></head><body>
+<svg id="s" width="5120" height="2880" viewBox="0 0 5120 2880"><rect width="5120" height="2880" fill="#fff"/><rect x="2300" y="0" width="560" height="78" rx="39" fill="#111"/></svg>
+<script>
+const s=document.getElementById('s');const ns='http://www.w3.org/2000/svg';
+function drip(x,w,l,y0,dir){const perle=w*0.9,sh=w*1.8;const p=document.createElementNS(ns,'path');
+const d=dir;const Y=(v)=>y0+d*v;
+p.setAttribute('d',`M${x-sh},${Y(0)} C${x-w*0.9},${Y(0)} ${x-w/2},${Y(l*0.1)} ${x-w/2},${Y(l*0.3)} C${x-w/2},${Y(l*0.7)} ${x-perle},${Y(l-perle*1.7)} ${x-perle},${Y(l-perle)} A${perle},${perle} 0 1 ${d>0?0:1} ${x+perle},${Y(l-perle)} C${x+perle},${Y(l-perle*1.7)} ${x+w/2},${Y(l*0.7)} ${x+w/2},${Y(l*0.3)} C${x+w/2},${Y(l*0.1)} ${x+w*0.9},${Y(0)} ${x+sh},${Y(0)} Z`);
+p.setAttribute('fill','#111');s.appendChild(p);}
+[[2340,14,60],[2410,20,150],[2470,12,40],[2540,24,210],[2610,14,80],[2680,18,130],[2740,12,50],[2800,20,170],[2845,13,70]].forEach(([x,w,l])=>drip(x,w,l,70,1));
+const r=document.createElementNS(ns,'rect');r.setAttribute('x',0);r.setAttribute('y',2330);r.setAttribute('width',5120);r.setAttribute('height',550);r.setAttribute('fill','#222');s.appendChild(r);
+let x=120;while(x<5100){const w=30+Math.random()*50,l=120+Math.random()*420;drip(x,w,l,2340,-1);x+=260+Math.random()*320;}
+</script></body></html>
