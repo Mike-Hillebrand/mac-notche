@@ -42,14 +42,18 @@ enum Skin: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     static var gewaehlt: Skin { Skin(rawValue: UserDefaults.standard.string(forKey: E.skin) ?? "") ?? .angedockt }
     /// Schwebt mit Abstand zur Bildschirmkante (Kopf links, Schwanz rechts).
-    var schwebend: Bool { self == .katze || self == .dackel || self == .bulldogge }
+    /// Tier-Skin (Kopf links, Schwanz rechts).
+    var tier: Bool { self == .katze || self == .dackel || self == .bulldogge }
+    /// Tiere schweben mit Abstand zur Kante, außer der Nutzer dockt sie oben an.
+    var schwebend: Bool { tier && !Skin.dockt }
+    static var dockt: Bool { UserDefaults.standard.bool(forKey: E.skinDock) }
     /// Zusätzlicher Platz ums Fenster für Ohren, Schwanz, Beine, Tropfen.
     var rand: (oben: CGFloat, unten: CGFloat, links: CGFloat, rechts: CGFloat) {
         switch self {
         case .angedockt: (0, 0, 0, 0)
-        case .katze: (12, 4, 0, 34)
-        case .dackel: (18, 14, 34, 46)
-        case .bulldogge: (14, 8, 6, 22)
+        case .katze: (Skin.dockt ? 0 : 12, Skin.dockt ? 16 : 4, 0, 34)
+        case .dackel: (Skin.dockt ? 0 : 18, Skin.dockt ? 26 : 14, 34, 46)
+        case .bulldogge: (Skin.dockt ? 0 : 14, Skin.dockt ? 20 : 8, 6, 22)
         case .tropfend: (0, 30, 0, 0)
         }
     }
@@ -80,6 +84,8 @@ struct Tier: View {
             let b = blick(), b2 = b
             GeometryReader { g in
                 let kopf = hoehe + 10
+                // Angedockt: Kopf so weit nach unten, dass Ohren und Stirn unter der Bildschirmkante bleiben.
+                let dock: CGFloat = Skin.dockt ? (art == .katze ? 16 : art == .dackel ? 20 : 12) : 0
                 ZStack(alignment: .topLeading) {
                     // Kopf
                     ZStack {
@@ -138,7 +144,7 @@ struct Tier: View {
                         }
                     }
                     .frame(width: kopf, height: kopf)
-                    .position(x: kopf / 2 + 2, y: hoehe / 2 - 3)
+                    .position(x: kopf / 2 + 2, y: hoehe / 2 - 3 + dock)
 
                     // Schwanz am rechten Ende
                     Group {
@@ -146,20 +152,20 @@ struct Tier: View {
                             Katzenschwanz().stroke(fuellung, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                                 .frame(width: 30, height: 26)
                                 .rotationEffect(.degrees(wedel), anchor: .bottomLeading)
-                                .position(x: g.size.width + 12, y: hoehe / 2 - 6)
+                                .position(x: g.size.width + 12, y: hoehe / 2 - 6 + (Skin.dockt ? 8 : 0))
                         } else if art == .dackel {
                             // Lange dünne Rute, schwingt nach oben; helle Hinterpfote
                             Dackelrute().stroke(fuellung, style: StrokeStyle(lineWidth: 5, lineCap: .round))
                                 .frame(width: 42, height: 30)
                                 .rotationEffect(.degrees(wedel), anchor: .bottomLeading)
-                                .position(x: g.size.width + 18, y: hoehe / 2 - 4)
+                                .position(x: g.size.width + 18, y: hoehe / 2 - 4 + (Skin.dockt ? 10 : 0))
                             Capsule().fill(fell).frame(width: 18, height: 8).position(x: g.size.width - 6, y: hoehe + 1)
                         } else {
                             // kleiner Kringel als Schwanz, zuckt
                             Kringel().stroke(fuellung, style: StrokeStyle(lineWidth: 5, lineCap: .round))
                                 .frame(width: 16, height: 16)
                                 .rotationEffect(.degrees(wedel * 0.6), anchor: .bottomLeading)
-                                .position(x: g.size.width + 4, y: hoehe / 2 - 10)
+                                .position(x: g.size.width + 4, y: hoehe / 2 - 10 + (Skin.dockt ? 10 : 0))
                             // Hinterpfote
                             Capsule().fill(fell).frame(width: 16, height: 7).position(x: g.size.width - 2, y: hoehe + 1)
                         }

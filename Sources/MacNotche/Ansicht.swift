@@ -53,6 +53,7 @@ struct NotchAnsicht: View {
     @AppStorage(E.look) private var look = "schwarz"
     @AppStorage(E.skin) private var skinRaw = "Angedockt"
     @AppStorage(E.farbe) private var farbe = "000000"
+    @AppStorage(E.skinDock) private var skinDock = false
     @Environment(\.colorScheme) private var system
 
     private var schema: ColorScheme {
@@ -87,13 +88,13 @@ struct NotchAnsicht: View {
                 }
             }
             // Inhalt bleibt neben den Ohren; bei Tieren rechts vom Kopf.
-            .padding(.leading, skin.schwebend ? (offen ? 12 : m.leistenHoehe + 14) : Island.ohr)
+            .padding(.leading, skin.tier ? (offen ? 12 : m.leistenHoehe + 14) : Island.ohr)
             .padding(.trailing, skin.schwebend ? 12 : Island.ohr)
         }
         // Inhalt nie über die Form hinaus zeichnen (sonst wirken die Ecken abgeschnitten).
         .clipShape(form)
         .overlay {
-            if skin.schwebend, !offen { Tier(art: skin, fuellung: hintergrund, hoehe: m.leistenHoehe) }
+            if skin.tier, !offen { Tier(art: skin, fuellung: hintergrund, hoehe: m.leistenHoehe) }
             else if skin == .tropfend, !offen { Tropfen(fuellung: hintergrund).frame(height: r.unten).offset(y: m.zustand == .meldung ? m.leistenHoehe + 48 : m.leistenHoehe) }
         }
         .padding(.top, r.oben).padding(.bottom, offen ? 0 : r.unten).padding(.trailing, offen ? (r.rechts + r.links) / 2 : r.rechts).padding(.leading, offen ? (r.rechts + r.links) / 2 : r.links)
@@ -179,12 +180,13 @@ struct Kompakt: View {
 
     @AppStorage(E.breite) private var basisBreite = 300.0
     @AppStorage(E.skin) private var skinRaw = "Angedockt"
+    @AppStorage(E.skinDock) private var skinDock = false
     @State private var linksBreite: CGFloat = 0
     @State private var rechtsBreite: CGFloat = 0
     /// Fenster so breit wie nötig: gemessener Inhalt links und rechts, Lücke unter der Kamera-Notch, Ränder.
     private func anpassen() {
-        let schwebend = (Skin(rawValue: skinRaw) ?? .angedockt).schwebend
-        let rand = schwebend ? m.leistenHoehe + 14 + 12 : 2 * Island.ohr
+        let tier = (Skin(rawValue: skinRaw) ?? .angedockt).tier
+        let rand = tier ? m.leistenHoehe + 14 + 12 : 2 * Island.ohr
         // 28 = Innenabstand, dazu Stack-Abstände und Mindestbreite der Spacer (mit Lücke zwei Spacer).
         let luft: CGFloat = Geraet.luecke > 0 ? 48 : 24
         let noetig = linksBreite + rechtsBreite + Geraet.luecke + 28 + luft + rand + 4
@@ -264,6 +266,7 @@ struct Kompakt: View {
         .onAppear { anpassen() }
         .onChange(of: linksBreite + rechtsBreite) { _, _ in anpassen() }
         .onChange(of: skinRaw) { _, _ in anpassen() }
+        .onChange(of: skinDock) { _, _ in anpassen() }
     }
 }
 

@@ -434,9 +434,9 @@
 " … oder „15 min Tee“ für einen Timer" = " … or “15 min tea” for a timer";
 "Form" = "Shape";
 "Angedockt – Island mit weichen Ohren" = "Docked – island with soft ears";
-"Katze – schwebend, blinzelt und wedelt" = "Cat – floating, blinks and wags";
-"Dackel – schwebend, lange Schnauze, Schlappohr, wedelt mit der Rute" = "Dachshund – floating, long snout, floppy ear, wagging tail";
-"Bulldogge – schwebend, liegt und döst, wippt mit der Ringelrute" = "Bulldog – floating, dozing, curly tail wags";
+"Katze – blinzelt und wedelt" = "Cat – blinks and wags";
+"Dackel – lange Schnauze, Schlappohr, wedelt mit der Rute" = "Dachshund – long snout, floppy ear, wagging tail";
+"Bulldogge – liegt und döst, wippt mit der Ringelrute" = "Bulldog – dozing, curly tail wags";
 "Tropfend – zähflüssig, ab und zu fällt ein Tropfen" = "Dripping – viscous, a drop falls now and then";
 "Die Tiere schauen deiner Maus nach. Aufgeklappt wird jede Form zum runden Fenster." = "The animals follow your mouse. Opened, every shape becomes the rounded panel.";
 "Farbe" = "Color";
@@ -463,3 +463,4 @@
 "Gefällt dir Mac Notche? Ein Stern auf GitHub hilft, dass andere die App finden." = "Like Mac Notche? A star on GitHub helps others find the app.";
 "Stern geben" = "Give a star";
 "Frei und quelloffen (MIT). Fehler oder Wünsche: Issues auf GitHub." = "Free and open source (MIT). Bugs or wishes: issues on GitHub.";
+"Tier oben andocken (Körper an der Kante wie die Island)" = "Dock the animal at the top (body on the edge like the island)";

@@ -3,7 +3,7 @@ import ServiceManagement
 
 /// Schlüssel für UserDefaults.
 enum E {
-    static let look = "look", breite = "breite", schatten = "schatten", skin = "skin", farbe = "farbe"
+    static let look = "look", breite = "breite", schatten = "schatten", skin = "skin", farbe = "farbe", skinDock = "skin.dock"
     static let verzoegerung = "verzoegerung", klickSchliesst = "klickSchliesst"
     static let updatesAuto = "updates.auto"
     static let zeigeMusik = "zeige.musik", zeigeClaude = "zeige.claude", zeigeWetter = "zeige.wetter", zeigeTermin = "zeige.termin"
@@ -184,16 +184,20 @@ struct AussehenSeite: View {
     @AppStorage(E.schatten) var schatten = true
     @AppStorage(E.skin) var skin = "Angedockt"
     @AppStorage(E.farbe) var farbe = "000000"
+    @AppStorage(E.skinDock) var dock = false
     var body: some View {
         Section("Form") {
             Picker("Form", selection: $skin) {
                 Text("Angedockt – Island mit weichen Ohren").tag(Skin.angedockt.rawValue)
-                Text("Katze – schwebend, blinzelt und wedelt").tag(Skin.katze.rawValue)
-                Text("Dackel – schwebend, lange Schnauze, Schlappohr, wedelt mit der Rute").tag(Skin.dackel.rawValue)
-                Text("Bulldogge – schwebend, liegt und döst, wippt mit der Ringelrute").tag(Skin.bulldogge.rawValue)
+                Text("Katze – blinzelt und wedelt").tag(Skin.katze.rawValue)
+                Text("Dackel – lange Schnauze, Schlappohr, wedelt mit der Rute").tag(Skin.dackel.rawValue)
+                Text("Bulldogge – liegt und döst, wippt mit der Ringelrute").tag(Skin.bulldogge.rawValue)
                 Text("Tropfend – zähflüssig, ab und zu fällt ein Tropfen").tag(Skin.tropfend.rawValue)
             }
             .pickerStyle(.radioGroup)
+            if (Skin(rawValue: skin) ?? .angedockt).tier {
+                Toggle("Tier oben andocken (Körper an der Kante wie die Island)", isOn: $dock)
+            }
             Text("Die Tiere schauen deiner Maus nach. Aufgeklappt wird jede Form zum runden Fenster.")
                 .font(.caption).foregroundStyle(.secondary)
         }
