@@ -1,10 +1,10 @@
 import AppKit
 import SwiftUI
 
-/// Mitgelieferte Schreibtischhintergründe (5120×2880): das Dekor liegt um die Notch herum, die Notch selbst malt die App.
+/// Mitgelieferte Schreibtischhintergründe: das Motiv setzt oben mittig an der Notch an, die Notch selbst malt die App.
 enum Hintergruende {
-    static let titel: [String: String] = ["katze": "Katze", "tropfen": "Tropfen", "taschenlampe": "Taschenlampe", "planeten": "Planeten", "insel": "Insel", "glasbruch": "Glasbruch"]
-    static let reihenfolge = ["katze", "tropfen", "taschenlampe", "planeten", "insel", "glasbruch"]
+    static let titel: [String: String] = ["farbroller": "Farbroller", "bert": "Bert"]
+    static let reihenfolge = ["farbroller", "bert"]
 
     static var alle: [(name: String, url: URL)] {
         guard let ordner = Bundle.main.resourceURL?.appendingPathComponent("Hintergruende") else { return [] }
@@ -74,7 +74,7 @@ struct HintergruendeSeite: View {
     private let spalten = [GridItem(.adaptive(minimum: 150), spacing: 12)]
     var body: some View {
         Section {
-            Text("Sechs Hintergründe in 5K, deren Dekor an der Notch ansetzt – die Notch selbst ist die echte mit deinem Skin. Klick setzt den Hintergrund auf allen Bildschirmen; die Datei landet in Bilder › Mac Notche › Hintergründe. Eigene Bilder in diesem Ordner erscheinen hier ebenfalls.")
+            Text("Hintergründe, deren Motiv oben mittig an der Notch ansetzt – die Notch selbst ist die echte mit deinem Skin. Klick setzt den Hintergrund auf allen Bildschirmen; die Datei landet in Bilder › Mac Notche › Hintergründe. Eigene Bilder in diesem Ordner erscheinen hier ebenfalls.")
                 .font(.caption).foregroundStyle(.secondary)
             raster(Hintergruende.alle)
             if !Hintergruende.eigene.isEmpty {

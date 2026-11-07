@@ -58,7 +58,7 @@ struct NotchAnsicht: View {
     @Environment(\.colorScheme) private var system
 
     private var schema: ColorScheme {
-        switch look { case "hell": .light; case "schwarz", "dunkel": .dark; default: system }
+        switch look { case "hell": .light; case "schwarz": Farbe.hell(farbe) ? .light : .dark; case "dunkel": .dark; default: system }
     }
     private var hintergrund: AnyShapeStyle {
         switch look {

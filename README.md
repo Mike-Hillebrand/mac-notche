@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.23.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.24.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -58,7 +58,7 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 
 Katze und die drei Hunde stammen aus Vektorvorlagen.
 
-**Hintergründe (Einstellungen › Hintergründe):** sechs Schreibtischhintergründe in 5K, deren Dekor an der Notch ansetzt (Katze, Tropfen, Taschenlampe, Planeten, Insel, Glasbruch) – die Notch selbst bleibt die echte mit deinem Skin; ein Klick setzt sie passgenau je Bildschirm; eigene Bilder im Ordner Bilder › Mac Notche › Hintergründe erscheinen ebenfalls.
+**Hintergründe (Einstellungen › Hintergründe):** Schreibtischhintergründe, deren Motiv oben mittig an der Notch ansetzt (Farbroller, Bert) – die Notch selbst bleibt die echte mit deinem Skin; ein Klick setzt sie passgenau je Bildschirm; eigene Bilder im Ordner Bilder › Mac Notche › Hintergründe erscheinen ebenfalls.
 
 **Im Hintergrund:** Lautstärke- und Feststell-Anzeige, Bluetooth- und Akku-Meldungen, Termin-Hinweis, Termin-Countdown in der zugeklappten Notch (ab 60 Min. vorher, ab 10 Min. orange, Klick öffnet Zoom/Teams/Meet), Downloads-Wächter (neue Datei → Meldung und Ablage), Fenster einrasten (per ⌃⌥-Tastenkürzel oder Ziehen an den Rand), Textbausteine und Emoji-Kürzel (`;mfg`, `:herz:`), Menüleisten-Symbole ausblenden, Bildschirmecken mit Aktionen, Gesicht entsperren.
 

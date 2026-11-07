@@ -49,7 +49,13 @@ enum Geraet {
 enum Farbe {
     static let liste: [(name: String, hex: String)] = [
         ("Schwarz", "000000"), ("Anthrazit", "2B2B2E"), ("Nachtblau", "0F1F3D"), ("Tannengrün", "0F2E22"),
-        ("Weinrot", "3B0F1C"), ("Schokolade", "3A2518"), ("Lila", "32175A"), ("Signalorange", "F04A00"), ("Pink", "C2185B")]
+        ("Weinrot", "3B0F1C"), ("Schokolade", "3A2518"), ("Lila", "32175A"), ("Signalorange", "F04A00"), ("Pink", "C2185B"), ("Weiß", "FFFFFF")]
+    /// Helle Notch-Farbe (z. B. Weiß): Schrift und Symbole dann dunkel.
+    static func hell(_ hex: String) -> Bool {
+        guard hex.count == 6, let v = UInt32(hex, radix: 16) else { return false }
+        let r = Double((v >> 16) & 0xFF), g = Double((v >> 8) & 0xFF), b = Double(v & 0xFF)
+        return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6
+    }
     static func color(_ hex: String) -> Color {
         var h = hex; if h.hasPrefix("#") { h.removeFirst() }
         guard h.count == 6, let v = UInt32(h, radix: 16) else { return .black }
