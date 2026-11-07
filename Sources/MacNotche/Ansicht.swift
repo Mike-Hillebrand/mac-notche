@@ -94,7 +94,7 @@ struct NotchAnsicht: View {
         }
         // Inhalt nie über die Form hinaus zeichnen (sonst wirken die Ecken abgeschnitten).
         .clipShape(form)
-        .background { if leuchten { Leuchten(form: form) } }
+        .background { if leuchten, !skin.tier { Leuchten(form: form) } }
         .overlay(alignment: .bottom) {
             // Saum hängt an der Unterkante des Körpers und ragt um r.unten darunter.
             if skin == .tropfend, !offen { Tropfen(fuellung: hintergrund).frame(height: r.unten).padding(.horizontal, Island.ohr + 12).offset(y: r.unten) }
@@ -107,7 +107,7 @@ struct NotchAnsicht: View {
             if skin.tier, skin != .dackel, !offen { Tier(art: skin, fuellung: hintergrund, hoehe: m.leistenHoehe) }
         }
         .padding(.top, r.oben).padding(.bottom, offen ? 0 : r.unten).padding(.trailing, offen ? (r.rechts + r.links) / 2 : r.rechts).padding(.leading, offen ? (r.rechts + r.links) / 2 : r.links)
-        .padding(.horizontal, leuchten ? Leuchten.rand : 0).padding(.bottom, leuchten ? Leuchten.rand : 0)
+        .padding(.horizontal, leuchten && !skin.tier ? Leuchten.rand : 0).padding(.bottom, leuchten && !skin.tier ? Leuchten.rand : 0)
         .environmentObject(m.musik)
         .environmentObject(m.kalender)
         .environmentObject(m.claude)
@@ -726,10 +726,10 @@ struct AblageAnsicht: View {
                     HStack(spacing: 12) { ForEach(a.dateien, id: \.self) { DateiKachel(url: $0) } }
                 }
                 HStack {
-                    Text("\(a.dateien.count == 1 ? "1 Datei" : "\(a.dateien.count) Dateien") – rausziehen zum Ablegen, Doppelklick öffnet, Rechtsklick wandelt um").kopf()
+                    Text("\(a.dateien.count == 1 ? "1 Datei" : "\(a.dateien.count) Dateien") – rausziehen zum Ablegen, Doppelklick öffnet, Rechtsklick wandelt um").kopf().lineLimit(1).truncationMode(.tail)
                     Spacer()
-                    freistellen
-                    Button("Alle entfernen") { a.dateien.removeAll() }
+                    freistellen.layoutPriority(1)
+                    Button("Alle entfernen") { a.dateien.removeAll() }.layoutPriority(1)
                         .buttonStyle(.plain).font(.system(size: 11)).foregroundStyle(Color.primary.opacity(0.7))
                 }
             }

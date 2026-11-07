@@ -4,14 +4,14 @@ import SwiftUI
 
 struct Leuchten: View {
     let form: AnyShape
-    static let rand: CGFloat = 18
+    static let rand: CGFloat = 30  // Platz für den Weichzeichner rund um die Form
     private let farben: [Color] = [.orange, .pink, .purple, .blue, .cyan, .yellow, .orange]
     var body: some View {
         TimelineView(.animation(minimumInterval: 1 / 30)) { tl in
             // Waagerechter Verlauf über die Breite, der langsam durch den Farbkreis dreht.
             let verlauf = LinearGradient(colors: farben, startPoint: .leading, endPoint: .trailing)
             ZStack {
-                form.stroke(verlauf, lineWidth: 12).blur(radius: 16).opacity(0.9)
+                form.stroke(verlauf, lineWidth: 12).blur(radius: 12).opacity(0.9)
                 form.stroke(verlauf, lineWidth: 5).blur(radius: 5)
                 form.stroke(verlauf, lineWidth: 1.5).opacity(0.9)
             }
@@ -19,7 +19,8 @@ struct Leuchten: View {
         }
         .allowsHitTesting(false)
     }
-    static var an: Bool { UserDefaults.standard.bool(forKey: E.leuchten) }
+    /// Nur ohne Tier-Skin: um Katze und Hunde herum würde der Saum stören.
+    static var an: Bool { UserDefaults.standard.bool(forKey: E.leuchten) && !Skin.gewaehlt.tier }
 }
 
 // MARK: - Gerät: echte Notch (MacBook) oder freier Bildschirmrand (iMac, Studio, Monitor)

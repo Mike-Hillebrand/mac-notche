@@ -205,6 +205,7 @@ struct AussehenSeite: View {
         }
         Section("Leuchten") {
             Toggle("Farbiges Leuchten um die Notch (wie Siri, Farben wandern langsam)", isOn: $leuchten)
+            if leuchten, (Skin(rawValue: skin) ?? .angedockt).tier { Text("Bei Tier-Skins bleibt das Leuchten aus.").font(.caption).foregroundStyle(.secondary) }
         }
         Section("Farbe") {
             HStack(spacing: 10) {

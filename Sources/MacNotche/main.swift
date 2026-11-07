@@ -85,11 +85,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             modell.zustand = .offen
         }
         if args.contains("--einstellungen") || args.contains("--entsperren-seite") || args.contains("--seite") { DispatchQueue.main.async { self.einstellungen() } }
-        panel.hasShadow = UserDefaults.standard.bool(forKey: E.schatten)
+        // Mit Leuchten keinen Fensterschatten: er zeichnet sonst eine dunkle Linie um den Leuchtbereich.
+        panel.hasShadow = UserDefaults.standard.bool(forKey: E.schatten) && !Leuchten.an
         var fahrenheit = UserDefaults.standard.bool(forKey: E.fahrenheit)
         NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
             guard let self else { return }
-            self.panel.hasShadow = UserDefaults.standard.bool(forKey: E.schatten)
+            self.panel.hasShadow = UserDefaults.standard.bool(forKey: E.schatten) && !Leuchten.an
             self.anpassen(self.modell.zustand)
             if UserDefaults.standard.bool(forKey: E.fahrenheit) != fahrenheit {
                 fahrenheit.toggle()
