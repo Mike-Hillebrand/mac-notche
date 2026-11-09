@@ -42,7 +42,7 @@ enum Einstellungen {
 
 enum Seite: String, CaseIterable, Identifiable {
     case allgemein = "Allgemein", aussehen = "Aussehen", hintergrund = "Hintergründe", live = "Live-Aktivitäten", mitteilungen = "Mitteilungen"
-    case wetter = "Wetter", iphone = "iPhone", werkzeuge = "Werkzeuge", entsperren = "Gesicht entsperren", claude = "Verbindungen", info = "Über Mac Notche"
+    case wetter = "Wetter", iphone = "iPhone", zuhause = "Zuhause", werkzeuge = "Werkzeuge", entsperren = "Gesicht entsperren", claude = "Verbindungen", info = "Über Mac Notche"
     var id: String { rawValue }
     var symbol: String {
         switch self {
@@ -53,6 +53,7 @@ enum Seite: String, CaseIterable, Identifiable {
         case .mitteilungen: "message"
         case .wetter: "cloud.sun"
         case .iphone: "iphone"
+        case .zuhause: "house"
         case .werkzeuge: "wrench.and.screwdriver"
         case .entsperren: "faceid"
         case .claude: "link"
@@ -84,6 +85,7 @@ struct EinstellungenAnsicht: View {
                 case .mitteilungen: MitteilungenSeite()
                 case .wetter: WetterSeite()
                 case .iphone: IPhoneSeite()
+                case .zuhause: ZuhauseSeite()
                 case .werkzeuge: WerkzeugeSeite()
                 case .entsperren: EntsperrenSeite()
                 case .claude: VerbindungenSeite()
@@ -571,9 +573,6 @@ struct WerkzeugeSeite: View {
     @AppStorage(E.fensterAktiv) var fenster = true
     @AppStorage(E.fensterZiehen) var ziehen = true
     @AppStorage(E.kurzbefehle) var kurzbefehle = ""
-    @AppStorage(E.zuhauseWoerter) var zuhauseWoerter = ""
-    @AppStorage(E.zuhauseAuswahl) var zuhauseAuswahl = ""
-    private var auswahlListe: [String] { zuhauseAuswahl.split(separator: "\n").map(String.init).filter { !$0.isEmpty } }
     @AppStorage(E.notizOrdner) var notizOrdner = ""
     @AppStorage(E.diktatSprache) var diktatSprache = "de-DE"
     @State private var alleKurzbefehle: [String] = []
@@ -658,29 +657,6 @@ struct WerkzeugeSeite: View {
             Text("„In Ordner“ legt eine Markdown-Datei mit Datum und Frontmatter ab; leer = Vault-Inbox, sonst ~/Dokumente/Notizen. Erste Nutzung fragt nach Mikrofon und Spracherkennung.")
         }
         Section {
-            if alleKurzbefehle.isEmpty {
-                Text("Kurzbefehle werden geladen …").foregroundStyle(.secondary)
-            } else {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 2) {
-                        ForEach(alleKurzbefehle, id: \.self) { n in
-                            Toggle(n, isOn: Binding(get: { auswahlListe.contains(n) }, set: { an in
-                                var l = auswahlListe
-                                if an { if !l.contains(n) { l.append(n) } } else { l.removeAll { $0 == n } }
-                                zuhauseAuswahl = l.joined(separator: "\n")
-                            })).toggleStyle(.checkbox)
-                        }
-                    }.frame(maxWidth: .infinity, alignment: .leading)
-                }.frame(maxHeight: 220)
-                Text(auswahlListe.isEmpty ? L("Nichts angehakt – es gelten Ordner „Zuhause“ oder die Stichwörter.") : "\(auswahlListe.count) " + L("Kurzbefehle im Reiter „Zuhause“"))
-                    .font(.caption).foregroundStyle(.secondary)
-            }
-            TextField("Stichwörter (ohne Haken)", text: $zuhauseWoerter, prompt: Text(Zuhause.standardWoerter))
-            Button("Kurzbefehle-App öffnen") { NSWorkspace.shared.open(URL(string: "shortcuts://")!) }
-        } header: { Text("Reiter „Zuhause“ (Home-App über Kurzbefehle)") } footer: {
-            Text("Angehakte Kurzbefehle werden Kacheln im Reiter „Zuhause“ der Notch. Die Home-App gibt ihre Geräte nur an App-Store-Apps frei; der Weg geht über Kurzbefehle: in der Kurzbefehle-App einen Kurzbefehl mit der Aktion „Zuhause steuern“ anlegen (Szene oder Gerät), dann hier anhaken. Ohne Haken gelten der Ordner „Zuhause“ oder die Stichwörter.")
-        }
-        Section {
             TextField("Kurzbefehle", text: $kurzbefehle, prompt: Text("Name 1, Name 2"))
         } header: { Text("Kurzbefehle in der Übersicht") } footer: {
             Text(alleKurzbefehle.isEmpty ? "Namen aus der Kurzbefehle-App, mit Komma getrennt."
@@ -729,3 +705,62 @@ struct WerkzeugeSeite: View {
 }
 
 extension Notification.Name { static let kurseLaden = Notification.Name("kurseLaden") }
+
+/// Zuhause: Geräte und Szenen der Home-App kommen über Kurzbefehle in die Notch.
+struct ZuhauseSeite: View {
+    @AppStorage(E.zuhauseWoerter) var zuhauseWoerter = ""
+    @AppStorage(E.zuhauseAuswahl) var zuhauseAuswahl = ""
+    @State private var alle: [String] = []
+    @State private var laedt = true
+    private var auswahl: [String] { zuhauseAuswahl.split(separator: "\n").map(String.init).filter { !$0.isEmpty } }
+
+    var body: some View {
+        Section {
+            Text("Die Home-App gibt ihre Geräte nur an App-Store-Apps frei. Deshalb geht jedes Gerät und jede Szene über einen Kurzbefehl: einmal anlegen, hier anhaken, fertig – in der Notch erscheint eine Kachel, ein Klick schaltet.")
+                .font(.caption).foregroundStyle(.secondary)
+        } header: { Text("So kommt die Home-App in die Notch") }
+
+        Section {
+            Text("1. „Neuen Kurzbefehl anlegen“ öffnet die Kurzbefehle-App mit einem leeren Kurzbefehl.\n2. Aktion „Zuhause steuern“ hinzufügen (Suche oben rechts: Zuhause), Szene oder Gerät wählen, z. B. Heizkörper Wohnzimmer → aus.\n3. Oben den Namen vergeben, so wie er auf der Kachel stehen soll, z. B. „Heizkörper Wohnzimmer aus“.\n4. Fenster schließen, hier „Liste neu laden“ und den Haken setzen.")
+                .font(.caption)
+            HStack {
+                Button("Neuen Kurzbefehl anlegen") { NSWorkspace.shared.open(URL(string: "shortcuts://create-shortcut")!) }
+                Button("Kurzbefehle-App öffnen") { NSWorkspace.shared.open(URL(string: "shortcuts://")!) }
+                Button("Liste neu laden") { laden() }
+            }
+        } header: { Text("Gerät oder Szene hinzufügen") } footer: {
+            Text("Tipp: Für Licht an und aus zwei Kurzbefehle anlegen („Licht Wohnzimmer an“, „Licht Wohnzimmer aus“). Ein Kurzbefehl kann auch mehrere Geräte auf einmal schalten, z. B. alle Heizkörper aus.")
+        }
+
+        Section {
+            if laedt {
+                Text("Kurzbefehle werden geladen …").foregroundStyle(.secondary)
+            } else if alle.isEmpty {
+                Text("Keine Kurzbefehle gefunden.").foregroundStyle(.secondary)
+            } else {
+                ForEach(alle, id: \.self) { n in
+                    Toggle(isOn: Binding(get: { auswahl.contains(n) }, set: { an in
+                        var l = auswahl
+                        if an { if !l.contains(n) { l.append(n) } } else { l.removeAll { $0 == n } }
+                        zuhauseAuswahl = l.joined(separator: "\n")
+                    })) {
+                        Label(n, systemImage: Zuhause.symbol(n))
+                    }
+                    .toggleStyle(.checkbox)
+                }
+            }
+        } header: { Text(auswahl.isEmpty ? "Kurzbefehle anhaken, die in der Notch erscheinen sollen" : "\(auswahl.count) in der Notch – Kurzbefehle anhaken") } footer: {
+            Text(auswahl.isEmpty ? "Ohne Haken zeigt die Notch den Ordner „Zuhause“ der Kurzbefehle-App, sonst alle Kurzbefehle, deren Name eines der Stichwörter unten enthält." : "Nur die angehakten erscheinen; Reihenfolge wie angehakt.")
+        }
+
+        Section {
+            TextField("Stichwörter", text: $zuhauseWoerter, prompt: Text(Zuhause.standardWoerter))
+        } header: { Text("Automatisch (wenn nichts angehakt ist)") }
+        .onAppear(perform: laden)
+    }
+
+    private func laden() {
+        laedt = true
+        DispatchQueue.global().async { let l = Kurzbefehle.alle(); DispatchQueue.main.async { alle = l; laedt = false } }
+    }
+}
