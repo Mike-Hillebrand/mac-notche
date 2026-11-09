@@ -712,6 +712,7 @@ struct ZuhauseSeite: View {
     @AppStorage(E.zuhauseAuswahl) var zuhauseAuswahl = ""
     @State private var alle: [String] = []
     @State private var laedt = true
+    @StateObject private var imp = HomeImport()
     private var auswahl: [String] { zuhauseAuswahl.split(separator: "\n").map(String.init).filter { !$0.isEmpty } }
 
     var body: some View {
@@ -721,6 +722,23 @@ struct ZuhauseSeite: View {
         } header: { Text("So kommt die Home-App in die Notch") }
 
         Section {
+            if let h = imp.haus {
+                Text(L("Gefunden in „\(h.name)“: ") + h.szenen.map(\.name).joined(separator: ", ")).font(.caption)
+                if imp.fehlend.isEmpty {
+                    Text("Alle Szenen sind schon als Kurzbefehle da.").font(.caption).foregroundStyle(.secondary)
+                } else {
+                    Button(imp.laeuft ? "Läuft …" : "\(imp.fehlend.count) Szenen als Kurzbefehle anlegen") { imp.anlegen() }.disabled(imp.laeuft)
+                }
+                if !imp.status.isEmpty { Text(imp.status).font(.caption).foregroundStyle(imp.laeuft ? .orange : .secondary) }
+            } else {
+                Text("Die Home-App hat auf diesem Mac keinen lesbaren Szenen-Cache. Home-App einmal öffnen, dann hier „Liste neu laden“; bleibt es dabei, braucht Mac Notche Festplattenvollzugriff (Systemeinstellungen › Datenschutz & Sicherheit).")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        } header: { Text("Szenen der Home-App übernehmen") } footer: {
+            Text("Mac Notche legt je Szene einen Kurzbefehl „Zuhause <Szene>“ an und öffnet ihn in der Kurzbefehle-App – dort nur noch „Kurzbefehl hinzufügen“ klicken, eine Szene nach der anderen. Die Kachel in der Notch zeigt den Namen ohne „Zuhause“.")
+        }
+
+        Section {
             Text("1. „Neuen Kurzbefehl anlegen“ öffnet die Kurzbefehle-App mit einem leeren Kurzbefehl.\n2. Aktion „Zuhause steuern“ hinzufügen (Suche oben rechts: Zuhause), Szene oder Gerät wählen, z. B. Heizkörper Wohnzimmer → aus.\n3. Oben den Namen vergeben, so wie er auf der Kachel stehen soll, z. B. „Heizkörper Wohnzimmer aus“.\n4. Fenster schließen, hier „Liste neu laden“ und den Haken setzen.")
                 .font(.caption)
             HStack {
@@ -728,7 +746,7 @@ struct ZuhauseSeite: View {
                 Button("Kurzbefehle-App öffnen") { NSWorkspace.shared.open(URL(string: "shortcuts://")!) }
                 Button("Liste neu laden") { laden() }
             }
-        } header: { Text("Gerät oder Szene hinzufügen") } footer: {
+        } header: { Text("Gerät oder Szene von Hand hinzufügen") } footer: {
             Text("Tipp: Für Licht an und aus zwei Kurzbefehle anlegen („Licht Wohnzimmer an“, „Licht Wohnzimmer aus“). Ein Kurzbefehl kann auch mehrere Geräte auf einmal schalten, z. B. alle Heizkörper aus.")
         }
 
@@ -761,6 +779,7 @@ struct ZuhauseSeite: View {
 
     private func laden() {
         laedt = true
+        imp.laden()
         DispatchQueue.global().async { let l = Kurzbefehle.alle(); DispatchQueue.main.async { alle = l; laedt = false } }
     }
 }

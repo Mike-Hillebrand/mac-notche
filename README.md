@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.26.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.27.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -21,7 +21,7 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 | Ablage | Dateien ablegen, umwandeln (PNG/JPEG/HEIC), DMG installieren, per AirDrop senden; Freistellen (⌥⌘4): Bildschirmbereich aufziehen, Text wird erkannt und kopiert, das Bild liegt in der Ablage |
 | iPhone | Name, Akku und neue Fotos per Kabel oder über WLAN (Finder-WLAN-Sync + libimobiledevice), Übernahme in die Fotos-App |
 | Fokus | Timer (auch per Text im Reiter Fragen: „15 min Tee“ läuft in der Leiste), Fokus 25+5, braunes Rauschen, Augen- und Trinkpause, Ton-Ausgabe, Lautstärke pro App, Notizen |
-| Zuhause | Home-App über Kurzbefehle: Einstellungen › Zuhause erklärt das Anlegen (Aktion „Zuhause steuern“) und listet alle Kurzbefehle zum Anhaken; angehakte werden Kacheln |
+| Zuhause | Home-App über Kurzbefehle: Einstellungen › Zuhause liest die Szenen aus dem Cache der Home-App und legt sie als Kurzbefehle an (Import per Klick in der Kurzbefehle-App), dazu alle Kurzbefehle zum Anhaken; angehakte werden Kacheln |
 | Werkzeuge | Spiegel (Kamera), Wach halten, Zwischenablage-Verlauf |
 
 ## Bilder

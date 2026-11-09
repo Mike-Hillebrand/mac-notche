@@ -1411,7 +1411,7 @@ struct ZuhauseAnsicht: View {
                                 VStack(spacing: 6) {
                                     Image(systemName: z.zuletzt == n ? "checkmark.circle.fill" : Zuhause.symbol(n))
                                         .font(.system(size: 20)).foregroundStyle(z.zuletzt == n ? .green : .orange)
-                                    Text(n).font(.system(size: 11, weight: .medium)).lineLimit(2).multilineTextAlignment(.center)
+                                    Text(HomeSzenen.anzeige(n)).font(.system(size: 11, weight: .medium)).lineLimit(2).multilineTextAlignment(.center)
                                 }
                                 .frame(maxWidth: .infinity, minHeight: 64)
                                 .background(RoundedRectangle(cornerRadius: 12).fill(Color.primary.opacity(0.08)))
