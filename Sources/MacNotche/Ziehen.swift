@@ -120,8 +120,27 @@ final class Zuhause: ObservableObject {
         }
     }
 
+    /// Zuletzt geschaltete Szene je Paar (… an / … aus); der Gegenpart gilt als inaktiv und wird farblos gezeigt.
+    @Published var aktiv: Set<String> = Set(UserDefaults.standard.stringArray(forKey: "zuhause.aktiv") ?? [])
+
+    /// Paarkennung: „Zuhause Licht an“ und „Zuhause Licht aus“ → „zuhause licht“; nil ohne an/aus.
+    static func paar(_ n: String) -> String? {
+        let t = n.lowercased()
+        for e in [" an", " aus", " ein"] where t.hasSuffix(e) { return String(t.dropLast(e.count)) }
+        return nil
+    }
+    /// Farbig, wenn kein Paar oder zuletzt in diesem Paar geschaltet.
+    func istAktiv(_ n: String) -> Bool {
+        guard let p = Zuhause.paar(n) else { return true }
+        return aktiv.contains(n) || !kacheln.contains { $0 != n && Zuhause.paar($0) == p && aktiv.contains($0) }
+    }
+
     func starten(_ name: String) {
         Kurzbefehle.starten(name)
+        if let p = Zuhause.paar(name) {
+            aktiv = aktiv.filter { Zuhause.paar($0) != p }.union([name])
+            UserDefaults.standard.set(Array(aktiv), forKey: "zuhause.aktiv")
+        }
         zuletzt = name
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { if self.zuletzt == name { self.zuletzt = nil } }
     }

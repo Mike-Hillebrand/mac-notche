@@ -1410,11 +1410,12 @@ struct ZuhauseAnsicht: View {
                             Button { z.starten(n) } label: {
                                 VStack(spacing: 6) {
                                     Image(systemName: z.zuletzt == n ? "checkmark.circle.fill" : Zuhause.symbol(n))
-                                        .font(.system(size: 20)).foregroundStyle(z.zuletzt == n ? .green : .orange)
+                                        .font(.system(size: 20)).foregroundStyle(z.zuletzt == n ? Color.green : z.istAktiv(n) ? Color.orange : Color.primary.opacity(0.35))
                                     Text(HomeSzenen.anzeige(n)).font(.system(size: 11, weight: .medium)).lineLimit(2).multilineTextAlignment(.center)
+                                        .foregroundStyle(z.istAktiv(n) ? Color.primary : Color.primary.opacity(0.5))
                                 }
                                 .frame(maxWidth: .infinity, minHeight: 64)
-                                .background(RoundedRectangle(cornerRadius: 12).fill(Color.primary.opacity(0.08)))
+                                .background(RoundedRectangle(cornerRadius: 12).fill(Color.primary.opacity(z.istAktiv(n) ? 0.12 : 0.04)))
                             }
                             .buttonStyle(.plain)
                         }
