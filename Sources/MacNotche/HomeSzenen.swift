@@ -9,7 +9,7 @@ enum HomeSzenen {
     struct Szene: Identifiable { let name: String; let uuid: UUID; var id: String { name } }
     struct Haus { let name: String; let uuid: UUID; let szenen: [Szene] }
 
-    static let praefix = "Zuhause "
+    static let praefix = "Szene "
     static let ordner = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Downloads/Mac Notche Kurzbefehle", isDirectory: true)
     private static let cache = FileManager.default.homeDirectoryForCurrentUser
         .appendingPathComponent("Library/Containers/com.apple.Home/Data/Library/Caches/com.apple.HomeKit/com.apple.Home/com.apple.HomeKit.configurations")

@@ -735,7 +735,7 @@ struct ZuhauseSeite: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
         } header: { Text("Szenen der Home-App übernehmen") } footer: {
-            Text("Mac Notche legt je Szene einen Kurzbefehl „Zuhause <Szene>“ an und öffnet ihn in der Kurzbefehle-App – dort nur noch „Kurzbefehl hinzufügen“ klicken, eine Szene nach der anderen. Die Kachel in der Notch zeigt den Namen ohne „Zuhause“.")
+            Text("Mac Notche legt je Szene einen Kurzbefehl „Szene <Name>“ an und öffnet ihn in der Kurzbefehle-App – dort nur noch „Kurzbefehl hinzufügen“ klicken, eine Szene nach der anderen. Die Kachel in der Notch zeigt den Namen ohne „Szene“. Ein Kurzbefehl darf nicht genauso heißen wie eine Home-Szene, daher der Vorsatz.")
         }
 
         Section {
