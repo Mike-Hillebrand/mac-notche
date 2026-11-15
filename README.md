@@ -2,11 +2,13 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.29.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.30.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
 **Zugeklappt:** Musik-Cover und Equalizer, Temperatur, Timer-Countdown, Claude-Limits in Prozent (5 Stunden, wo der Plan eines hat, und Woche).
+
+**Monitor:** Unter Einstellungen › Allgemein › Gerät wählst du, auf welchem Bildschirm die Notch sitzt. Ist er nicht angeschlossen, nimmt sie den Hauptbildschirm.
 
 **Aufgeklappt, nach Reitern:**
 

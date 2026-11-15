@@ -99,9 +99,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    /// Notch sitzt oben mittig auf dem Hauptbildschirm; Größe hängt vom Zustand ab.
+    /// Notch sitzt oben mittig auf dem gewählten Bildschirm; Größe hängt vom Zustand ab.
     func anpassen(_ z: Zustand) {
-        guard let s = NSScreen.screens.first else { return }
+        guard let s = Geraet.bildschirm else { return }
         // Höhe zugeklappt: wie die Menüleiste oder schlanker (Einstellung); nie unter 22 pt.
         let menue = max(24, s.frame.maxY - s.visibleFrame.maxY)
         let wunsch = UserDefaults.standard.double(forKey: E.notchHoehe)

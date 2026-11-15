@@ -26,18 +26,23 @@ struct Leuchten: View {
 // MARK: - Gerät: echte Notch (MacBook) oder freier Bildschirmrand (iMac, Studio, Monitor)
 
 enum Geraet {
+    /// Bildschirm der Notch: gewählter Monitor (nach Name), sonst der Hauptbildschirm mit Menüleiste.
+    static var bildschirm: NSScreen? {
+        let wahl = UserDefaults.standard.string(forKey: E.monitor) ?? ""
+        return NSScreen.screens.first { !wahl.isEmpty && $0.localizedName == wahl } ?? NSScreen.screens.first
+    }
     /// „auto“ erkennt die Notch über den sicheren Bereich; „macbook“/„imac“ erzwingen.
     static var echteNotch: Bool {
         switch UserDefaults.standard.string(forKey: E.geraet) ?? "auto" {
         case "macbook": return true
         case "imac": return false
-        default: return (NSScreen.screens.first?.safeAreaInsets.top ?? 0) > 0
+        default: return (bildschirm?.safeAreaInsets.top ?? 0) > 0
         }
     }
     /// Breite der Kamera-Notch plus Rand; unter ihr darf zugeklappt nichts stehen.
     static var luecke: CGFloat {
         guard echteNotch else { return 0 }
-        if let s = NSScreen.screens.first, let l = s.auxiliaryTopLeftArea, let r = s.auxiliaryTopRightArea, s.frame.width - l.width - r.width > 50 {
+        if let s = bildschirm, let l = s.auxiliaryTopLeftArea, let r = s.auxiliaryTopRightArea, s.frame.width - l.width - r.width > 50 {
             return s.frame.width - l.width - r.width + 16
         }
         return 200  // erzwungen oder unbekannt: typische MacBook-Notch
@@ -113,7 +118,7 @@ enum Skin: String, CaseIterable, Identifiable {
 
 /// Blickrichtung der Pupillen: Maus relativ zur Bildschirmmitte oben, auf ±1 begrenzt.
 private func blick() -> CGPoint {
-    guard let s = NSScreen.screens.first else { return .zero }
+    guard let s = Geraet.bildschirm else { return .zero }
     let m = NSEvent.mouseLocation
     let dx = (m.x - s.frame.midX) / (s.frame.width / 2)
     let dy = (s.frame.maxY - m.y) / s.frame.height * 2 - 0.3

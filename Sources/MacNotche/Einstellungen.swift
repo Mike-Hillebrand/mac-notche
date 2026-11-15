@@ -13,7 +13,7 @@ enum E {
     static let fensterAktiv = "fenster.aktiv", augenMinuten = "augen.minuten", trinkenMinuten = "trinken.minuten", bausteine = "bausteine"
     static let emojiKuerzel = "emoji.kuerzel", aktien = "aktien", notizen = "notizen"
     static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuhauseWoerter = "zuhause.woerter", notizOrdner = "notiz.ordner", diktatSprache = "diktat.sprache", downloadsAblage = "downloads.ablage", zuKI = "zu.ki", zuAus = "zu.aus"
-    static let sportLiga = "sport.liga", sportVereine = "sport.vereine", geraet = "geraet", notchHoehe = "notch.hoehe", zuhauseAuswahl = "zuhause.auswahl"
+    static let sportLiga = "sport.liga", sportVereine = "sport.vereine", geraet = "geraet", notchHoehe = "notch.hoehe", monitor = "monitor", zuhauseAuswahl = "zuhause.auswahl"
     static let fensterZiehen = "fenster.ziehen", kurzbefehle = "kurzbefehle"
     static func meldung(_ art: String) -> String { "meldung.\(art)" }
 }
@@ -122,11 +122,21 @@ struct AllgemeinSeite: View {
     @AppStorage(E.klickSchliesst) var klick = true
     @AppStorage(E.geraet) var geraet = "auto"
     @AppStorage(E.notchHoehe) var notchHoehe = 0.0
+    @AppStorage(E.monitor) var monitor = ""
     @State private var login = SMAppService.mainApp.status == .enabled
     @State private var sprache = (UserDefaults.standard.stringArray(forKey: "AppleLanguages")?.first).flatMap { ["de", "en"].first(where: $0.hasPrefix) } ?? ""
     @State private var neustart = false
     var body: some View {
         Section("Gerät") {
+            Picker("Monitor", selection: $monitor) {
+                Text("Hauptbildschirm (mit Menüleiste)").tag("")
+                ForEach(NSScreen.screens.map(\.localizedName), id: \.self) { Text($0).tag($0) }
+                if !monitor.isEmpty && !NSScreen.screens.contains(where: { $0.localizedName == monitor }) {
+                    Text(monitor + L(" (nicht angeschlossen)")).tag(monitor)
+                }
+            }
+            Text("Auf diesem Monitor sitzt die Notch oben mittig. Ist er nicht angeschlossen, nimmt sie den Hauptbildschirm.")
+                .font(.caption).foregroundStyle(.secondary)
             Picker("Bildschirm", selection: $geraet) {
                 Text("Automatisch erkennen").tag("auto")
                 Text("MacBook mit Notch – Mitte bleibt frei").tag("macbook")
