@@ -51,6 +51,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self.anpassen(self.modell.zustand)
         }
         panel.orderFrontRegardless()
+        // Vollbild: jede Sekunde prüfen (Wechsel in den Vollbild-Space dauert ohnehin eine Animation lang).
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in self?.vollbildPruefen() }
         menuBauen()
         modell.starten()
         modell.einstellungenOeffnen = { [weak self] in self?.einstellungen() }
@@ -96,6 +98,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 fahrenheit.toggle()
                 self.modell.wetter.laden()
             }
+        }
+    }
+
+    /// Steht auf dem Notch-Monitor eine App im Vollbild, wird die Notch ausgeblendet (abschaltbar).
+    func vollbildPruefen() {
+        let aus = UserDefaults.standard.bool(forKey: E.vollbildAus) && Self.vollbild(auf: Geraet.bildschirm)
+        guard aus == panel.isVisible else { return }
+        if aus { panel.orderOut(nil) } else { panel.orderFrontRegardless() }
+    }
+
+    /// Vollbild = ein normales Fenster (Ebene 0) der vorderen App deckt den ganzen Bildschirm samt Menüleiste ab.
+    static func vollbild(auf s: NSScreen?) -> Bool {
+        guard let s, let haupt = NSScreen.screens.first,
+              let pid = NSWorkspace.shared.frontmostApplication?.processIdentifier,
+              pid != ProcessInfo.processInfo.processIdentifier,
+              let liste = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] else { return false }
+        // CoreGraphics zählt y von oben am Hauptbildschirm, AppKit von unten.
+        let ziel = CGRect(x: s.frame.minX, y: haupt.frame.maxY - s.frame.maxY, width: s.frame.width, height: s.frame.height)
+        return liste.contains { w in
+            guard (w[kCGWindowOwnerPID as String] as? pid_t) == pid, (w[kCGWindowLayer as String] as? Int) == 0,
+                  let b = w[kCGWindowBounds as String] as? NSDictionary, let r = CGRect(dictionaryRepresentation: b) else { return false }
+            return r.insetBy(dx: -1, dy: -1).contains(ziel)
         }
     }
 

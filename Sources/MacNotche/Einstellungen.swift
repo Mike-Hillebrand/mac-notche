@@ -13,7 +13,7 @@ enum E {
     static let fensterAktiv = "fenster.aktiv", augenMinuten = "augen.minuten", trinkenMinuten = "trinken.minuten", bausteine = "bausteine"
     static let emojiKuerzel = "emoji.kuerzel", aktien = "aktien", notizen = "notizen"
     static let leisteAktiv = "leiste.aktiv", leisteSekunden = "leiste.sekunden", fragenModell = "fragen.modell", fragenKI = "fragen.ki", wetterOrt = "wetter.ort", reiterAus = "reiter.aus", zuhauseWoerter = "zuhause.woerter", notizOrdner = "notiz.ordner", diktatSprache = "diktat.sprache", downloadsAblage = "downloads.ablage", zuKI = "zu.ki", zuAus = "zu.aus"
-    static let sportLiga = "sport.liga", sportVereine = "sport.vereine", geraet = "geraet", notchHoehe = "notch.hoehe", monitor = "monitor", zuhauseAuswahl = "zuhause.auswahl"
+    static let sportLiga = "sport.liga", sportVereine = "sport.vereine", geraet = "geraet", notchHoehe = "notch.hoehe", monitor = "monitor", vollbildAus = "vollbild.aus", zuhauseAuswahl = "zuhause.auswahl"
     static let fensterZiehen = "fenster.ziehen", kurzbefehle = "kurzbefehle"
     static func meldung(_ art: String) -> String { "meldung.\(art)" }
 }
@@ -34,7 +34,7 @@ enum Einstellungen {
             E.meldung("augen"): false, E.meldung("trinken"): true, E.meldung("update"): true, E.meldung("download"): true, E.downloadsAblage: true, E.updatesAuto: true, E.meldung("ablage"): true,
             E.leisteAktiv: true, E.leisteSekunden: 10.0, E.fragenModell: "sonnet", E.fragenKI: "Claude",
             E.sportLiga: "bl1", E.sportVereine: "", E.meldung("sport"): true,
-            E.fensterZiehen: true, E.kurzbefehle: "", E.meldung("termin"): true,
+            E.fensterZiehen: true, E.vollbildAus: true, E.kurzbefehle: "", E.meldung("termin"): true,
             "ecke.ol": "Nichts", "ecke.or": "Nichts", "ecke.ul": "Nichts", "ecke.ur": "Nichts",
         ])
     }
@@ -123,6 +123,7 @@ struct AllgemeinSeite: View {
     @AppStorage(E.geraet) var geraet = "auto"
     @AppStorage(E.notchHoehe) var notchHoehe = 0.0
     @AppStorage(E.monitor) var monitor = ""
+    @AppStorage(E.vollbildAus) var vollbildAus = true
     @State private var login = SMAppService.mainApp.status == .enabled
     @State private var sprache = (UserDefaults.standard.stringArray(forKey: "AppleLanguages")?.first).flatMap { ["de", "en"].first(where: $0.hasPrefix) } ?? ""
     @State private var neustart = false
@@ -136,6 +137,9 @@ struct AllgemeinSeite: View {
                 }
             }
             Text("Auf diesem Monitor sitzt die Notch oben mittig. Ist er nicht angeschlossen, nimmt sie den Hauptbildschirm.")
+                .font(.caption).foregroundStyle(.secondary)
+            Toggle("Im Vollbild ausblenden", isOn: $vollbildAus)
+            Text("Läuft auf diesem Monitor eine App im Vollbild (Video, Spiel, Präsentation), verschwindet die Notch, bis du das Vollbild verlässt.")
                 .font(.caption).foregroundStyle(.secondary)
             Picker("Bildschirm", selection: $geraet) {
                 Text("Automatisch erkennen").tag("auto")
