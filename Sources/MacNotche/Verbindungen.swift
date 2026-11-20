@@ -99,6 +99,7 @@ enum Verbindungen {
             return Verbindung(id: "claude", name: "Claude Code", angemeldet: false, konto: nil,
                               hinweis: L("Nicht installiert. „Installieren“ holt Claude Code und startet die Anmeldung im Browser."), befehl: claudeInstall)
         }
+        ClaudeLogin.sicherstellen()
         let status = claudeStatus()
         let dienste = ClaudeUsage.schluesselbundDienste()
         let token = dienste.first.flatMap { ClaudeUsage.token(dienst: $0) } ?? ClaudeUsage.dateiToken()

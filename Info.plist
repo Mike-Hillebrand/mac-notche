@@ -2,33 +2,64 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleExecutable</key><string>MacNotche</string>
-    <key>CFBundleIdentifier</key><string>com.mikehillebrand.kerbe</string>
-    <key>CFBundleName</key><string>Mac Notche</string>
-    <key>CFBundleDisplayName</key><string>Mac Notche</string>
-    <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleShortVersionString</key><string>4.31</string>
-    <key>CFBundleVersion</key><string>1</string>
-    <key>CFBundleDevelopmentRegion</key><string>de</string>
-    <key>CFBundleLocalizations</key><array><string>de</string><string>en</string></array>
-    <key>LSMinimumSystemVersion</key><string>14.2</string>
-    <key>CFBundleIconFile</key><string>AppIcon</string>
-    <key>LSUIElement</key><true/>
-    <key>NSAppleEventsUsageDescription</key><string>Mac Notche steuert Apple Music und Spotify, sendet Antworten über Nachrichten und öffnet Antworten in Mail.</string>
-    <key>NSCalendarsFullAccessUsageDescription</key><string>Mac Notche zeigt deine nächsten Termine in der Notch.</string>
-    <key>NSRemindersFullAccessUsageDescription</key><string>Mac Notche zeigt offene Erinnerungen und hakt sie auf Klick ab.</string>
-    <key>NSRemovableVolumesUsageDescription</key><string>Mac Notche liest die Claude-Code-Sitzungen in ~/.claude, um Token und Kosten anzuzeigen.</string>
-    <key>NSNetworkVolumesUsageDescription</key><string>Mac Notche liest die Claude-Code-Sitzungen in ~/.claude, um Token und Kosten anzuzeigen.</string>
-    <key>NSLocationUsageDescription</key><string>Mac Notche zeigt das Wetter für deinen Ort.</string>
-    <key>NSLocationWhenInUseUsageDescription</key><string>Mac Notche zeigt das Wetter für deinen Ort.</string>
-    <key>NSPhotoLibraryAddUsageDescription</key><string>Mac Notche übernimmt Fotos von deinem iPhone in die Fotos-App.</string>
-    <key>NSPhotoLibraryUsageDescription</key><string>Mac Notche übernimmt Fotos von deinem iPhone in die Fotos-App.</string>
-    <key>NSContactsUsageDescription</key><string>Mac Notche zeigt bei Nachrichten den Namen statt der Telefonnummer.</string>
-    <key>NSMicrophoneUsageDescription</key><string>Mac Notche nimmt dein Diktat für Schnellnotizen auf, nur solange du das Mikrofon einschaltest.</string>
-    <key>NSSpeechRecognitionUsageDescription</key><string>Mac Notche wandelt dein Diktat in Text um, wenn möglich auf dem Mac selbst.</string>
-    <key>NSCameraUsageDescription</key><string>Mac Notche zeigt dein Kamerabild im Spiegel-Werkzeug, nur solange du es einschaltest.</string>
-    <key>NSBluetoothAlwaysUsageDescription</key><string>Mac Notche meldet, wenn sich ein Bluetooth-Gerät verbindet oder trennt.</string>
-    <key>NSAudioCaptureUsageDescription</key><string>Mac Notche regelt die Lautstärke einzelner Apps. Dafür leitet es deren Ton durch, nichts wird gespeichert.</string>
-    <key>NSScreenCaptureUsageDescription</key><string>Mac Notche schickt auf Wunsch ein Foto deines Bildschirms an Claude und erkennt Text in Ausschnitten, die du mit ⌥⌘4 aufziehst.</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>de</string>
+	<key>CFBundleDisplayName</key>
+	<string>Mac Notche</string>
+	<key>CFBundleExecutable</key>
+	<string>MacNotche</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.mikehillebrand.kerbe</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>de</string>
+		<string>en</string>
+	</array>
+	<key>CFBundleName</key>
+	<string>Mac Notche</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>4.32</string>
+	<key>CFBundleVersion</key>
+	<string>4.32</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.2</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Mac Notche steuert Apple Music und Spotify, sendet Antworten über Nachrichten und öffnet Antworten in Mail.</string>
+	<key>NSAudioCaptureUsageDescription</key>
+	<string>Mac Notche regelt die Lautstärke einzelner Apps. Dafür leitet es deren Ton durch, nichts wird gespeichert.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Mac Notche meldet, wenn sich ein Bluetooth-Gerät verbindet oder trennt.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Mac Notche zeigt deine nächsten Termine in der Notch.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Mac Notche zeigt dein Kamerabild im Spiegel-Werkzeug, nur solange du es einschaltest.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Mac Notche zeigt bei Nachrichten den Namen statt der Telefonnummer.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Mac Notche zeigt das Wetter für deinen Ort.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Mac Notche zeigt das Wetter für deinen Ort.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Mac Notche nimmt dein Diktat für Schnellnotizen auf, nur solange du das Mikrofon einschaltest.</string>
+	<key>NSNetworkVolumesUsageDescription</key>
+	<string>Mac Notche liest die Claude-Code-Sitzungen in ~/.claude, um Token und Kosten anzuzeigen.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Mac Notche übernimmt Fotos von deinem iPhone in die Fotos-App.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Mac Notche übernimmt Fotos von deinem iPhone in die Fotos-App.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>Mac Notche zeigt offene Erinnerungen und hakt sie auf Klick ab.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>Mac Notche liest die Claude-Code-Sitzungen in ~/.claude, um Token und Kosten anzuzeigen.</string>
+	<key>NSScreenCaptureUsageDescription</key>
+	<string>Mac Notche schickt auf Wunsch ein Foto deines Bildschirms an Claude und erkennt Text in Ausschnitten, die du mit ⌥⌘4 aufziehst.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Mac Notche wandelt dein Diktat in Text um, wenn möglich auf dem Mac selbst.</string>
 </dict>
 </plist>

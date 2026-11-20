@@ -58,6 +58,7 @@ final class ClaudeUsage: ObservableObject {
     // MARK: Plan-Limits
 
     private func limitsHolen() async {
+        ClaudeLogin.sicherstellen()
         var kandidaten = dienst.map { [$0] } ?? []
         kandidaten += Self.schluesselbundDienste().filter { $0 != dienst }
         if Self.dateiToken() != nil { kandidaten.append(Self.dateiDienst) }
