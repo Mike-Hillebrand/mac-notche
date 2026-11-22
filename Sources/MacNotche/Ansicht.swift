@@ -377,12 +377,17 @@ struct Offen: View {
         VStack(spacing: 12) {
             HStack(spacing: 4) {
                 ForEach(reiter, id: \.self) { r in
-                    Button(LocalizedStringKey(r.rawValue)) { m.reiter = r }
-                        .buttonStyle(.plain)
-                        .font(.system(size: 12, weight: .semibold))
-                        .padding(.horizontal, reiter.count > 9 ? 7 : 10).padding(.vertical, 5)
-                        .background(Capsule().fill(m.reiter == r ? Color.primary.opacity(0.18) : .clear))
-                        .foregroundStyle(m.reiter == r ? Color.primary : Color.primary.opacity(0.55))
+                    Button { m.reiter = r } label: {
+                        Image(systemName: r.symbol)
+                            .font(.system(size: 14, weight: .semibold))
+                            .frame(width: 38, height: 26)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .background(Capsule().fill(m.reiter == r ? Color.primary.opacity(0.18) : .clear))
+                    .foregroundStyle(m.reiter == r ? Color.primary : Color.primary.opacity(0.55))
+                    .help(LocalizedStringKey(r.rawValue))
+                    .accessibilityLabel(LocalizedStringKey(r.rawValue))
                 }
                 Menu {
                     Button("Einstellungen …") { m.einstellungenOeffnen?() }
@@ -394,6 +399,8 @@ struct Offen: View {
                 .help("Einstellungen und Beenden")
             }
             .padding(.top, 10 + m.echteNotch)
+            .fixedSize(horizontal: false, vertical: true)
+            .layoutPriority(1)  // Leiste nie verdrängen, auch wenn ein Reiter zu hohen Inhalt hat
             Group {
                 switch m.reiter {
                 case .uebersicht: Uebersicht()
@@ -405,11 +412,13 @@ struct Offen: View {
                 case .iphone: IPhoneAnsicht()
                 case .fokus: FokusAnsicht()
                 case .notiz: NotizAnsicht()
+                case .prompter: PrompterAnsicht()
                 case .zuhause: ZuhauseAnsicht()
                 case .werkzeuge: WerkzeugeAnsicht()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .clipped()
         }
         .padding(.horizontal, 22)
         .padding(.bottom, 16)
@@ -1019,16 +1028,20 @@ struct WerkzeugeAnsicht: View {
                 if ablage.eintraege.isEmpty {
                     Text("Noch nichts kopiert.").font(.system(size: 12)).foregroundStyle(Color.primary.opacity(0.6))
                 }
-                ForEach(ablage.eintraege, id: \.self) { s in
-                    Button { ablage.kopieren(s) } label: {
-                        Text(s.replacingOccurrences(of: "\n", with: " ")).font(.system(size: 11)).lineLimit(1)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 6).padding(.vertical, 3)
-                            .background(RoundedRectangle(cornerRadius: 5).fill(Color.primary.opacity(0.06)))
-                            .contentShape(Rectangle())
+                ScrollView {
+                    VStack(spacing: 4) {
+                        ForEach(ablage.eintraege, id: \.self) { s in
+                            Button { ablage.kopieren(s) } label: {
+                                Text(s.replacingOccurrences(of: "\n", with: " ")).font(.system(size: 11)).lineLimit(1)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, 6).padding(.vertical, 3)
+                                    .background(RoundedRectangle(cornerRadius: 5).fill(Color.primary.opacity(0.06)))
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .help("Erneut kopieren")
+                        }
                     }
-                    .buttonStyle(.plain)
-                    .help("Erneut kopieren")
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

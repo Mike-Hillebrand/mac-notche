@@ -2,13 +2,15 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.32.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.33.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
 **Zugeklappt:** Musik-Cover und Equalizer, Temperatur, Timer-Countdown, Claude-Limits in Prozent (5 Stunden, wo der Plan eines hat, und Woche).
 
 **Monitor:** Unter Einstellungen › Allgemein › Gerät wählst du, auf welchem Bildschirm die Notch sitzt. Ist er nicht angeschlossen, nimmt sie den Hauptbildschirm. Läuft dort eine App im Vollbild, blendet sich die Notch aus (abschaltbar).
+
+**Teleprompter:** Der Reiter „Prompter“ nimmt deinen Text auf. „Starten“ hängt ihn als Laufband direkt unter die Kamera, so schaust du beim Lesen in die Linse. Maus drauf hält an, ↑/↓ springen zeilenweise, Leertaste schaltet das Laufen um, Esc beendet. Tempo, Schrift, Breite, Höhe und Farbe sind einstellbar. Auf Wunsch ist das Panel in Bildschirmfreigabe, Aufnahmen und Screenshots unsichtbar, und ein Leuchten folgt der Lautstärke deiner Stimme (nur Pegel, keine Aufnahme).
 
 **Aufgeklappt, nach Reitern:**
 

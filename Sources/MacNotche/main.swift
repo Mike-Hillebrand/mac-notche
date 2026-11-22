@@ -4,6 +4,7 @@ import Combine
 import ServiceManagement
 
 Einstellungen.registrieren()
+P.registrieren()
 
 if CommandLine.arguments.contains("--selbsttest") {
     Selbsttest.laufen()
@@ -86,6 +87,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             modell.reiter = .fragen
             modell.zustand = .offen
         }
+        if args.contains("--prompter") { Prompter.shared.starten() }
         if args.contains("--einstellungen") || args.contains("--entsperren-seite") || args.contains("--seite") { DispatchQueue.main.async { self.einstellungen() } }
         // Mit Leuchten keinen Fensterschatten: er zeichnet sonst eine dunkle Linie um den Leuchtbereich.
         panel.hasShadow = UserDefaults.standard.bool(forKey: E.schatten) && !Leuchten.an
@@ -155,6 +157,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let m = NSMenu()
         m.addItem(withTitle: "Notch öffnen", action: #selector(oeffnen), keyEquivalent: "").target = self
         m.addItem(withTitle: "Einstellungen …", action: #selector(einstellungen), keyEquivalent: ",").target = self
+        m.addItem(withTitle: "Teleprompter starten/stoppen", action: #selector(prompter), keyEquivalent: "").target = self
         m.addItem(withTitle: "Claude-Usage aktualisieren", action: #selector(aktualisieren), keyEquivalent: "r").target = self
         let login = NSMenuItem(title: "Beim Anmelden starten", action: #selector(loginUmschalten(_:)), keyEquivalent: "")
         login.target = self
@@ -166,6 +169,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc func oeffnen() { modell.zustand = .offen }
+    @objc func prompter() { Prompter.shared.umschalten() }
 
     var einstellungsFenster: NSWindow?
     @objc func einstellungen() {

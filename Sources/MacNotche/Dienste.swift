@@ -9,7 +9,7 @@ import CoreBluetooth
 func L(_ s: String) -> String { NSLocalizedString(s, comment: "") }
 
 enum Zustand { case zu, offen, meldung }
-enum Reiter: String, CaseIterable { case uebersicht = "Übersicht", mitteilungen = "Mitteilungen", wetter = "Wetter", claude = "KI", fragen = "Fragen", notiz = "Notiz", ablage = "Ablage", iphone = "iPhone", fokus = "Fokus", zuhause = "Zuhause", werkzeuge = "Werkzeuge" }
+enum Reiter: String, CaseIterable { case uebersicht = "Übersicht", mitteilungen = "Mitteilungen", wetter = "Wetter", claude = "KI", fragen = "Fragen", notiz = "Notiz", prompter = "Prompter", ablage = "Ablage", iphone = "iPhone", fokus = "Fokus", zuhause = "Zuhause", werkzeuge = "Werkzeuge" }
 
 extension Reiter {
     /// Vom Nutzer ausgeschaltete Reiter (Einstellungen › Allgemein), Übersicht nie.
@@ -521,5 +521,25 @@ final class Ablage: ObservableObject {
             }
         }
         return !provider.isEmpty
+    }
+}
+
+extension Reiter {
+    /// Icon in der Reiterleiste (Name erscheint als Tooltip).
+    var symbol: String {
+        switch self {
+        case .uebersicht: "square.grid.2x2"
+        case .mitteilungen: "bell"
+        case .wetter: "cloud.sun"
+        case .claude: "sparkles"
+        case .fragen: "questionmark.bubble"
+        case .notiz: "note.text"
+        case .prompter: "scroll"
+        case .ablage: "tray.full"
+        case .iphone: "iphone"
+        case .fokus: "timer"
+        case .zuhause: "house"
+        case .werkzeuge: "wrench.and.screwdriver"
+        }
     }
 }
