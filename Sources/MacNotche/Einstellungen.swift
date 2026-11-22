@@ -207,6 +207,7 @@ struct AllgemeinSeite: View {
 
 struct AussehenSeite: View {
     @AppStorage(E.look) var look = "schwarz"
+    @AppStorage(E.glasArt) var glasArt = "klar"
     @AppStorage(E.breite) var breite = 300.0
     @AppStorage(E.schatten) var schatten = true
     @AppStorage(E.skin) var skin = "Angedockt"
@@ -249,12 +250,19 @@ struct AussehenSeite: View {
         Section("Look") {
             Picker("Stil", selection: $look) {
                 Text("Schwarz – wie eine echte Notch").tag("schwarz")
-                Text("Glas – transparent").tag("glas")
+                Text("Glas – echtes Liquid Glass").tag("glas")
                 Text("System – folgt Hell/Dunkel").tag("system")
                 Text("Hell").tag("hell")
                 Text("Dunkel").tag("dunkel")
             }
             .pickerStyle(.radioGroup)
+            if look == "glas" {
+                Picker("Glasart", selection: $glasArt) {
+                    ForEach(GlasArt.alle, id: \.id) { Text(LocalizedStringKey($0.art.name)).tag($0.id) }
+                }
+                Text("Bricht live, was hinter der Notch liegt. Rand, Glanz, Farbsäume und Tönung kommen aus dem Glas-Werkzeug. Über unruhigem Hintergrund liest sich „Milchglas“ oder „Rauch“ am besten.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
         }
         Section("Form") {
             Regler(titel: "Breite zugeklappt", wert: $breite, bereich: 220...420, schritt: 10) { "\(Int($0)) pt" }

@@ -55,10 +55,15 @@ struct NotchAnsicht: View {
     @AppStorage(E.farbe) private var farbe = "000000"
     @AppStorage(E.skinDock) private var skinDock = false
     @AppStorage(E.leuchten) private var leuchten = false
+    @AppStorage(E.glasArt) private var glasArt = "klar"
     @Environment(\.colorScheme) private var system
 
     private var schema: ColorScheme {
-        switch look { case "hell": .light; case "schwarz": Farbe.hell(farbe) ? .light : .dark; case "dunkel": .dark; default: system }
+        switch look {
+        case "hell": .light; case "schwarz": Farbe.hell(farbe) ? .light : .dark; case "dunkel": .dark
+        case "glas": GlasArt.gewaehlt(glasArt).dunkel ? .dark : system
+        default: system
+        }
     }
     private var hintergrund: AnyShapeStyle {
         switch look {
@@ -80,7 +85,7 @@ struct NotchAnsicht: View {
         let r = skin.rand(leiste: m.leistenHoehe)
         let offen = m.zustand == .offen
         ZStack(alignment: .top) {
-            form.fill(hintergrund)
+            if look == "glas" { GlasFlaeche(form: form, art: GlasArt.gewaehlt(glasArt), lesbar: m.zustand == .offen) } else { form.fill(hintergrund) }
             Group {
                 switch m.zustand {
                 case .zu: Kompakt()
