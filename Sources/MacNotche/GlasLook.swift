@@ -37,8 +37,9 @@ struct GlasFlaeche: View {
         ZStack {
             basis
             form.fill(art.tint.opacity(art.tintAmount * 0.8))
+            // Lesbar ohne Weichzeichner: nur Tönung (Skill-Regel „tintAmount erhöhen“), Hintergrund bleibt scharf.
             if lesbar {
-                if art.dunkel { form.fill(Color.black.opacity(0.45)) } else { form.fill(.regularMaterial).opacity(0.85) }
+                form.fill(art.dunkel ? Color.black.opacity(0.45) : Color(nsColor: .windowBackgroundColor).opacity(0.38))
             }
             // Glanzlicht links oben (specular).
             form.fill(RadialGradient(colors: [.white.opacity(art.specular * 0.28), .clear],
@@ -60,7 +61,10 @@ struct GlasFlaeche: View {
     }
 
     @ViewBuilder private var basis: some View {
-        if #available(macOS 26.0, *) {
+        // Klar = Scheibe ohne jede Unschärfe (Liquid Glass zeichnet selbst als .clear leicht weich).
+        if art.frost == 0, art.tintAmount < 0.03 {
+            form.fill(Color.white.opacity(0.015))
+        } else if #available(macOS 26.0, *) {
             // Frost über das stärkere Glas, sonst klares Glas; Tönung wie tint/tintAmount.
             let glas: Glass = art.frost >= 6 ? .regular : .clear
             Color.clear.glassEffect(glas.tint(art.tint.opacity(art.tintAmount)), in: form)

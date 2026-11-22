@@ -260,7 +260,7 @@ struct AussehenSeite: View {
                 Picker("Glasart", selection: $glasArt) {
                     ForEach(GlasArt.alle, id: \.id) { Text(LocalizedStringKey($0.art.name)).tag($0.id) }
                 }
-                Text("Bricht live, was hinter der Notch liegt. Rand, Glanz, Farbsäume und Tönung kommen aus dem Glas-Werkzeug. Über unruhigem Hintergrund liest sich „Milchglas“ oder „Rauch“ am besten.")
+                Text("Bricht live, was hinter der Notch liegt. Rand, Glanz, Farbsäume und Tönung kommen aus dem Glas-Werkzeug. Geöffnet wird nur leicht getönt, nicht gefrostet. Über sehr unruhigem Hintergrund liest sich „Rauch“ am besten.")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }

@@ -2,7 +2,7 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.34.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.35.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
@@ -10,7 +10,7 @@ Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Stud
 
 **Monitor:** Unter Einstellungen › Allgemein › Gerät wählst du, auf welchem Bildschirm die Notch sitzt. Ist er nicht angeschlossen, nimmt sie den Hauptbildschirm. Läuft dort eine App im Vollbild, blendet sich die Notch aus (abschaltbar).
 
-**Glas:** Einstellungen › Aussehen › Look „Glas“ nutzt Apples Liquid Glass und bricht live, was hinter der Notch liegt. Sechs Glasarten aus dem Glas-Werkzeug: Klar, Standard, Milchglas, Eis, Prisma, Rauch (Lichtkante, Glanz, Farbsäume, Tönung). Geöffnet kommt automatisch Frost dazu, damit Text lesbar bleibt.
+**Glas:** Einstellungen › Aussehen › Look „Glas“ nutzt Apples Liquid Glass und bricht live, was hinter der Notch liegt. Sechs Glasarten aus dem Glas-Werkzeug („Klar“ ganz ohne Unschärfe, nur Kante und Glanz): Klar, Standard, Milchglas, Eis, Prisma, Rauch (Lichtkante, Glanz, Farbsäume, Tönung). Geöffnet wird das Glas nur leicht getönt (ohne Weichzeichner), damit Text lesbar bleibt.
 
 **Teleprompter:** Der Reiter „Prompter“ nimmt deinen Text auf. „Starten“ hängt ihn als Laufband direkt unter die Kamera, so schaust du beim Lesen in die Linse. Maus drauf hält an, ↑/↓ springen zeilenweise, Leertaste schaltet das Laufen um, Esc beendet. Tempo, Schrift, Breite, Höhe und Farbe sind einstellbar. Auf Wunsch ist das Panel in Bildschirmfreigabe, Aufnahmen und Screenshots unsichtbar, und ein Leuchten folgt der Lautstärke deiner Stimme (nur Pegel, keine Aufnahme).
 
