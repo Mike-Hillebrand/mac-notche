@@ -26,10 +26,17 @@ struct Leuchten: View {
 // MARK: - Gerät: echte Notch (MacBook) oder freier Bildschirmrand (iMac, Studio, Monitor)
 
 enum Geraet {
-    /// Bildschirm der Notch: gewählter Monitor (nach Name), sonst der Hauptbildschirm mit Menüleiste.
+    /// Bildschirm der Notch: gewählter Monitor (nach Name), sonst automatisch der mit dem Dock
+    /// (das Dock wandert mit, wenn man die Maus an den unteren Rand eines anderen Monitors schiebt).
+    /// Ist das Dock ausgeblendet, nimmt sie den Hauptbildschirm mit Menüleiste.
     static var bildschirm: NSScreen? {
         let wahl = UserDefaults.standard.string(forKey: E.monitor) ?? ""
-        return NSScreen.screens.first { !wahl.isEmpty && $0.localizedName == wahl } ?? NSScreen.screens.first
+        if !wahl.isEmpty, let s = NSScreen.screens.first(where: { $0.localizedName == wahl }) { return s }
+        return NSScreen.screens.first(where: mitDock) ?? NSScreen.screens.first
+    }
+    static func mitDock(_ s: NSScreen) -> Bool {
+        let f = s.frame, v = s.visibleFrame
+        return v.minY - f.minY > 1 || v.minX - f.minX > 1 || f.maxX - v.maxX > 1
     }
     /// „auto“ erkennt die Notch über den sicheren Bereich; „macbook“/„imac“ erzwingen.
     static var echteNotch: Bool {

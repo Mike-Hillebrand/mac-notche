@@ -2,13 +2,13 @@
 
 Die Notch als Schaltzentrale für den Mac – auch auf Macs ohne Notch (Mac Studio, Mac mini, externe Monitore). Alles frei, kein Abo, keine Sperren.
 
-**[Download: Mac Notche 4.35.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
+**[Download: Mac Notche 4.36.dmg](../../releases/latest)** · macOS 14.2 oder neuer · Apple Silicon
 
 ## Funktionen
 
 **Zugeklappt:** Musik-Cover und Equalizer, Temperatur, Timer-Countdown, Claude-Limits in Prozent (5 Stunden, wo der Plan eines hat, und Woche).
 
-**Monitor:** Unter Einstellungen › Allgemein › Gerät wählst du, auf welchem Bildschirm die Notch sitzt. Ist er nicht angeschlossen, nimmt sie den Hauptbildschirm. Läuft dort eine App im Vollbild, blendet sich die Notch aus (abschaltbar).
+**Monitor:** Unter Einstellungen › Allgemein › Gerät wählst du, auf welchem Bildschirm die Notch sitzt. „Automatisch“ folgt dem Dock: wechselt es den Monitor, wandert die Notch mit (bei ausgeblendetem Dock der Bildschirm mit Menüleiste). Läuft dort eine App im Vollbild, blendet sich die Notch aus (abschaltbar).
 
 **Glas:** Einstellungen › Aussehen › Look „Glas“ nutzt Apples Liquid Glass und bricht live, was hinter der Notch liegt. Sechs Glasarten aus dem Glas-Werkzeug („Klar“ ganz ohne Unschärfe, nur Kante und Glanz): Klar, Standard, Milchglas, Eis, Prisma, Rauch (Lichtkante, Glanz, Farbsäume, Tönung). Geöffnet wird das Glas nur leicht getönt (ohne Weichzeichner), damit Text lesbar bleibt.
 

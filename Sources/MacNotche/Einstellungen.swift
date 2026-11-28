@@ -71,8 +71,9 @@ struct EinstellungenAnsicht: View {
     }()
     var body: some View {
         NavigationSplitView {
-            List(selection: $seite) {
-                ForEach(Seite.allCases) { s in Label(LocalizedStringKey(s.rawValue), systemImage: s.symbol).tag(s) }
+            // Leere Auswahl ignorieren: sonst springt ein Klick rechts (Fokus weg von der Liste) auf „Allgemein“ zurück.
+            List(selection: Binding(get: { seite }, set: { if let neu = $0 { seite = neu } })) {
+                ForEach(Seite.allCases) { s in Label(LocalizedStringKey(s.rawValue), systemImage: s.symbol).tag(Optional(s)) }
             }
             .navigationSplitViewColumnWidth(200)
         } detail: {
@@ -130,13 +131,13 @@ struct AllgemeinSeite: View {
     var body: some View {
         Section("Gerät") {
             Picker("Monitor", selection: $monitor) {
-                Text("Hauptbildschirm (mit Menüleiste)").tag("")
+                Text("Automatisch – folgt dem Dock").tag("")
                 ForEach(NSScreen.screens.map(\.localizedName), id: \.self) { Text($0).tag($0) }
                 if !monitor.isEmpty && !NSScreen.screens.contains(where: { $0.localizedName == monitor }) {
                     Text(monitor + L(" (nicht angeschlossen)")).tag(monitor)
                 }
             }
-            Text("Auf diesem Monitor sitzt die Notch oben mittig. Ist er nicht angeschlossen, nimmt sie den Hauptbildschirm.")
+            Text("„Automatisch“: Die Notch sitzt auf dem Monitor mit dem Dock und wandert mit, wenn das Dock wechselt (Maus an den unteren Rand eines anderen Monitors). Bei ausgeblendetem Dock nimmt sie den Bildschirm mit Menüleiste. Ein fest gewählter Monitor hat Vorrang.")
                 .font(.caption).foregroundStyle(.secondary)
             Toggle("Im Vollbild ausblenden", isOn: $vollbildAus)
             Text("Läuft auf diesem Monitor eine App im Vollbild (Video, Spiel, Präsentation), verschwindet die Notch, bis du das Vollbild verlässt.")

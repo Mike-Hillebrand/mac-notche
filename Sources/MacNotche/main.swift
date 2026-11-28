@@ -53,7 +53,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         panel.orderFrontRegardless()
         // Vollbild: jede Sekunde prüfen (Wechsel in den Vollbild-Space dauert ohnehin eine Animation lang).
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in self?.vollbildPruefen() }
+        // Dazu: Wechselt das Dock den Monitor (Einstellung „Automatisch“), zieht die Notch mit.
+        var letzterSchirm = Geraet.bildschirm?.localizedName
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            self.vollbildPruefen()
+            let jetzt = Geraet.bildschirm?.localizedName
+            if jetzt != letzterSchirm { letzterSchirm = jetzt; self.anpassen(self.modell.zustand); if Prompter.shared.laeuft { Prompter.shared.einpassen() } }
+        }
         menuBauen()
         modell.starten()
         modell.einstellungenOeffnen = { [weak self] in self?.einstellungen() }
